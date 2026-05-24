@@ -84,6 +84,35 @@ export function CobrarForm({ supplierName }: Props) {
             onAdd={(item) => setItems((prev) => [...prev, item])}
           />
         </div>
+        <p className="af-eb mt-6 mb-2">prazo de pagamento</p>
+        <div className="flex gap-2">
+          {[15, 30, 45, 60].map((d) => (
+            <button
+              key={d}
+              onClick={() => setPrazo(d)}
+              className={`flex-1 text-center py-2.5 rounded-[8px] font-mono text-[13px] border ${
+                prazo === d
+                  ? "bg-[var(--af-preto)] text-[var(--af-branco)] border-[var(--af-preto)]"
+                  : "bg-[var(--af-branco)] text-[var(--af-preto)] border-[var(--af-borda)]"
+              }`}
+            >
+              {d}d
+            </button>
+          ))}
+        </div>
+
+        <div className="mt-4 flex justify-between items-center bg-[var(--af-preto)] text-[var(--af-branco)] rounded-[10px] px-3.5 py-4">
+          <span className="af-eb text-[var(--af-cinza-soft)]">Total fiado</span>
+          <span className="af-display text-[28px]">
+            R${" "}
+            {(
+              items.reduce((s, it) => s + it.priceCents * it.qty, 0) / 100
+            )
+              .toFixed(2)
+              .replace(".", ",")}
+          </span>
+        </div>
+
         <button
           onClick={handleGenerate}
           disabled={generating || items.length === 0}
