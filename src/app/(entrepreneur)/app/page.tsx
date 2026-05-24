@@ -561,7 +561,7 @@ export default async function CockpitPage() {
               {featuredSuppliers.map((s) => (
                 <Link
                   key={s.id}
-                  href={`/app/fiado/${s.id}`}
+                  href="/app/fiado"
                   className="flex items-center gap-3 px-5 py-4 transition-colors hover:bg-[oklch(0.985_0.005_75_/_0.5)]"
                 >
                   <div

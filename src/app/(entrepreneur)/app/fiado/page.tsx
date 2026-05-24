@@ -1,7 +1,6 @@
-import Link from "next/link";
-import { ArrowRight, Package, Search } from "lucide-react";
+import { Package } from "lucide-react";
 
-import { AfCard, Eyebrow, Tag } from "@/components/af";
+import { AfCard, Eyebrow } from "@/components/af";
 import { PageHeader } from "@/components/shell/page-header";
 import { requireEntrepreneur } from "@/lib/auth";
 import { db } from "@/lib/db";
@@ -17,18 +16,6 @@ const CATEGORY_LABEL: Record<string, string> = {
   CALCADOS: "calçados",
   BAZAR: "bazar",
   OUTROS: "outros",
-};
-
-const CATEGORY_ACCENT: Record<string, string> = {
-  TEXTIL: "var(--af-terra)",
-  COSMETICOS: "var(--af-mata)",
-  ALIMENTOS: "var(--af-dende)",
-  BEBIDAS: "var(--af-cobre)",
-  PAPELARIA: "var(--af-acafrao)",
-  ACESSORIOS: "var(--af-terra-2)",
-  CALCADOS: "var(--af-brasa)",
-  BAZAR: "var(--af-mata-2)",
-  OUTROS: "var(--af-ink-3)",
 };
 
 export default async function FiadoPage() {
@@ -68,14 +55,13 @@ export default async function FiadoPage() {
               gap: 10,
               padding: "10px 14px",
               borderRadius: 12,
-              background: "var(--af-paper)",
-              border: "1px solid var(--af-ink-08)",
+              background: "var(--af-branco)",
+              border: "1px solid var(--af-borda)",
               fontSize: 13,
-              boxShadow: "var(--af-shadow-card)",
             }}
           >
-            <span style={{ color: "var(--af-ink-soft)" }}>seu limite</span>
-            <span style={{ fontWeight: 600 }}>
+            <span style={{ color: "var(--af-cinza)" }}>limite aprovado</span>
+            <span style={{ fontWeight: 600, color: "var(--af-preto)" }}>
               {formatBRL(score?.approvedLimitCents ?? 0n)}
             </span>
           </div>
@@ -84,146 +70,116 @@ export default async function FiadoPage() {
 
       <div
         className="px-6 py-7 md:px-10 md:py-8 space-y-6"
-        style={{ background: "var(--af-paper-2)" }}
+        style={{ background: "var(--af-creme-2)" }}
       >
-        <div className="relative max-w-md">
-          <Search
-            className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2"
-            style={{ color: "var(--af-ink-soft)" }}
-          />
-          <input
-            placeholder="buscar fornecedor ou categoria"
-            className="w-full rounded-xl px-10 py-3 text-sm"
-            style={{
-              background: "var(--af-paper)",
-              border: "1px solid var(--af-ink-08)",
-              fontFamily: "var(--af-sans)",
-              color: "var(--af-ink)",
-              outline: "none",
-            }}
-            disabled
-          />
-        </div>
-
         <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-          {suppliers.map((s) => {
-            const accent = CATEGORY_ACCENT[s.category] ?? "var(--af-terra)";
-            return (
-              <Link
-                key={s.id}
-                href={`/app/fiado/${s.id}`}
-                className="group block transition-transform hover:-translate-y-0.5"
+          {suppliers.map((s) => (
+            <AfCard key={s.id} padding={0} radius={20} className="overflow-hidden h-full">
+              <div
+                className="px-6 py-5"
+                style={{ borderBottom: "1px solid var(--af-borda)" }}
               >
-                <AfCard padding={0} radius={20} className="overflow-hidden h-full">
+                <div className="flex items-start justify-between gap-3">
                   <div
-                    className="relative h-32 overflow-hidden"
                     style={{
-                      background: `linear-gradient(135deg, ${accent}, oklch(0.93 0.012 72))`,
+                      width: 44,
+                      height: 44,
+                      background: "var(--af-dourado-soft)",
+                      color: "var(--af-dourado-dark)",
+                      borderRadius: 12,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontFamily: "var(--af-display)",
+                      fontSize: 20,
+                      fontWeight: 400,
+                      flexShrink: 0,
                     }}
                   >
-                    <div
-                      className="absolute inset-0"
-                      style={{
-                        backgroundImage:
-                          "radial-gradient(currentColor 1.2px, transparent 1.2px)",
-                        backgroundSize: "20px 20px",
-                        color: "oklch(0.972 0.008 75 / 0.18)",
-                      }}
-                    />
-                    <div
-                      className="absolute left-5 bottom-4"
-                      style={{
-                        width: 56,
-                        height: 56,
-                        background: "var(--af-paper)",
-                        color: accent,
-                        borderRadius: 14,
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        fontFamily: "var(--af-sans)",
-                        fontSize: 22,
-                        fontWeight: 600,
-                        boxShadow: "var(--af-shadow-card)",
-                      }}
-                    >
-                      {s.businessName.charAt(0)}
-                    </div>
-                    <Tag
-                      color={accent}
-                      className="absolute right-3 top-3"
-                      style={{
-                        background: "var(--af-paper)",
-                        boxShadow: "var(--af-shadow-card)",
-                      }}
-                    >
-                      {CATEGORY_LABEL[s.category] ?? s.category.toLowerCase()}
-                    </Tag>
+                    {s.businessName.charAt(0)}
                   </div>
-                  <div className="p-6">
-                    <h3
-                      className="af-h"
-                      style={{
-                        fontSize: 18,
-                        color: "var(--af-ink-deep)",
-                        margin: 0,
-                      }}
-                    >
-                      {s.businessName}
-                    </h3>
-                    <p
-                      className="af-mono"
-                      style={{
-                        fontSize: 11,
-                        color: "var(--af-ink-soft)",
-                        margin: "4px 0 0",
-                      }}
-                    >
-                      {s.addressNeighborhood}, {s.addressCity}/{s.addressState}
-                    </p>
-                    <p
-                      className="af-body text-pretty"
-                      style={{
-                        fontSize: 13.5,
-                        color: "var(--af-ink-2)",
-                        margin: "14px 0 0",
-                        display: "-webkit-box",
-                        WebkitLineClamp: 3,
-                        WebkitBoxOrient: "vertical",
-                        overflow: "hidden",
-                      }}
-                    >
-                      {s.description}
-                    </p>
-                    <div
-                      className="mt-5 flex items-center justify-between pt-4"
-                      style={{ borderTop: "1px solid var(--af-ink-08)" }}
-                    >
-                      <span
-                        className="af-mono inline-flex items-center gap-1.5"
-                        style={{ fontSize: 11, color: "var(--af-ink-soft)" }}
-                      >
-                        <Package className="size-3.5" />
-                        {s._count.products} produtos
-                        {s.products[0] && (
-                          <>
-                            {" "}· a partir de{" "}
-                            <span style={{ color: "var(--af-ink)" }}>
-                              {formatBRL(s.products[0].priceCents)}
-                            </span>
-                          </>
-                        )}
+                  <span
+                    className="af-mono"
+                    style={{
+                      fontSize: 10,
+                      padding: "3px 8px",
+                      borderRadius: 99,
+                      background: "var(--af-creme)",
+                      border: "1px solid var(--af-borda)",
+                      color: "var(--af-cinza)",
+                    }}
+                  >
+                    {CATEGORY_LABEL[s.category] ?? s.category.toLowerCase()}
+                  </span>
+                </div>
+                <h3
+                  className="af-display"
+                  style={{
+                    fontSize: 18,
+                    color: "var(--af-preto)",
+                    margin: "14px 0 0",
+                  }}
+                >
+                  {s.businessName}
+                </h3>
+                <p
+                  className="af-mono"
+                  style={{
+                    fontSize: 11,
+                    color: "var(--af-cinza)",
+                    margin: "4px 0 0",
+                  }}
+                >
+                  {s.addressNeighborhood}, {s.addressCity}/{s.addressState}
+                </p>
+                <p
+                  className="af-body text-pretty"
+                  style={{
+                    fontSize: 13.5,
+                    color: "var(--af-cinza)",
+                    margin: "12px 0 0",
+                    display: "-webkit-box",
+                    WebkitLineClamp: 3,
+                    WebkitBoxOrient: "vertical",
+                    overflow: "hidden",
+                  }}
+                >
+                  {s.description}
+                </p>
+              </div>
+              <div
+                className="flex items-center justify-between px-6 py-4"
+              >
+                <span
+                  className="af-mono inline-flex items-center gap-1.5"
+                  style={{ fontSize: 11, color: "var(--af-cinza)" }}
+                >
+                  <Package className="size-3.5" />
+                  {s._count.products} produtos
+                  {s.products[0] && (
+                    <>
+                      {" "}· a partir de{" "}
+                      <span style={{ color: "var(--af-preto)", fontWeight: 600 }}>
+                        {formatBRL(s.products[0].priceCents)}
                       </span>
-                      <ArrowRight
-                        className="size-4 transition-transform group-hover:translate-x-0.5"
-                        style={{ color: "var(--af-ink-soft)" }}
-                      />
-                    </div>
-                  </div>
-                </AfCard>
-              </Link>
-            );
-          })}
+                    </>
+                  )}
+                </span>
+                <span
+                  className="af-mono"
+                  style={{
+                    fontSize: 10,
+                    padding: "4px 10px",
+                    borderRadius: 99,
+                    background: "var(--af-preto)",
+                    color: "var(--af-creme)",
+                  }}
+                >
+                  aceita fiado
+                </span>
+              </div>
+            </AfCard>
+          ))}
         </div>
       </div>
     </>

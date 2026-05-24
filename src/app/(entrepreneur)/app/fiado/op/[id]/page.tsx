@@ -104,7 +104,7 @@ export default async function OperationDetailPage({ params }: Props) {
           <span>
             fornecedor:{" "}
             <Link
-              href={`/app/fiado/${order.supplier.id}`}
+              href="/app/fiado"
               className="font-medium underline-offset-2 hover:underline"
               style={{ color: "var(--af-terra)" }}
             >
