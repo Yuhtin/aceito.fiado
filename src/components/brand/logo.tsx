@@ -1,53 +1,54 @@
-import { AfLogo } from "@/components/af";
 import { cn } from "@/lib/utils";
 
-const SIZE_MAP = { sm: 18, md: 22, lg: 30 } as const;
-
-export function Logo({
-  className,
-  variant = "default",
-  size = "md",
-}: {
+interface LogoProps {
+  size?: number;
+  color?: string;
+  accent?: string;
   className?: string;
-  variant?: "default" | "mono";
-  size?: "sm" | "md" | "lg";
-}) {
-  return (
-    <AfLogo
-      size={SIZE_MAP[size]}
-      color={variant === "mono" ? "currentColor" : "var(--af-ink)"}
-      accent={variant === "mono" ? "currentColor" : "var(--af-terra)"}
-      className={cn(className)}
-    />
-  );
+  showText?: boolean;
 }
 
-// LogoMark — placeholder pequeno (mantém API antiga, mas usa dot+letra)
-export function LogoMark({
+export function Logo({
+  size = 28,
+  color = "var(--af-preto)",
+  accent = "var(--af-dourado)",
   className,
-  size = 32,
-}: {
-  className?: string;
-  size?: number;
-}) {
+  showText = true,
+}: LogoProps) {
   return (
-    <div
-      className={cn(
-        "inline-flex items-center justify-center rounded-xl font-semibold",
-        className,
+    <div className={cn("inline-flex items-center gap-2.5", className)}>
+      <div
+        style={{
+          width: size,
+          height: size,
+          background: accent,
+          borderRadius: size * 0.22,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          color: "var(--af-preto)",
+          fontFamily: "var(--af-display), system-ui, sans-serif",
+          fontSize: size * 0.62,
+          lineHeight: 1,
+          textTransform: "uppercase",
+        }}
+      >
+        A
+      </div>
+      {showText && (
+        <span
+          className="af-display"
+          style={{
+            color,
+            fontSize: size * 0.78,
+            lineHeight: 1,
+          }}
+        >
+          AceitoFiado
+        </span>
       )}
-      style={{
-        width: size,
-        height: size,
-        background: "var(--af-terra)",
-        color: "var(--af-paper)",
-        fontFamily: "var(--af-sans)",
-        fontSize: size * 0.42,
-        letterSpacing: "-0.04em",
-      }}
-      aria-hidden
-    >
-      af
     </div>
   );
 }
+
+export { Logo as AfLogo };

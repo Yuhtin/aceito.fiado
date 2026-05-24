@@ -14,7 +14,7 @@ export function SiteHeader({ className }: { className?: string }) {
     >
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
         <Link href="/" className="flex items-center gap-3">
-          <Logo size="md" />
+          <Logo size={22} />
         </Link>
         <nav className="hidden items-center gap-1 md:flex">
           <Link

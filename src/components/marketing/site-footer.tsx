@@ -7,11 +7,11 @@ export function SiteFooter() {
     <footer className="border-t border-border/60 bg-background">
       <div className="mx-auto grid max-w-7xl gap-10 px-6 py-12 md:grid-cols-4">
         <div className="md:col-span-2 max-w-md">
-          <Logo size="md" />
+          <Logo size={22} />
           <p className="mt-4 text-sm text-muted-foreground text-pretty">
             Capital de giro pra cadeia afroempreendedora. A empreendedora compra
             a prazo do fornecedor parceiro, ele recebe à vista, a gente cobra
-            do recebível. Sem score discriminatório no caminho.
+            do recebível. Sem Serasa, sem peneira, sem letrinha miúda.
           </p>
         </div>
         <div>
