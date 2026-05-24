@@ -72,9 +72,9 @@ export default async function CockpitPage() {
         description={`${data.profile.businessName} · ${data.profile.addressNeighborhood}, ${data.profile.addressCity}/${data.profile.addressState}`}
         actions={
           <>
-            <AfButton variant="outline" size="lg" href="/app/score" icon={false}>
+            <AfButton variant="outline" size="lg" href="/app/saude" icon={false}>
               <span className="inline-flex items-center gap-1.5">
-                <Sparkles className="size-4" /> meu score
+                <Sparkles className="size-4" /> saúde financeira
               </span>
             </AfButton>
             <AfButton variant="accent" size="lg" href="/app/fiado">
@@ -105,7 +105,7 @@ export default async function CockpitPage() {
             >
               de R$ {(approvedLimit / 100).toLocaleString("pt-BR")} aprovados ·{" "}
               <Link
-                href="/app/score"
+                href="/app/saude"
                 className="underline-offset-2 hover:underline"
               >
                 como calculamos

@@ -23,7 +23,7 @@ type Factor = {
   contribution: number;
 };
 
-export default async function ScorePage() {
+export default async function SaudePage() {
   const user = await requireEntrepreneur();
   const snapshot = await db.scoreSnapshot.findFirst({
     where: { entrepreneurId: user.entrepreneurId },
@@ -37,17 +37,17 @@ export default async function ScorePage() {
   return (
     <>
       <PageHeader
-        eyebrow="meu score"
+        eyebrow="saúde financeira"
         title="por que seu limite é o que é"
         description="sem caixa preta. calculamos do que você fatura, em quantos canais e há quanto tempo. sem consulta a Serasa."
       />
 
       <div
         className="grid gap-6 px-6 py-7 md:px-10 md:py-8 lg:grid-cols-[1.4fr_1fr]"
-        style={{ background: "var(--af-paper-2)" }}
+        style={{ background: "var(--af-creme-2)" }}
       >
         <div className="space-y-5">
-          {/* SCORE PRINCIPAL */}
+          {/* SAÚDE PRINCIPAL */}
           <GradientMesh
             className="overflow-hidden"
             style={{ borderRadius: 20 }}
@@ -56,9 +56,9 @@ export default async function ScorePage() {
               <div
                 className="flex size-32 items-center justify-center rounded-full"
                 style={{
-                  background: "var(--af-paper)",
-                  border: "2px solid var(--af-terra)",
-                  color: "var(--af-terra)",
+                  background: "var(--af-branco)",
+                  border: "2px solid var(--af-dourado)",
+                  color: "var(--af-dourado)",
                 }}
               >
                 <div className="text-center">
@@ -67,7 +67,7 @@ export default async function ScorePage() {
                     style={{
                       fontSize: 42,
                       lineHeight: 1,
-                      color: "var(--af-ink-deep)",
+                      color: "var(--af-preto)",
                     }}
                   >
                     {Math.round(snapshot.score * 100)}
@@ -76,7 +76,7 @@ export default async function ScorePage() {
                     className="af-mono"
                     style={{
                       fontSize: 10,
-                      color: "var(--af-ink-soft)",
+                      color: "var(--af-cinza)",
                       letterSpacing: "0.12em",
                       textTransform: "uppercase",
                       marginTop: 4,
@@ -87,25 +87,25 @@ export default async function ScorePage() {
                 </div>
               </div>
               <div>
-                <Tag color="var(--af-mata)">
+                <Tag color="var(--af-sucesso)">
                   aprovada · acima de{" "}
                   {Math.round(SCORING_CONSTANTS.APPROVAL_THRESHOLD * 100)}%
                 </Tag>
                 <h2
-                  className="af-h-tight"
+                  className="af-display"
                   style={{
                     fontSize: 28,
                     margin: "12px 0 0",
-                    color: "var(--af-ink-deep)",
+                    color: "var(--af-preto)",
                   }}
                 >
-                  seu limite aprovado é{" "}
-                  <span style={{ color: "var(--af-terra)" }}>
+                  limite aprovado:{" "}
+                  <span style={{ color: "var(--af-dourado)" }}>
                     <Money
                       cents={snapshot.approvedLimitCents}
                       size={28}
                       weight={600}
-                      color="var(--af-terra)"
+                      color="var(--af-dourado)"
                     />
                   </span>
                 </h2>
@@ -113,7 +113,7 @@ export default async function ScorePage() {
                   className="af-body text-pretty"
                   style={{
                     fontSize: 13.5,
-                    color: "var(--af-ink-2)",
+                    color: "var(--af-cinza)",
                     margin: "10px 0 0",
                   }}
                 >
@@ -123,7 +123,7 @@ export default async function ScorePage() {
                   className="af-mono"
                   style={{
                     fontSize: 11,
-                    color: "var(--af-ink-soft)",
+                    color: "var(--af-cinza)",
                     margin: "8px 0 0",
                   }}
                 >
@@ -136,22 +136,22 @@ export default async function ScorePage() {
           {/* FATORES */}
           <AfCard padding={0} radius={20} className="overflow-hidden">
             <div className="px-7 pt-6 pb-3">
-              <Eyebrow>como cada sinal pesa</Eyebrow>
+              <p className="af-eb" style={{ color: "var(--af-cinza)" }}>como cada sinal pesa</p>
               <h2
-                className="af-h"
+                className="af-display"
                 style={{
                   fontSize: 20,
                   margin: "8px 0 0",
-                  color: "var(--af-ink-deep)",
+                  color: "var(--af-preto)",
                 }}
               >
                 cada fator vira número 0–1, multiplicado pelo peso
               </h2>
             </div>
-            <div style={{ borderTop: "1px solid var(--af-ink-08)" }}>
+            <div style={{ borderTop: "1px solid var(--af-borda)" }}>
               <div
                 className="divide-y"
-                style={{ borderColor: "var(--af-ink-08)" }}
+                style={{ borderColor: "var(--af-borda)" }}
               >
                 {factors.map((f) => {
                   const contributionPct = f.contribution * 100;
@@ -161,7 +161,7 @@ export default async function ScorePage() {
                         <div>
                           <p
                             className="af-body"
-                            style={{ fontSize: 14, fontWeight: 500, margin: 0 }}
+                            style={{ fontSize: 14, fontWeight: 500, margin: 0, color: "var(--af-preto)" }}
                           >
                             {f.label}
                           </p>
@@ -169,12 +169,12 @@ export default async function ScorePage() {
                             className="af-mono"
                             style={{
                               fontSize: 11,
-                              color: "var(--af-ink-soft)",
+                              color: "var(--af-cinza)",
                               margin: "3px 0 0",
                             }}
                           >
                             peso {Math.round(f.weight * 100)}% · seu valor{" "}
-                            <span style={{ color: "var(--af-ink)" }}>
+                            <span style={{ color: "var(--af-preto)" }}>
                               {f.rawValue}
                             </span>
                           </p>
@@ -184,7 +184,7 @@ export default async function ScorePage() {
                             className="af-n"
                             style={{
                               fontSize: 16,
-                              color: "var(--af-mata)",
+                              color: "var(--af-sucesso)",
                               fontWeight: 600,
                             }}
                           >
@@ -194,7 +194,7 @@ export default async function ScorePage() {
                             className="af-mono"
                             style={{
                               fontSize: 10,
-                              color: "var(--af-ink-soft)",
+                              color: "var(--af-cinza)",
                               margin: "2px 0 0",
                               textTransform: "uppercase",
                               letterSpacing: "0.1em",
@@ -208,14 +208,14 @@ export default async function ScorePage() {
                         className="mt-3 overflow-hidden rounded-full"
                         style={{
                           height: 4,
-                          background: "var(--af-ink-08)",
+                          background: "var(--af-borda)",
                         }}
                       >
                         <div
                           style={{
                             width: `${f.normalizedValue * 100}%`,
                             height: "100%",
-                            background: "var(--af-terra)",
+                            background: "var(--af-dourado)",
                           }}
                         />
                       </div>
@@ -231,22 +231,22 @@ export default async function ScorePage() {
           <AfCard padding={22} radius={18}>
             <div
               className="inline-flex items-center gap-1.5"
-              style={{ color: "var(--af-terra)" }}
+              style={{ color: "var(--af-dourado)" }}
             >
               <Sparkles className="size-3.5" />
-              <Eyebrow color="var(--af-terra)">por que isso importa</Eyebrow>
+              <p className="af-eb" style={{ color: "var(--af-dourado)" }}>por que isso importa</p>
             </div>
             <p
               className="af-body"
               style={{
                 fontSize: 13.5,
-                color: "var(--af-ink-2)",
+                color: "var(--af-cinza)",
                 margin: "12px 0 0",
                 lineHeight: 1.55,
               }}
             >
-              algoritmos de score brasileiros usam{" "}
-              <strong style={{ color: "var(--af-ink)" }}>CEP</strong> como
+              algoritmos de crédito brasileiros usam{" "}
+              <strong style={{ color: "var(--af-preto)" }}>CEP</strong> como
               variável de poder preditivo. CEP correlaciona com raça.
               conclusão: o algoritmo discrimina sem saber que discrimina.
             </p>
@@ -254,13 +254,13 @@ export default async function ScorePage() {
               className="af-body"
               style={{
                 fontSize: 13.5,
-                color: "var(--af-ink-soft)",
+                color: "var(--af-cinza)",
                 margin: "12px 0 0",
                 lineHeight: 1.55,
               }}
             >
               nosso underwriting{" "}
-              <strong style={{ color: "var(--af-ink)" }}>
+              <strong style={{ color: "var(--af-preto)" }}>
                 não consulta bureau
               </strong>
               . não usa CEP. usa o que você de fato move por mês.
@@ -268,7 +268,7 @@ export default async function ScorePage() {
           </AfCard>
 
           <AfCard padding={22} radius={18}>
-            <Eyebrow>como subir seu score</Eyebrow>
+            <p className="af-eb" style={{ color: "var(--af-cinza)" }}>como melhorar sua saúde financeira</p>
             <ul className="mt-4 space-y-3">
               {[
                 [
@@ -276,8 +276,8 @@ export default async function ScorePage() {
                   "diversidade de receita vira sinal de resiliência.",
                 ],
                 [
-                  "construa histórico",
-                  "cada operação quitada melhora o fator histórico com fornecedor.",
+                  "construa atividade na rede",
+                  "cada operação quitada melhora seu perfil financeiro com fornecedores.",
                 ],
                 [
                   "estabilize o fluxo",
@@ -287,13 +287,13 @@ export default async function ScorePage() {
                 <li key={t} className="flex items-start gap-2.5">
                   <CheckCircle2
                     className="size-4 shrink-0 mt-0.5"
-                    style={{ color: "var(--af-mata)" }}
+                    style={{ color: "var(--af-sucesso)" }}
                   />
                   <span
                     className="af-body"
-                    style={{ fontSize: 13.5, color: "var(--af-ink-2)" }}
+                    style={{ fontSize: 13.5, color: "var(--af-cinza)" }}
                   >
-                    <strong style={{ color: "var(--af-ink)" }}>{t}</strong> —{" "}
+                    <strong style={{ color: "var(--af-preto)" }}>{t}</strong> —{" "}
                     {d}
                   </span>
                 </li>
@@ -304,21 +304,21 @@ export default async function ScorePage() {
           <AfCard
             padding={22}
             radius={18}
-            style={{ border: "1px dashed var(--af-ink-12)" }}
+            style={{ border: "1px dashed var(--af-borda)" }}
           >
             <div
               className="inline-flex items-center gap-1.5"
-              style={{ color: "var(--af-ink-soft)" }}
+              style={{ color: "var(--af-cinza)" }}
             >
               <ShieldOff className="size-3.5" />
-              <Eyebrow>o que não usamos</Eyebrow>
+              <p className="af-eb">o que não usamos</p>
             </div>
             <ul
               className="af-mono mt-3 space-y-1.5"
-              style={{ fontSize: 12, color: "var(--af-ink-soft)" }}
+              style={{ fontSize: 12, color: "var(--af-cinza)" }}
             >
               <li>· CEP</li>
-              <li>· score do Serasa, SPC ou Quod</li>
+              <li>· bureau de crédito (Serasa, SPC, Quod)</li>
               <li>· dados de redes sociais inferidos</li>
               <li>· renda do CPF</li>
             </ul>
