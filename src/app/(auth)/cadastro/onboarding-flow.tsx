@@ -255,6 +255,7 @@ export function OnboardingFlow({ nextUrl = "/app" }: { nextUrl?: string }) {
   const [step, setStep] = useState(0);
   const [form, setForm] = useState<FormState>(INITIAL);
   const [calculating, setCalculating] = useState(false);
+  const [supplierSubmitting, setSupplierSubmitting] = useState(false);
   const [done, setDone] = useState<DoneState | null>(null);
   const [pluggyLoading, setPluggyLoading] = useState(false);
 
@@ -350,7 +351,7 @@ export function OnboardingFlow({ nextUrl = "/app" }: { nextUrl?: string }) {
   }
 
   async function submitSupplier() {
-    setCalculating(true);
+    setSupplierSubmitting(true);
     const result = await completeSupplierOnboardingAction({
       name: form.name,
       email: form.email,
@@ -366,12 +367,12 @@ export function OnboardingFlow({ nextUrl = "/app" }: { nextUrl?: string }) {
       addressCep: "00000000",
       pixKey: "",
     });
-    setCalculating(false);
     if (!result.ok) {
+      setSupplierSubmitting(false);
       toast.error(result.error ?? "não conseguimos cadastrar agora");
       return;
     }
-    toast.success(`bem-vinda, ${result.businessName}!`);
+    toast.success(`bem-vindo, ${result.businessName}!`);
     router.push("/fornecedor");
   }
 
@@ -416,9 +417,14 @@ export function OnboardingFlow({ nextUrl = "/app" }: { nextUrl?: string }) {
     }
   }
 
-  // ── Calculating screen ──
+  // ── Calculating screen (motor de crédito, só MEI) ──
   if (calculating) {
     return <CalculatingScreen />;
+  }
+
+  // ── Supplier submitting (simples, sem animação de motor) ──
+  if (supplierSubmitting) {
+    return <SupplierSubmittingScreen businessName={form.businessName} />;
   }
 
   // ── Result screen ──
@@ -1376,6 +1382,40 @@ const CALC_STEPS = [
   "checando limites de segurança",
   "definindo seu limite",
 ];
+
+function SupplierSubmittingScreen({ businessName }: { businessName: string }) {
+  return (
+    <div className="flex min-h-[calc(100vh-110px)] flex-col items-center justify-center px-6 py-12 lg:px-14">
+      <div className="w-full max-w-md text-center">
+        <Loader2
+          className="size-10 mx-auto animate-spin"
+          style={{ color: "var(--af-dourado)" }}
+        />
+        <h1
+          className="af-display mt-6"
+          style={{
+            fontSize: "clamp(32px, 4.5vw, 48px)",
+            lineHeight: 1,
+            color: "var(--af-preto)",
+          }}
+        >
+          abrindo a loja
+        </h1>
+        <p
+          className="af-body mt-3"
+          style={{
+            fontSize: 15,
+            color: "var(--af-cinza)",
+            lineHeight: 1.55,
+          }}
+        >
+          criando a {businessName || "sua conta"} na plataforma. já vamos te
+          jogar no painel.
+        </p>
+      </div>
+    </div>
+  );
+}
 
 function CalculatingScreen() {
   const [activeIdx, setActiveIdx] = useState(0);

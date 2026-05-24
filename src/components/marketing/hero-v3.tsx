@@ -84,7 +84,7 @@ export function HeroV3() {
                 criar conta →
               </Link>
               <Link
-                href="/demo-marketplace"
+                href="/demo"
                 className="inline-flex items-center gap-2 px-6 py-4 rounded-[10px] border border-white/25 text-[14px] font-semibold"
               >
                 ▸ ver demo
