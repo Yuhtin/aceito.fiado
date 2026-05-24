@@ -83,7 +83,7 @@ export default async function OperationDetailPage({ params }: Props) {
           <Link
             href="/app"
             className="inline-flex items-center gap-1 transition-opacity hover:opacity-100 opacity-70"
-            style={{ color: "var(--af-ink-soft)" }}
+            style={{ color: "var(--af-cinza)" }}
           >
             <ArrowLeft className="size-3" /> cockpit
           </Link>
@@ -93,7 +93,7 @@ export default async function OperationDetailPage({ params }: Props) {
             operação{" "}
             <span
               className="af-mono"
-              style={{ fontSize: 20, color: "var(--af-ink-soft)" }}
+              style={{ fontSize: 20, color: "var(--af-cinza)" }}
             >
               {order.duplicata?.numero ?? `#${order.id.slice(0, 8)}`}
             </span>
@@ -106,7 +106,7 @@ export default async function OperationDetailPage({ params }: Props) {
             <Link
               href="/app/fiado"
               className="font-medium underline-offset-2 hover:underline"
-              style={{ color: "var(--af-terra)" }}
+              style={{ color: "var(--af-dourado)" }}
             >
               {order.supplier.businessName}
             </Link>
@@ -120,7 +120,7 @@ export default async function OperationDetailPage({ params }: Props) {
 
       <div
         className="grid gap-6 px-6 py-7 md:px-10 md:py-8 lg:grid-cols-[1.5fr_1fr]"
-        style={{ background: "var(--af-paper-2)" }}
+        style={{ background: "var(--af-creme-2)" }}
       >
         <div className="space-y-5">
           {/* PROGRESSO */}
@@ -135,7 +135,7 @@ export default async function OperationDetailPage({ params }: Props) {
                   className="af-mono"
                   style={{
                     fontSize: 11,
-                    color: "var(--af-ink-soft)",
+                    color: "var(--af-cinza)",
                     margin: "5px 0 0",
                   }}
                 >
@@ -155,7 +155,7 @@ export default async function OperationDetailPage({ params }: Props) {
                   className="af-mono"
                   style={{
                     fontSize: 11,
-                    color: "var(--af-ink-soft)",
+                    color: "var(--af-cinza)",
                     margin: "5px 0 0",
                   }}
                 >
@@ -171,7 +171,7 @@ export default async function OperationDetailPage({ params }: Props) {
                   style={{
                     fontSize: 32,
                     margin: "10px 0 0",
-                    color: "var(--af-terra)",
+                    color: "var(--af-dourado)",
                     fontWeight: 600,
                   }}
                 >
@@ -181,7 +181,7 @@ export default async function OperationDetailPage({ params }: Props) {
                   className="af-mono"
                   style={{
                     fontSize: 11,
-                    color: "var(--af-ink-soft)",
+                    color: "var(--af-cinza)",
                     margin: "5px 0 0",
                   }}
                 >
@@ -193,7 +193,7 @@ export default async function OperationDetailPage({ params }: Props) {
               <div
                 style={{
                   height: 8,
-                  background: "var(--af-paper-3)",
+                  background: "var(--af-borda)",
                   borderRadius: 99,
                   overflow: "hidden",
                 }}
@@ -203,7 +203,7 @@ export default async function OperationDetailPage({ params }: Props) {
                     width: `${progressPct}%`,
                     height: "100%",
                     background:
-                      "linear-gradient(to right, var(--af-terra), var(--af-mata-2))",
+                      "linear-gradient(to right, var(--af-dourado), var(--af-sucesso))",
                     transition: "width 1.2s ease",
                   }}
                 />
@@ -211,9 +211,9 @@ export default async function OperationDetailPage({ params }: Props) {
               <div className="mt-3 flex justify-between">
                 <span
                   className="af-mono"
-                  style={{ fontSize: 11.5, color: "var(--af-ink-soft)" }}
+                  style={{ fontSize: 11.5, color: "var(--af-cinza)" }}
                 >
-                  <span style={{ color: "var(--af-mata)", fontWeight: 600 }}>
+                  <span style={{ color: "var(--af-sucesso)", fontWeight: 600 }}>
                     {progressPct.toFixed(0)}%
                   </span>{" "}
                   liquidado
@@ -221,7 +221,7 @@ export default async function OperationDetailPage({ params }: Props) {
                 {order.dueDate && (
                   <span
                     className="af-mono"
-                    style={{ fontSize: 11.5, color: "var(--af-ink-soft)" }}
+                    style={{ fontSize: 11.5, color: "var(--af-cinza)" }}
                   >
                     vencimento: {formatDate(order.dueDate)}
                   </span>
@@ -235,18 +235,18 @@ export default async function OperationDetailPage({ params }: Props) {
             <div className="px-7 pt-6 pb-3">
               <Eyebrow>linha do tempo</Eyebrow>
               <h2
-                className="af-h"
+                className="af-display"
                 style={{
                   fontSize: 18,
                   margin: "6px 0 0",
-                  color: "var(--af-ink-deep)",
+                  color: "var(--af-preto)",
                 }}
               >
                 onde a operação está agora
               </h2>
             </div>
             <div
-              style={{ borderTop: "1px solid var(--af-ink-08)" }}
+              style={{ borderTop: "1px solid var(--af-borda)" }}
               className="px-7 py-5"
             >
               <ol className="space-y-3.5">
@@ -257,10 +257,10 @@ export default async function OperationDetailPage({ params }: Props) {
                       style={{
                         background: step.done
                           ? "oklch(0.420 0.085 155 / 0.15)"
-                          : "var(--af-paper-3)",
+                          : "var(--af-borda)",
                         color: step.done
-                          ? "var(--af-mata)"
-                          : "var(--af-ink-soft)",
+                          ? "var(--af-sucesso)"
+                          : "var(--af-cinza)",
                       }}
                     >
                       {step.done ? (
@@ -276,8 +276,8 @@ export default async function OperationDetailPage({ params }: Props) {
                           fontSize: 13.5,
                           fontWeight: step.done ? 500 : 400,
                           color: step.done
-                            ? "var(--af-ink)"
-                            : "var(--af-ink-soft)",
+                            ? "var(--af-preto)"
+                            : "var(--af-cinza)",
                           margin: 0,
                         }}
                       >
@@ -288,7 +288,7 @@ export default async function OperationDetailPage({ params }: Props) {
                           className="af-mono"
                           style={{
                             fontSize: 10.5,
-                            color: "var(--af-ink-soft)",
+                            color: "var(--af-cinza)",
                             margin: "2px 0 0",
                           }}
                         >
@@ -310,10 +310,10 @@ export default async function OperationDetailPage({ params }: Props) {
                 {order.items.length === 1 ? "" : "s"}
               </Eyebrow>
             </div>
-            <div style={{ borderTop: "1px solid var(--af-ink-08)" }}>
+            <div style={{ borderTop: "1px solid var(--af-borda)" }}>
               <div
                 className="divide-y"
-                style={{ borderColor: "var(--af-ink-08)" }}
+                style={{ borderColor: "var(--af-borda)" }}
               >
                 {order.items.map((item) => (
                   <div
@@ -324,8 +324,8 @@ export default async function OperationDetailPage({ params }: Props) {
                       style={{
                         width: 38,
                         height: 38,
-                        background: "var(--af-paper-3)",
-                        color: "var(--af-ink-soft)",
+                        background: "var(--af-borda)",
+                        color: "var(--af-cinza)",
                         borderRadius: 10,
                         display: "flex",
                         alignItems: "center",
@@ -345,7 +345,7 @@ export default async function OperationDetailPage({ params }: Props) {
                         className="af-mono"
                         style={{
                           fontSize: 11,
-                          color: "var(--af-ink-soft)",
+                          color: "var(--af-cinza)",
                           margin: "2px 0 0",
                         }}
                       >
@@ -358,7 +358,7 @@ export default async function OperationDetailPage({ params }: Props) {
                 ))}
               </div>
             </div>
-            <div style={{ borderTop: "1px solid var(--af-ink-08)" }} />
+            <div style={{ borderTop: "1px solid var(--af-borda)" }} />
             <div className="space-y-2 px-7 py-5 text-sm">
               <Row label="subtotal" value={formatBRL(order.subtotalCents)} />
               <Row
@@ -371,7 +371,7 @@ export default async function OperationDetailPage({ params }: Props) {
                 value={`+${formatBRL(order.customerPayCents - order.subtotalCents)}`}
                 muted
               />
-              <div style={{ borderTop: "1px solid var(--af-ink-08)" }} />
+              <div style={{ borderTop: "1px solid var(--af-borda)" }} />
               <Row
                 label="você paga até o vencimento"
                 value={formatBRL(order.customerPayCents)}
@@ -389,16 +389,16 @@ export default async function OperationDetailPage({ params }: Props) {
               <div
                 className="px-6 py-4"
                 style={{
-                  background: "var(--af-paper-2)",
-                  borderBottom: "1px solid var(--af-ink-08)",
+                  background: "var(--af-creme-2)",
+                  borderBottom: "1px solid var(--af-borda)",
                 }}
               >
                 <div
                   className="inline-flex items-center gap-1.5"
-                  style={{ color: "var(--af-terra)" }}
+                  style={{ color: "var(--af-dourado)" }}
                 >
                   <FileText className="size-3.5" />
-                  <Eyebrow color="var(--af-terra)">
+                  <Eyebrow color="var(--af-dourado)">
                     duplicata escritural
                   </Eyebrow>
                 </div>
@@ -407,7 +407,7 @@ export default async function OperationDetailPage({ params }: Props) {
                   style={{
                     fontSize: 22,
                     margin: "6px 0 0",
-                    color: "var(--af-ink-deep)",
+                    color: "var(--af-preto)",
                   }}
                 >
                   {order.duplicata.numero}
@@ -424,7 +424,7 @@ export default async function OperationDetailPage({ params }: Props) {
                       <br />
                       <span
                         className="af-mono"
-                        style={{ color: "var(--af-ink-soft)" }}
+                        style={{ color: "var(--af-cinza)" }}
                       >
                         {formatCNPJ(order.duplicata.sacadoCnpj)}
                       </span>
@@ -441,7 +441,7 @@ export default async function OperationDetailPage({ params }: Props) {
                       <br />
                       <span
                         className="af-mono"
-                        style={{ color: "var(--af-ink-soft)" }}
+                        style={{ color: "var(--af-cinza)" }}
                       >
                         {formatCNPJ(order.duplicata.sacadorCnpj)}
                       </span>
@@ -462,7 +462,7 @@ export default async function OperationDetailPage({ params }: Props) {
                 />
                 <KV
                   k="status"
-                  v={<Tag color="var(--af-ink)">{order.duplicata.status}</Tag>}
+                  v={<Tag color="var(--af-preto)">{order.duplicata.status}</Tag>}
                 />
               </div>
             </AfCard>
@@ -470,15 +470,15 @@ export default async function OperationDetailPage({ params }: Props) {
             <AfCard
               padding={22}
               radius={20}
-              style={{ border: "1px dashed var(--af-ink-12)" }}
+              style={{ border: "1px dashed var(--af-borda)" }}
             >
               <FileText
                 className="mb-2 size-5"
-                style={{ color: "var(--af-ink-soft)" }}
+                style={{ color: "var(--af-cinza)" }}
               />
               <p
                 className="af-body"
-                style={{ fontSize: 13.5, color: "var(--af-ink-soft)" }}
+                style={{ fontSize: 13.5, color: "var(--af-cinza)" }}
               >
                 duplicata será emitida assim que o fornecedor confirmar o
                 pedido.
@@ -492,29 +492,29 @@ export default async function OperationDetailPage({ params }: Props) {
               <div>
                 <Eyebrow>capturas via Pix</Eyebrow>
                 <h3
-                  className="af-h"
+                  className="af-display"
                   style={{
                     fontSize: 16,
                     margin: "4px 0 0",
-                    color: "var(--af-ink-deep)",
+                    color: "var(--af-preto)",
                   }}
                 >
                   cada captura zera um pedaço
                 </h3>
               </div>
-              <Tag color="var(--af-terra)">
+              <Tag color="var(--af-dourado)">
                 <Lock className="inline size-3" /> trava B3
               </Tag>
             </div>
-            <div style={{ borderTop: "1px solid var(--af-ink-08)" }}>
+            <div style={{ borderTop: "1px solid var(--af-borda)" }}>
               <div
                 className="max-h-80 overflow-y-auto divide-y"
-                style={{ borderColor: "var(--af-ink-08)" }}
+                style={{ borderColor: "var(--af-borda)" }}
               >
                 {order.receivables.length === 0 && (
                   <p
                     className="px-6 py-6 text-center text-sm"
-                    style={{ color: "var(--af-ink-soft)" }}
+                    style={{ color: "var(--af-cinza)" }}
                   >
                     nenhuma captura ainda. assim que entrar um Pix, aparece
                     aqui.
@@ -533,7 +533,7 @@ export default async function OperationDetailPage({ params }: Props) {
                         cents={r.amountCapturedCents}
                         size={13}
                         weight={600}
-                        color="var(--af-mata)"
+                        color="var(--af-sucesso)"
                       />
                     </div>
                     <div className="mt-1 flex items-center justify-between">
@@ -541,7 +541,7 @@ export default async function OperationDetailPage({ params }: Props) {
                         className="af-mono"
                         style={{
                           fontSize: 10.5,
-                          color: "var(--af-ink-soft)",
+                          color: "var(--af-cinza)",
                           margin: 0,
                         }}
                       >
@@ -551,7 +551,7 @@ export default async function OperationDetailPage({ params }: Props) {
                         className="af-mono"
                         style={{
                           fontSize: 10.5,
-                          color: "var(--af-ink-soft)",
+                          color: "var(--af-cinza)",
                           margin: 0,
                         }}
                       >
@@ -568,8 +568,8 @@ export default async function OperationDetailPage({ params }: Props) {
             href="/app/trava"
             className="inline-flex w-full items-center justify-center gap-2 rounded-full py-3 text-sm font-medium transition-colors"
             style={{
-              border: "1px solid var(--af-ink-20)",
-              color: "var(--af-ink)",
+              border: "1px solid var(--af-borda)",
+              color: "var(--af-preto)",
               fontFamily: "var(--af-sans)",
             }}
           >
@@ -598,10 +598,10 @@ function Row({
       <span
         style={{
           color: strong
-            ? "var(--af-ink-deep)"
+            ? "var(--af-preto)"
             : muted
-              ? "var(--af-ink-soft)"
-              : "var(--af-ink-2)",
+              ? "var(--af-cinza)"
+              : "var(--af-cinza)",
           fontWeight: strong ? 500 : 400,
         }}
       >
@@ -610,7 +610,7 @@ function Row({
       <span
         className={strong ? "af-n" : "af-mono"}
         style={{
-          color: strong ? "var(--af-ink-deep)" : "var(--af-ink-2)",
+          color: strong ? "var(--af-preto)" : "var(--af-cinza)",
           fontSize: strong ? 18 : 13,
           fontWeight: strong ? 600 : 500,
         }}
@@ -624,8 +624,8 @@ function Row({
 function KV({ k, v }: { k: string; v: React.ReactNode }) {
   return (
     <div className="grid grid-cols-[1fr_2fr] gap-3">
-      <dt style={{ color: "var(--af-ink-soft)" }}>{k}</dt>
-      <dd style={{ color: "var(--af-ink)", textAlign: "right" }}>{v}</dd>
+      <dt style={{ color: "var(--af-cinza)" }}>{k}</dt>
+      <dd style={{ color: "var(--af-preto)", textAlign: "right" }}>{v}</dd>
     </div>
   );
 }

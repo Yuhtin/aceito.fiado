@@ -1,5 +1,4 @@
 import type { OrderStatus } from "@/generated/prisma/client";
-import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
 const STATUS_LABEL: Record<OrderStatus, string> = {
@@ -12,16 +11,43 @@ const STATUS_LABEL: Record<OrderStatus, string> = {
   CANCELLED: "Cancelada",
 };
 
-const STATUS_TONE: Record<OrderStatus, string> = {
-  AWAITING_SUPPLIER:
-    "border-warning/40 bg-warning/15 text-warning-foreground",
-  SUPPLIER_CONFIRMED:
-    "border-warning/40 bg-warning/15 text-warning-foreground",
-  FUNDED: "border-primary/30 bg-primary/10 text-primary",
-  ACTIVE: "border-primary/30 bg-primary/10 text-primary",
-  REPAID: "border-success/30 bg-success/10 text-success",
-  OVERDUE: "border-destructive/30 bg-destructive/10 text-destructive",
-  CANCELLED: "border-border bg-muted text-muted-foreground",
+// v3 semantic colors: cinza=pending, dourado=funded/active, sucesso=repaid, vermelho=overdue
+const STATUS_STYLE: Record<OrderStatus, React.CSSProperties> = {
+  AWAITING_SUPPLIER: {
+    background: "oklch(from var(--af-cinza) l c h / 0.12)",
+    color: "var(--af-cinza)",
+    border: "1px solid oklch(from var(--af-cinza) l c h / 0.25)",
+  },
+  SUPPLIER_CONFIRMED: {
+    background: "oklch(from var(--af-cinza) l c h / 0.12)",
+    color: "var(--af-cinza)",
+    border: "1px solid oklch(from var(--af-cinza) l c h / 0.25)",
+  },
+  FUNDED: {
+    background: "var(--af-dourado-soft)",
+    color: "var(--af-dourado-dark)",
+    border: "1px solid oklch(from var(--af-dourado) l c h / 0.3)",
+  },
+  ACTIVE: {
+    background: "var(--af-dourado-soft)",
+    color: "var(--af-dourado-dark)",
+    border: "1px solid oklch(from var(--af-dourado) l c h / 0.3)",
+  },
+  REPAID: {
+    background: "oklch(from var(--af-sucesso) l c h / 0.1)",
+    color: "var(--af-sucesso)",
+    border: "1px solid oklch(from var(--af-sucesso) l c h / 0.25)",
+  },
+  OVERDUE: {
+    background: "oklch(from var(--af-vermelho) l c h / 0.1)",
+    color: "var(--af-vermelho)",
+    border: "1px solid oklch(from var(--af-vermelho) l c h / 0.25)",
+  },
+  CANCELLED: {
+    background: "var(--af-borda)",
+    color: "var(--af-cinza)",
+    border: "1px solid var(--af-borda)",
+  },
 };
 
 export function OrderStatusBadge({
@@ -32,11 +58,18 @@ export function OrderStatusBadge({
   className?: string;
 }) {
   return (
-    <Badge
-      variant="outline"
-      className={cn("text-[10px] font-medium", STATUS_TONE[status], className)}
+    <span
+      className={cn(
+        "af-mono inline-flex items-center rounded-full px-2 py-0.5",
+        className,
+      )}
+      style={{
+        fontSize: 10,
+        fontWeight: 500,
+        ...STATUS_STYLE[status],
+      }}
     >
       {STATUS_LABEL[status]}
-    </Badge>
+    </span>
   );
 }
