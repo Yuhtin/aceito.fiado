@@ -1,0 +1,40 @@
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: aceitofiado-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: aceitofiado
+      POSTGRES_PASSWORD: aceitofiado_dev
+      POSTGRES_DB: aceitofiado
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U aceitofiado -d aceitofiado"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: aceitofiado-app
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://aceitofiado:aceitofiado_dev@postgres:5432/aceitofiado?schema=public
+      AUTH_SECRET: ${AUTH_SECRET:-trocar-em-producao-com-openssl-rand-base64-32}
+      NODE_ENV: production
+    ports:
+      - "3000:3000"
+    profiles:
+      - production
+
+volumes:
+  postgres_data:
+    driver: local

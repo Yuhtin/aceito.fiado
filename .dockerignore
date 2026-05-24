@@ -1,0 +1,15 @@
+node_modules
+.next
+.git
+.env.local
+.env.*.local
+Dockerfile
+docker-compose.yml
+*.log
+.vscode
+.idea
+*.png
+.playwright-mcp
+README.md
+AGENTS.md
+CLAUDE.md
