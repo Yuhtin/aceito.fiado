@@ -14,7 +14,14 @@ export function Eyebrow({
   return (
     <div
       className={cn("af-eb", className)}
-      style={{ color: color || "var(--af-ink-soft)" }}
+      style={{
+        fontFamily: "var(--af-mono), ui-monospace, monospace",
+        fontSize: 11,
+        letterSpacing: "0.12em",
+        textTransform: "uppercase",
+        color: color ?? "var(--af-cinza)",
+        fontWeight: 500,
+      }}
     >
       {children}
     </div>
@@ -24,7 +31,7 @@ export function Eyebrow({
 // ─── Tag (pill colorida) ──────────────────────────────────────────────
 export function Tag({
   children,
-  color = "var(--af-mata)",
+  color = "var(--af-dourado)",
   bg,
   light = true,
   className,
@@ -95,9 +102,12 @@ type Size = "sm" | "md" | "lg" | "xl" | "block";
 
 const VARIANTS: Record<Variant, CSSProperties> = {
   primary: {
-    background: "var(--af-ink)",
-    color: "var(--af-paper)",
-    border: "1px solid var(--af-ink)",
+    background: "var(--af-dourado)",
+    color: "var(--af-preto)",
+    fontFamily: "var(--af-display), system-ui, sans-serif",
+    textTransform: "uppercase" as const,
+    letterSpacing: "0.01em",
+    fontWeight: 400,
   },
   accent: {
     background: "var(--af-terra)",

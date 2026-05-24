@@ -78,7 +78,7 @@ export function LiveCounter({
 
 // ─── PulseDot ─────────────────────────────────────────────────────────
 export function PulseDot({
-  color = "var(--af-mata-2)",
+  color = "var(--af-dourado)",
   size = 8,
   label,
   labelColor,
