@@ -13,12 +13,24 @@
    ───────────────────────────────────────────────────────── */
 
 @theme inline {
-  /* paper / tinta */
+  /* v3 — preto + dourado + creme */
+  --color-af-preto: var(--af-preto);
+  --color-af-preto-soft: var(--af-preto-soft);
+  --color-af-branco: var(--af-branco);
+  --color-af-creme: var(--af-creme);
+  --color-af-creme-2: var(--af-creme-2);
+  --color-af-borda: var(--af-borda);
+  --color-af-cinza: var(--af-cinza);
+  --color-af-cinza-soft: var(--af-cinza-soft);
+  --color-af-dourado: var(--af-dourado);
+  --color-af-dourado-dark: var(--af-dourado-dark);
+  --color-af-sucesso: var(--af-sucesso);
+  --color-af-laranja: var(--af-laranja);
+  --color-af-vermelho: var(--af-vermelho);
+  /* aliases legados */
   --color-af-paper: var(--af-paper);
   --color-af-paper-2: var(--af-paper-2);
   --color-af-paper-3: var(--af-paper-3);
-  --color-af-areia: var(--af-areia);
-  --color-af-pedra: var(--af-pedra);
   --color-af-ink: var(--af-ink);
   --color-af-ink-deep: var(--af-ink-deep);
   --color-af-ink-2: var(--af-ink-2);
@@ -74,7 +86,7 @@
 
   --font-sans: var(--af-sans);
   --font-mono: var(--af-mono);
-  --font-display: var(--af-sans);
+  --font-display: var(--af-display);
 
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
@@ -85,85 +97,75 @@
 }
 
 :root {
-  /* paper / tinta */
-  --af-paper: #ffffff;
-  --af-paper-2: oklch(0.985 0.005 75);
-  --af-paper-3: oklch(0.965 0.008 75);
-  --af-areia: oklch(0.93 0.012 72);
-  --af-pedra: oklch(0.85 0.015 65);
+  /* paleta v3 — preto + dourado + creme */
+  --af-preto: #0a0a0a;
+  --af-preto-soft: #1a1410;
+  --af-branco: #fafafa;
+  --af-creme: #f8f4ed;
+  --af-creme-2: #f3ebd9;
+  --af-borda: #ece5d5;
+  --af-borda-soft: rgba(13, 13, 13, 0.08);
+  --af-cinza: #6b645c;
+  --af-cinza-soft: #a39c92;
+  --af-dourado: #d4a017;
+  --af-dourado-soft: rgba(212, 160, 23, 0.12);
+  --af-dourado-dark: #b07d10;
+  --af-sucesso: #16a34a;
+  --af-laranja: #e8521a;
+  --af-vermelho: #b91c1c;
 
-  --af-ink: oklch(0.21 0.025 250);
-  --af-ink-deep: oklch(0.13 0.025 250);
-  --af-ink-2: oklch(0.30 0.020 250);
-  --af-ink-3: oklch(0.46 0.015 250);
-  --af-ink-soft: oklch(0.60 0.012 250);
-  --af-ink-08: oklch(0.21 0.025 250 / 0.08);
-  --af-ink-12: oklch(0.21 0.025 250 / 0.12);
-  --af-ink-20: oklch(0.21 0.025 250 / 0.20);
-  --af-ink-40: oklch(0.21 0.025 250 / 0.40);
-  --af-ink-60: oklch(0.21 0.025 250 / 0.60);
-  --af-ink-80: oklch(0.21 0.025 250 / 0.80);
+  /* aliases legados — mantém compat com componentes existentes */
+  --af-paper: var(--af-creme);
+  --af-paper-2: var(--af-creme-2);
+  --af-paper-3: #ddd4be;
+  --af-ink: var(--af-preto);
+  --af-ink-deep: var(--af-preto);
+  --af-ink-2: var(--af-cinza);
+  --af-ink-3: var(--af-cinza-soft);
+  --af-ink-soft: var(--af-cinza-soft);
+  --af-ink-08: rgba(13, 13, 13, 0.08);
+  --af-ink-12: rgba(13, 13, 13, 0.12);
+  --af-terra: var(--af-laranja);
+  --af-terra-2: var(--af-laranja);
+  --af-terra-soft: rgba(232, 82, 26, 0.12);
+  --af-dende: var(--af-dourado);
+  --af-acafrao: var(--af-dourado);
+  --af-mata: #15413a;
+  --af-mata-2: #1f6557;
+  --af-brasa: var(--af-laranja);
+  --af-cobre: #92400e;
 
-  /* acentos — culinária baiana, chroma equiparado */
-  --af-terra: oklch(0.555 0.130 40);
-  --af-terra-2: oklch(0.680 0.110 42);
-  --af-terra-soft: oklch(0.92 0.030 45);
-  --af-dende: oklch(0.720 0.140 65);
-  --af-acafrao: oklch(0.795 0.130 85);
-  --af-mata: oklch(0.420 0.085 155);
-  --af-mata-2: oklch(0.560 0.090 158);
-  --af-brasa: oklch(0.485 0.175 30);
-  --af-cobre: oklch(0.595 0.115 50);
+  /* sombras */
+  --af-shadow-lift: 0 20px 60px rgba(0, 0, 0, 0.18);
+  --af-shadow-card: 0 4px 12px rgba(0, 0, 0, 0.04);
+  --af-shadow-strong: 0 30px 80px rgba(0, 0, 0, 0.35);
 
-  /* fonts */
-  --af-sans: var(--font-geist-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
-  --af-mono: var(--font-geist-mono), ui-monospace, "SF Mono", monospace;
+  /* radius */
+  --radius: 12px;
 
-  /* shadows — sutis tipo Stripe */
-  --af-shadow-card: 0 1px 2px oklch(0.21 0.025 250 / 0.04), 0 8px 24px oklch(0.21 0.025 250 / 0.06);
-  --af-shadow-lift: 0 4px 12px oklch(0.21 0.025 250 / 0.08), 0 24px 60px oklch(0.21 0.025 250 / 0.12);
-  --af-shadow-button: 0 1px 2px oklch(0.21 0.025 250 / 0.1), 0 0 0 1px oklch(0.21 0.025 250 / 0.04);
-
-  /* shadcn semântico — bridge pros componentes existentes */
-  --background: var(--af-paper);
-  --foreground: var(--af-ink);
-  --card: var(--af-paper);
-  --card-foreground: var(--af-ink);
-  --popover: var(--af-paper);
-  --popover-foreground: var(--af-ink);
-  --primary: var(--af-ink);
-  --primary-foreground: var(--af-paper);
-  --secondary: var(--af-paper-2);
-  --secondary-foreground: var(--af-ink);
-  --muted: var(--af-paper-3);
-  --muted-foreground: var(--af-ink-soft);
-  --accent: var(--af-paper-2);
-  --accent-foreground: var(--af-ink);
-  --destructive: var(--af-brasa);
-  --success: var(--af-mata);
-  --success-foreground: var(--af-paper);
-  --warning: var(--af-acafrao);
-  --warning-foreground: var(--af-ink-deep);
-  --border: var(--af-ink-08);
-  --input: var(--af-ink-12);
-  --ring: var(--af-terra);
-  --chart-1: var(--af-terra);
-  --chart-2: var(--af-acafrao);
-  --chart-3: var(--af-mata-2);
-  --chart-4: var(--af-brasa);
-  --chart-5: var(--af-cobre);
-
-  --radius: 0.875rem;
-
-  /* sidebar — usado em algumas telas ainda */
-  --sidebar: var(--af-ink-deep);
-  --sidebar-foreground: var(--af-paper);
-  --sidebar-primary: var(--af-terra);
-  --sidebar-primary-foreground: var(--af-paper);
-  --sidebar-accent: oklch(0.972 0.008 75 / 0.06);
-  --sidebar-accent-foreground: var(--af-paper);
-  --sidebar-border: oklch(0.972 0.008 75 / 0.08);
-  --sidebar-ring: var(--af-terra);
+  /* shadcn bridge */
+  --background: var(--af-creme);
+  --foreground: var(--af-preto);
+  --card: var(--af-branco);
+  --card-foreground: var(--af-preto);
+  --popover: var(--af-branco);
+  --popover-foreground: var(--af-preto);
+  --primary: var(--af-preto);
+  --primary-foreground: var(--af-branco);
+  --secondary: var(--af-creme-2);
+  --secondary-foreground: var(--af-preto);
+  --muted: var(--af-creme-2);
+  --muted-foreground: var(--af-cinza);
+  --accent: var(--af-dourado);
+  --accent-foreground: var(--af-preto);
+  --destructive: var(--af-vermelho);
+  --success: var(--af-sucesso);
+  --success-foreground: var(--af-branco);
+  --warning: var(--af-laranja);
+  --warning-foreground: var(--af-branco);
+  --border: var(--af-borda);
+  --input: var(--af-borda);
+  --ring: var(--af-dourado);
 }
 
 * {
@@ -175,78 +177,68 @@
     @apply border-border outline-ring/50;
   }
   body {
-    background: var(--af-paper);
-    color: var(--af-ink);
-    font-family: var(--af-sans);
+    background: var(--af-creme);
+    color: var(--af-preto);
+    font-family: var(--af-sans), system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
     text-rendering: geometricPrecision;
   }
   html {
-    font-family: var(--af-sans);
+    font-family: var(--af-sans), system-ui, sans-serif;
   }
 }
 
 @layer components {
-  .af-h {
-    font-family: var(--af-sans);
-    font-weight: 600;
-    letter-spacing: -0.025em;
-    line-height: 1.04;
+  .af-screen {
+    background: var(--af-creme);
+    color: var(--af-preto);
+  }
+  .af-display {
+    font-family: var(--af-display), "Anton", system-ui, sans-serif;
+    text-transform: uppercase;
+    letter-spacing: -0.01em;
+    line-height: 0.95;
+    font-weight: 400;
   }
   .af-h-tight {
-    font-family: var(--af-sans);
+    font-family: var(--af-display), system-ui, sans-serif;
+    text-transform: uppercase;
+    letter-spacing: -0.015em;
+    line-height: 0.92;
+    font-weight: 400;
+  }
+  .af-h {
+    font-family: var(--af-sans), system-ui, sans-serif;
+    letter-spacing: -0.02em;
     font-weight: 600;
-    letter-spacing: -0.035em;
-    line-height: 0.98;
   }
   .af-body {
-    font-family: var(--af-sans);
+    font-family: var(--af-sans), system-ui, sans-serif;
     font-weight: 400;
-    letter-spacing: -0.005em;
-    line-height: 1.55;
+    line-height: 1.5;
   }
-  .af-mono {
-    font-family: var(--af-mono);
-    font-feature-settings: "tnum";
-    letter-spacing: -0.01em;
-  }
+  .af-mono,
   .af-n {
-    font-family: var(--af-sans);
-    font-feature-settings: "tnum", "zero";
-    font-weight: 600;
-    letter-spacing: -0.04em;
+    font-family: var(--af-mono), ui-monospace, monospace;
   }
   .af-eb {
-    font-family: var(--af-sans);
+    font-family: var(--af-mono), ui-monospace, monospace;
     font-size: 11px;
-    font-weight: 500;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: var(--af-ink-soft);
-  }
-  .af-screen {
-    font-family: var(--af-sans);
-    font-weight: 400;
-    color: var(--af-ink);
-    background: var(--af-paper);
-    -webkit-font-smoothing: antialiased;
-    text-rendering: geometricPrecision;
+    color: var(--af-cinza);
+    font-weight: 500;
   }
   .af-placeholder {
-    background-color: var(--af-paper-3);
-    background-image: repeating-linear-gradient(
-      135deg,
-      transparent 0 9px,
-      oklch(0.21 0.025 250 / 0.04) 9px 10px
-    );
+    background: var(--af-creme-2);
+    color: var(--af-cinza);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-family: var(--af-mono);
-    font-size: 10px;
-    color: var(--af-ink-40);
-    letter-spacing: 0.08em;
-    text-transform: lowercase;
+    font-family: var(--af-mono), monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
   }
 }
 
@@ -272,7 +264,7 @@
 .af-mesh {
   position: relative;
   overflow: hidden;
-  background: var(--af-paper);
+  background: var(--af-creme);
 }
 .af-mesh > .af-mesh-bg {
   position: absolute;
@@ -295,7 +287,7 @@
   will-change: transform;
 }
 .af-mesh-dark {
-  background: var(--af-ink-deep);
+  background: var(--af-preto);
 }
 .af-mesh-dark .af-blob {
   opacity: 0.45;
@@ -343,6 +335,6 @@
 
 /* dark mode — preservado pra futuro, mas v3 é light-first */
 .dark {
-  --background: var(--af-ink-deep);
-  --foreground: var(--af-paper);
+  --background: var(--af-preto);
+  --foreground: var(--af-branco);
 }
