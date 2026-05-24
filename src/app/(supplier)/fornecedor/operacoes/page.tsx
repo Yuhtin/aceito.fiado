@@ -35,60 +35,57 @@ export default async function OperacoesPage() {
 
       <div
         className="px-6 py-7 md:px-10 md:py-8"
-        style={{ background: "var(--af-paper-2)" }}
+        style={{ background: "var(--af-creme)" }}
       >
         <div className="grid gap-4 md:grid-cols-2">
-          <AfCard padding={24} radius={18}>
+          <AfCard padding={24} radius={18} style={{ background: "var(--af-branco)" }}>
             <Eyebrow>recebido (30 dias)</Eyebrow>
             <div className="mt-3">
               <Money cents={total30d} size={36} weight={600} />
             </div>
             <p
-              className="af-mono"
-              style={{
-                fontSize: 11,
-                color: "var(--af-mata)",
-                margin: "8px 0 0",
-              }}
+              className="af-mono mt-2"
+              style={{ fontSize: 11, color: "var(--af-mata)" }}
             >
               à vista, sem risco
             </p>
           </AfCard>
-          <AfCard padding={24} radius={18}>
+
+          <AfCard padding={24} radius={18} style={{ background: "var(--af-branco)" }}>
             <Eyebrow>total de operações</Eyebrow>
             <p
-              className="af-n"
+              className="af-mono mt-3"
               style={{
                 fontSize: 38,
-                margin: "12px 0 0",
                 lineHeight: 1,
-                color: "var(--af-ink-deep)",
+                color: "var(--af-preto)",
               }}
             >
               {operations.length}
             </p>
             <p
-              className="af-mono"
-              style={{
-                fontSize: 11,
-                color: "var(--af-ink-soft)",
-                margin: "8px 0 0",
-              }}
+              className="af-mono mt-2"
+              style={{ fontSize: 11, color: "var(--af-cinza)" }}
             >
               com a AceitoFiado
             </p>
           </AfCard>
         </div>
 
-        <AfCard padding={0} radius={20} className="mt-6 overflow-hidden">
+        <AfCard
+          padding={0}
+          radius={20}
+          className="mt-6 overflow-hidden"
+          style={{ background: "var(--af-branco)" }}
+        >
           <div
             className="divide-y"
-            style={{ borderColor: "var(--af-ink-08)" }}
+            style={{ borderColor: "var(--af-borda)" }}
           >
             {operations.length === 0 && (
               <p
                 className="px-7 py-10 text-center text-sm"
-                style={{ color: "var(--af-ink-soft)" }}
+                style={{ color: "var(--af-cinza)" }}
               >
                 sem operações pagas ainda.
               </p>
@@ -102,7 +99,7 @@ export default async function OperacoesPage() {
                   style={{
                     width: 40,
                     height: 40,
-                    background: "oklch(0.420 0.085 155 / 0.12)",
+                    background: "oklch(from var(--af-mata) l c h / 0.1)",
                     color: "var(--af-mata)",
                     borderRadius: 10,
                     display: "flex",
@@ -115,7 +112,7 @@ export default async function OperacoesPage() {
                 <div>
                   <p
                     className="af-body"
-                    style={{ fontSize: 14, fontWeight: 500, margin: 0 }}
+                    style={{ fontSize: 14, fontWeight: 500, margin: 0, color: "var(--af-preto)" }}
                   >
                     {o.entrepreneur.businessName}
                   </p>
@@ -123,7 +120,7 @@ export default async function OperacoesPage() {
                     className="af-mono"
                     style={{
                       fontSize: 11,
-                      color: "var(--af-ink-soft)",
+                      color: "var(--af-cinza)",
                       margin: "3px 0 0",
                     }}
                   >
@@ -136,7 +133,7 @@ export default async function OperacoesPage() {
                     className="af-mono"
                     style={{
                       fontSize: 10,
-                      color: "var(--af-ink-soft)",
+                      color: "var(--af-cinza)",
                       margin: "2px 0 0",
                     }}
                   >
