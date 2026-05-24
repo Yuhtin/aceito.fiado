@@ -64,7 +64,7 @@ export default async function CockpitPage() {
         title={
           <>
             bom dia,{" "}
-            <span style={{ color: "var(--af-terra)" }}>
+            <span style={{ color: "var(--af-dourado)" }}>
               {user.name.split(" ")[0]}.
             </span>
           </>
@@ -86,7 +86,7 @@ export default async function CockpitPage() {
 
       <div
         className="grid gap-5 px-6 py-7 md:px-10 md:py-8 lg:grid-cols-[1.45fr_1fr]"
-        style={{ background: "var(--af-paper-2)" }}
+        style={{ background: "var(--af-creme-2)" }}
       >
         <div className="space-y-5">
           {/* HERO LIMITE */}
@@ -99,7 +99,7 @@ export default async function CockpitPage() {
               className="af-mono"
               style={{
                 fontSize: 12,
-                color: "var(--af-ink-soft)",
+                color: "var(--af-cinza)",
                 marginTop: 8,
               }}
             >
@@ -119,20 +119,21 @@ export default async function CockpitPage() {
                   height: 6,
                   borderRadius: 99,
                   overflow: "hidden",
-                  background: "var(--af-paper-3)",
+                  background: "var(--af-borda)",
                 }}
               >
                 <div
                   style={{
                     width: `${Math.min(100, usePercent)}%`,
-                    background: "var(--af-terra)",
+                    background: "var(--af-dourado)",
                     transition: "width 1.2s ease",
                   }}
                 />
                 <div
                   style={{
                     width: `${Math.max(0, 100 - usePercent)}%`,
-                    background: "var(--af-mata-2)",
+                    background: "var(--af-sucesso)",
+                    opacity: 0.25,
                   }}
                 />
               </div>
@@ -144,13 +145,13 @@ export default async function CockpitPage() {
                 }}
                 className="af-mono"
               >
-                <span style={{ fontSize: 11.5, color: "var(--af-terra)" }}>
+                <span style={{ fontSize: 11.5, color: "var(--af-dourado-dark)" }}>
                   <span style={{ fontWeight: 600 }}>
                     {formatBRL(inUseLimit, { withSymbol: true })}
                   </span>{" "}
                   comprometido
                 </span>
-                <span style={{ fontSize: 11.5, color: "var(--af-mata)" }}>
+                <span style={{ fontSize: 11.5, color: "var(--af-sucesso)" }}>
                   <span style={{ fontWeight: 600 }}>
                     {formatBRL(availableLimit, { withSymbol: true })}
                   </span>{" "}
@@ -173,11 +174,11 @@ export default async function CockpitPage() {
               <div>
                 <Eyebrow>fluxo dos seus canais</Eyebrow>
                 <h2
-                  className="af-h"
+                  className="af-display"
                   style={{
                     fontSize: 22,
                     margin: "8px 0 0",
-                    color: "var(--af-ink-deep)",
+                    color: "var(--af-preto)",
                   }}
                 >
                   últimos 30 dias
@@ -202,7 +203,7 @@ export default async function CockpitPage() {
                           background: colors[i % colors.length],
                         }}
                       />
-                      <span style={{ color: "var(--af-ink-soft)" }}>
+                      <span style={{ color: "var(--af-cinza)" }}>
                         {c.label}
                       </span>
                     </div>
@@ -236,11 +237,11 @@ export default async function CockpitPage() {
               <div>
                 <Eyebrow>operações ativas · {data.activeOrders.length}</Eyebrow>
                 <h2
-                  className="af-h"
+                  className="af-display"
                   style={{
                     fontSize: 22,
                     margin: "8px 0 0",
-                    color: "var(--af-ink-deep)",
+                    color: "var(--af-preto)",
                   }}
                 >
                   duplicatas em circulação
@@ -249,17 +250,17 @@ export default async function CockpitPage() {
               <Link
                 href="/app/historico"
                 className="text-sm font-medium inline-flex items-center gap-1"
-                style={{ color: "var(--af-ink-soft)" }}
+                style={{ color: "var(--af-cinza)" }}
               >
                 histórico <ChevronRight className="size-4" />
               </Link>
             </div>
-            <div style={{ borderTop: "1px solid var(--af-ink-08)" }}>
+            <div style={{ borderTop: "1px solid var(--af-borda)" }}>
               {data.activeOrders.length === 0 ? (
                 <div className="px-7 py-14 text-center">
                   <p
                     className="af-body"
-                    style={{ fontSize: 14, color: "var(--af-ink-soft)" }}
+                    style={{ fontSize: 14, color: "var(--af-cinza)" }}
                   >
                     nenhuma operação ativa. que tal abrir uma agora?
                   </p>
@@ -270,7 +271,7 @@ export default async function CockpitPage() {
                   </div>
                 </div>
               ) : (
-                <div className="divide-y" style={{ borderColor: "var(--af-ink-08)" }}>
+                <div className="divide-y" style={{ borderColor: "var(--af-borda)" }}>
                   {data.activeOrders.map((order) => {
                     const paid = order.receivables.reduce(
                       (a, r) => a + r.amountCapturedCents,
@@ -284,7 +285,7 @@ export default async function CockpitPage() {
                       <Link
                         key={order.id}
                         href={`/app/fiado/op/${order.id}`}
-                        className="grid items-center gap-4 px-7 py-4 transition-colors hover:bg-[oklch(0.985_0.005_75_/_0.5)]"
+                        className="grid items-center gap-4 px-7 py-4 transition-colors hover:bg-[var(--af-creme)]"
                         style={{
                           gridTemplateColumns: "auto 1fr auto auto",
                         }}
@@ -293,15 +294,15 @@ export default async function CockpitPage() {
                           style={{
                             width: 36,
                             height: 36,
-                            background: "var(--af-ink)",
-                            color: "var(--af-paper)",
+                            background: "var(--af-preto)",
+                            color: "var(--af-creme)",
                             borderRadius: 10,
                             display: "flex",
                             alignItems: "center",
                             justifyContent: "center",
-                            fontFamily: "var(--af-sans)",
-                            fontSize: 14,
-                            fontWeight: 600,
+                            fontFamily: "var(--af-display)",
+                            fontSize: 16,
+                            fontWeight: 400,
                           }}
                         >
                           {order.supplier.businessName.charAt(0)}
@@ -314,6 +315,7 @@ export default async function CockpitPage() {
                                 fontSize: 14,
                                 fontWeight: 500,
                                 margin: 0,
+                                color: "var(--af-preto)",
                               }}
                             >
                               {order.supplier.businessName}
@@ -324,7 +326,7 @@ export default async function CockpitPage() {
                             className="af-mono"
                             style={{
                               fontSize: 11,
-                              color: "var(--af-ink-soft)",
+                              color: "var(--af-cinza)",
                               margin: "3px 0 0",
                             }}
                           >
@@ -343,7 +345,7 @@ export default async function CockpitPage() {
                             style={{
                               marginTop: 8,
                               height: 3,
-                              background: "var(--af-ink-08)",
+                              background: "var(--af-borda)",
                               borderRadius: 99,
                               overflow: "hidden",
                             }}
@@ -352,7 +354,7 @@ export default async function CockpitPage() {
                               style={{
                                 width: `${pct}%`,
                                 height: "100%",
-                                background: "var(--af-mata-2)",
+                                background: "var(--af-sucesso)",
                               }}
                             />
                           </div>
@@ -363,7 +365,7 @@ export default async function CockpitPage() {
                             className="af-mono"
                             style={{
                               fontSize: 10,
-                              color: "var(--af-ink-soft)",
+                              color: "var(--af-cinza)",
                               margin: "3px 0 0",
                               textTransform: "uppercase",
                               letterSpacing: "0.1em",
@@ -374,7 +376,7 @@ export default async function CockpitPage() {
                         </div>
                         <ChevronRight
                           className="size-4"
-                          style={{ color: "var(--af-ink-soft)" }}
+                          style={{ color: "var(--af-cinza)" }}
                         />
                       </Link>
                     );
@@ -483,19 +485,19 @@ export default async function CockpitPage() {
           {/* CANAIS CONECTADOS */}
           <AfCard padding={0} radius={18} className="overflow-hidden">
             <div style={{ padding: "20px 22px 12px" }}>
-              <Eyebrow>canais conectados · {data.channels.length}</Eyebrow>
+              <p className="af-eb">canais conectados · {data.channels.length}</p>
               <h3
-                className="af-h"
+                className="af-display"
                 style={{
                   fontSize: 18,
                   margin: "6px 0 0",
-                  color: "var(--af-ink-deep)",
+                  color: "var(--af-preto)",
                 }}
               >
                 onde o dinheiro entra
               </h3>
             </div>
-            <div className="divide-y" style={{ borderColor: "var(--af-ink-08)" }}>
+            <div className="divide-y" style={{ borderColor: "var(--af-borda)" }}>
               {data.channels.map((channel) => {
                 const Icon = CHANNEL_ICONS[channel.type] ?? Sparkles;
                 return (
@@ -508,8 +510,8 @@ export default async function CockpitPage() {
                         width: 34,
                         height: 34,
                         borderRadius: 9,
-                        background: "var(--af-ink)",
-                        color: "var(--af-paper)",
+                        background: "var(--af-preto)",
+                        color: "var(--af-creme)",
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
@@ -520,7 +522,7 @@ export default async function CockpitPage() {
                     <div className="min-w-0 flex-1">
                       <p
                         className="af-body truncate"
-                        style={{ fontSize: 13.5, fontWeight: 500, margin: 0 }}
+                        style={{ fontSize: 13.5, fontWeight: 500, margin: 0, color: "var(--af-preto)" }}
                       >
                         {channel.label}
                       </p>
@@ -528,14 +530,14 @@ export default async function CockpitPage() {
                         className="af-mono"
                         style={{
                           fontSize: 10.5,
-                          color: "var(--af-ink-soft)",
+                          color: "var(--af-cinza)",
                           margin: "2px 0 0",
                         }}
                       >
                         contribui {formatBRL(channel.monthlyRevenueCents, { compact: true })}/mês
                       </p>
                     </div>
-                    <PulseDot color="var(--af-mata-2)" size={5} />
+                    <PulseDot color="var(--af-sucesso)" size={5} />
                   </div>
                 );
               })}
@@ -545,38 +547,38 @@ export default async function CockpitPage() {
           {/* FORNECEDORES */}
           <AfCard padding={0} radius={18} className="overflow-hidden">
             <div style={{ padding: "20px 22px 12px" }}>
-              <Eyebrow>fornecedores na rede</Eyebrow>
+              <p className="af-eb">fornecedores na rede</p>
               <h3
-                className="af-h"
+                className="af-display"
                 style={{
                   fontSize: 18,
                   margin: "6px 0 0",
-                  color: "var(--af-ink-deep)",
+                  color: "var(--af-preto)",
                 }}
               >
                 curados na cadeia afro
               </h3>
             </div>
-            <div className="divide-y" style={{ borderColor: "var(--af-ink-08)" }}>
+            <div className="divide-y" style={{ borderColor: "var(--af-borda)" }}>
               {featuredSuppliers.map((s) => (
                 <Link
                   key={s.id}
                   href="/app/fiado"
-                  className="flex items-center gap-3 px-5 py-4 transition-colors hover:bg-[oklch(0.985_0.005_75_/_0.5)]"
+                  className="flex items-center gap-3 px-5 py-4 transition-colors hover:bg-[var(--af-creme)]"
                 >
                   <div
                     style={{
                       width: 38,
                       height: 38,
                       borderRadius: 10,
-                      background: "var(--af-terra-soft)",
-                      color: "var(--af-terra)",
+                      background: "var(--af-dourado-soft)",
+                      color: "var(--af-dourado-dark)",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
-                      fontFamily: "var(--af-sans)",
-                      fontSize: 14,
-                      fontWeight: 600,
+                      fontFamily: "var(--af-display)",
+                      fontSize: 16,
+                      fontWeight: 400,
                     }}
                   >
                     {s.businessName.charAt(0)}
@@ -584,7 +586,7 @@ export default async function CockpitPage() {
                   <div className="min-w-0 flex-1">
                     <p
                       className="af-body truncate"
-                      style={{ fontSize: 13.5, fontWeight: 500, margin: 0 }}
+                      style={{ fontSize: 13.5, fontWeight: 500, margin: 0, color: "var(--af-preto)" }}
                     >
                       {s.businessName}
                     </p>
@@ -592,7 +594,7 @@ export default async function CockpitPage() {
                       className="af-mono"
                       style={{
                         fontSize: 10.5,
-                        color: "var(--af-ink-soft)",
+                        color: "var(--af-cinza)",
                         margin: "2px 0 0",
                       }}
                     >
@@ -601,7 +603,7 @@ export default async function CockpitPage() {
                   </div>
                   <ArrowRight
                     className="size-4"
-                    style={{ color: "var(--af-ink-soft)" }}
+                    style={{ color: "var(--af-cinza)" }}
                   />
                 </Link>
               ))}
