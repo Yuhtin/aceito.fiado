@@ -83,7 +83,7 @@ const STEPS = [
   { id: 4, title: "score" },
 ] as const;
 
-export function OnboardingFlow() {
+export function OnboardingFlow({ nextUrl = "/app" }: { nextUrl?: string }) {
   const router = useRouter();
   const [step, setStep] = useState(1);
   const [form, setForm] = useState<FormState>(INITIAL);
@@ -260,7 +260,7 @@ export function OnboardingFlow() {
                 </GradientMesh>
                 <button
                   type="button"
-                  onClick={() => router.push("/app")}
+                  onClick={() => router.push(nextUrl && nextUrl.startsWith("/") ? nextUrl : "/app")}
                   className="mt-8 inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-sm font-medium"
                   style={{
                     background: "var(--af-ink)",
@@ -312,7 +312,7 @@ export function OnboardingFlow() {
                 </p>
                 <button
                   type="button"
-                  onClick={() => router.push("/app")}
+                  onClick={() => router.push(nextUrl && nextUrl.startsWith("/") ? nextUrl : "/app")}
                   className="mt-8 inline-flex items-center gap-2 rounded-full px-7 py-3 text-sm font-medium"
                   style={{
                     background: "transparent",

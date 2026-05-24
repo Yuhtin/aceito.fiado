@@ -6,7 +6,7 @@ import { LoginForm } from "./login-form";
 import { getCurrentUser } from "@/lib/auth";
 
 type Props = {
-  searchParams: Promise<{ demo?: string }>;
+  searchParams: Promise<{ demo?: string; next?: string }>;
 };
 
 export default async function EntrarPage({ searchParams }: Props) {
@@ -21,6 +21,7 @@ export default async function EntrarPage({ searchParams }: Props) {
       : params.demo === "tropical"
         ? "compras@distropical.com.br"
         : undefined;
+  const nextUrl = params.next ?? "/app";
 
   return (
     <div className="w-full max-w-md">
@@ -47,7 +48,7 @@ export default async function EntrarPage({ searchParams }: Props) {
           acesse seu cockpit pra ver limite, operações e trava de recebíveis.
         </p>
 
-        <LoginForm prefillEmail={demoEmail} />
+        <LoginForm prefillEmail={demoEmail} nextUrl={nextUrl} />
 
         <div
           className="af-body mt-6 text-center"
@@ -55,7 +56,7 @@ export default async function EntrarPage({ searchParams }: Props) {
         >
           não tem conta?{" "}
           <Link
-            href="/cadastro"
+            href={`/cadastro${nextUrl !== "/app" ? `?next=${encodeURIComponent(nextUrl)}` : ""}`}
             className="font-medium underline-offset-4 hover:underline"
             style={{ color: "var(--af-terra)" }}
           >

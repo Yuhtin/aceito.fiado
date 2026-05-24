@@ -52,8 +52,10 @@ export async function loginAction(
     };
   }
   await createSession(user.id);
+  const next = String(data.get("next") ?? "").trim();
   if (user.role === "ENTREPRENEUR") {
-    redirect("/app");
+    // Honrar ?next= pra deep links (ex: /pay/[code])
+    redirect(next && next.startsWith("/") ? next : "/app");
   } else if (user.role === "SUPPLIER") {
     redirect("/fornecedor");
   } else {

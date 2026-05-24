@@ -7,11 +7,18 @@ import { loginAction, type AuthFormState } from "@/app/(auth)/_actions";
 
 const INITIAL: AuthFormState = { ok: false };
 
-export function LoginForm({ prefillEmail }: { prefillEmail?: string }) {
+export function LoginForm({
+  prefillEmail,
+  nextUrl = "/app",
+}: {
+  prefillEmail?: string;
+  nextUrl?: string;
+}) {
   const [state, formAction, isPending] = useActionState(loginAction, INITIAL);
 
   return (
     <form action={formAction} className="mt-7 space-y-4">
+      <input type="hidden" name="next" value={nextUrl} />
       <Field
         label="e-mail"
         name="email"

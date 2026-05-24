@@ -1,5 +1,11 @@
 import { OnboardingFlow } from "./onboarding-flow";
 
-export default function CadastroPage() {
-  return <OnboardingFlow />;
+type Props = {
+  searchParams: Promise<{ next?: string }>;
+};
+
+export default async function CadastroPage({ searchParams }: Props) {
+  const params = await searchParams;
+  const nextUrl = params.next ?? "/app";
+  return <OnboardingFlow nextUrl={nextUrl} />;
 }
