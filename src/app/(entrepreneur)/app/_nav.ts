@@ -2,6 +2,7 @@ import {
   HandCoins,
   Home,
   Lock,
+  MapPin,
   ScrollText,
   Sparkles,
 } from "lucide-react";
@@ -12,4 +13,5 @@ export const entrepreneurNav = [
   { href: "/app/trava", label: "Trava de recebíveis", icon: Lock },
   { href: "/app/historico", label: "Histórico", icon: ScrollText },
   { href: "/app/saude", label: "Saúde financeira", icon: Sparkles },
+  { href: "/app/lojistas", label: "Lojistas", icon: MapPin },
 ];
