@@ -2,7 +2,7 @@
 import { Logo } from "@/components/brand/logo";
 
 const COLS = [
-  ["produto", ["Checkout presencial", "API marketplace", "Trava de recebíveis", "Mudanças recentes"]],
+  ["produto", ["Checkout presencial", "API marketplace", "Documentação", "Mudanças recentes"]],
   ["empresa", ["Manifesto", "Imprensa", "Carreira", "Contato"]],
   ["recursos", ["Documentação", "Status", "Termos", "Privacidade"]],
   ["social", ["Instagram", "LinkedIn", "Newsletter", "GitHub"]],

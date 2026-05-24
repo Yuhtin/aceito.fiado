@@ -132,7 +132,7 @@ export function OperationCard({
             <span style={{ color: "var(--af-mata)", fontWeight: 600 }}>
               {(progress * 100).toFixed(0)}%
             </span>{" "}
-            liquidado · trava {pct}%
+            liquidado · captura {pct}%
           </span>
         </div>
       </div>

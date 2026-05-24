@@ -1,7 +1,7 @@
 // Simula um Pix entrando na conta da empreendedora.
 //
 // Usado pra demo: a empreendedora aperta "simular Pix" e a gente
-// gera uma transação realista + aplica a trava automaticamente.
+// gera uma transação realista + registra pagamentos parciais quando aplicável.
 // Em produção, isso viria do webhook do banco parceiro.
 
 import { NextResponse } from "next/server";
@@ -57,7 +57,7 @@ export async function POST(request: Request) {
     },
   });
 
-  // Aplica trava: busca operações ativas, decide alocação
+  // Busca operações ativas para alocar pagamentos parciais
   const activeOrders = await db.order.findMany({
     where: {
       entrepreneurId: user.entrepreneurId,
@@ -122,5 +122,5 @@ export async function POST(request: Request) {
     }
   }
 
-  return NextResponse.redirect(new URL("/app/trava", request.url));
+  return NextResponse.redirect(new URL("/app", request.url));
 }

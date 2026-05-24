@@ -6,7 +6,6 @@ import {
   CircleDollarSign,
   Clock,
   FileText,
-  Lock,
 } from "lucide-react";
 
 import { OrderStatusBadge } from "@/app/(entrepreneur)/app/_components/order-status-badge";
@@ -69,7 +68,7 @@ export default async function OperationDetailPage({ params }: Props) {
       done: !!order.fundedAt,
     },
     {
-      label: "duplicata na trava B3",
+      label: "duplicata escritural registrada",
       at: order.fundedAt,
       done: !!order.duplicata,
     },
@@ -503,7 +502,7 @@ export default async function OperationDetailPage({ params }: Props) {
                 </h3>
               </div>
               <Tag color="var(--af-dourado)">
-                <Lock className="inline size-3" /> trava B3
+                pagamentos parciais
               </Tag>
             </div>
             <div style={{ borderTop: "1px solid var(--af-borda)" }}>
@@ -564,18 +563,6 @@ export default async function OperationDetailPage({ params }: Props) {
             </div>
           </AfCard>
 
-          <Link
-            href="/app/trava"
-            className="inline-flex w-full items-center justify-center gap-2 rounded-full py-3 text-sm font-medium transition-colors"
-            style={{
-              border: "1px solid var(--af-borda)",
-              color: "var(--af-preto)",
-              fontFamily: "var(--af-sans)",
-            }}
-          >
-            <Lock className="size-4" />
-            ver trava de recebíveis ao vivo
-          </Link>
         </div>
       </div>
     </>

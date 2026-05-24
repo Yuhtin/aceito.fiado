@@ -1,11 +1,9 @@
 import Link from "next/link";
 import {
   ArrowRight,
-  ArrowUpRight,
   AtSign,
   Banknote,
   ChevronRight,
-  Lock,
   ShoppingBag,
   Smartphone,
   Sparkles,
@@ -15,14 +13,10 @@ import {
 import {
   AfButton,
   AfCard,
-  BRLLive,
   Eyebrow,
-  GradientMesh,
   Money,
   PulseDot,
-  SoundBars,
 } from "@/components/af";
-import { CaptureProgressChart } from "@/components/charts/capture-progress";
 import { RevenueByChannelChart } from "@/components/charts/revenue-by-channel";
 import { PageHeader } from "@/components/shell/page-header";
 import { requireEntrepreneur } from "@/lib/auth";
@@ -389,98 +383,109 @@ export default async function CockpitPage() {
 
         {/* COLUNA DIREITA */}
         <div className="space-y-5">
-          {/* TRAVA DARK CARD */}
-          <GradientMesh
-            dark
-            style={{
-              borderRadius: 20,
-              padding: 22,
-              color: "var(--af-paper)",
-              overflow: "hidden",
-            }}
-          >
+          {/* PRÓXIMOS PAGAMENTOS */}
+          <AfCard padding={0} radius={20} className="overflow-hidden">
             <div
               style={{
+                padding: "20px 22px 12px",
                 display: "flex",
-                alignItems: "center",
                 justifyContent: "space-between",
-                marginBottom: 14,
+                alignItems: "flex-end",
               }}
             >
-              <Eyebrow color="oklch(0.972 0.008 75 / 0.55)">
-                <span className="inline-flex items-center gap-1.5">
-                  <Lock className="size-3" />
-                  trava · hoje
-                </span>
-              </Eyebrow>
-              <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                <SoundBars
-                  count={4}
-                  color="var(--af-acafrao)"
-                  height={12}
-                  width={2}
-                />
-                <PulseDot color="var(--af-acafrao)" label="ao vivo" />
+              <div>
+                <Eyebrow>próximos pagamentos</Eyebrow>
+                <h3
+                  className="af-display"
+                  style={{
+                    fontSize: 18,
+                    margin: "6px 0 0",
+                    color: "var(--af-preto)",
+                  }}
+                >
+                  operações em aberto
+                </h3>
               </div>
+              <PulseDot color="var(--af-sucesso)" size={5} />
             </div>
-            <div
-              className="af-n"
-              style={{ fontSize: 44, lineHeight: 0.95, color: "var(--af-paper)" }}
-            >
-              <span
-                style={{
-                  fontSize: 18,
-                  opacity: 0.4,
-                  marginRight: 4,
-                  verticalAlign: "0.5em",
-                }}
-              >
-                R$
-              </span>
-              <BRLLive
-                initial={Number(data.capturedThisMonth) / 100}
-                ratePerSec={0.21}
-                jitter={0.55}
-              />
+            <div style={{ borderTop: "1px solid var(--af-borda)" }}>
+              {data.activeOrders.length === 0 ? (
+                <div className="px-6 py-8 text-center">
+                  <p
+                    className="af-body"
+                    style={{ fontSize: 13.5, color: "var(--af-cinza)" }}
+                  >
+                    nenhuma operação ativa no momento.
+                  </p>
+                </div>
+              ) : (
+                <div
+                  className="divide-y"
+                  style={{ borderColor: "var(--af-borda)" }}
+                >
+                  {data.activeOrders.slice(0, 4).map((order) => {
+                    const paid = order.receivables.reduce(
+                      (a, r) => a + r.amountCapturedCents,
+                      0n,
+                    );
+                    const t = Number(order.customerPayCents);
+                    const p = Number(paid);
+                    const remaining = t - p;
+                    return (
+                      <Link
+                        key={order.id}
+                        href={`/app/fiado/op/${order.id}`}
+                        className="flex items-center gap-3 px-5 py-3.5 transition-colors hover:bg-[var(--af-creme)]"
+                      >
+                        <div
+                          style={{
+                            width: 32,
+                            height: 32,
+                            background: "var(--af-dourado-soft)",
+                            color: "var(--af-dourado-dark)",
+                            borderRadius: 8,
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            fontFamily: "var(--af-display)",
+                            fontSize: 14,
+                          }}
+                        >
+                          {order.supplier.businessName.charAt(0)}
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <p
+                            className="af-body truncate"
+                            style={{
+                              fontSize: 13.5,
+                              fontWeight: 500,
+                              margin: 0,
+                              color: "var(--af-preto)",
+                            }}
+                          >
+                            {order.supplier.businessName}
+                          </p>
+                          <p
+                            className="af-mono"
+                            style={{
+                              fontSize: 10.5,
+                              color: "var(--af-cinza)",
+                              margin: "2px 0 0",
+                            }}
+                          >
+                            {order.dueDate
+                              ? `vence ${order.dueDate.toLocaleDateString("pt-BR", { day: "2-digit", month: "short" })}`
+                              : "em aberto"}
+                          </p>
+                        </div>
+                        <Money cents={remaining > 0 ? remaining : 0} size={13} />
+                      </Link>
+                    );
+                  })}
+                </div>
+              )}
             </div>
-            <div
-              className="af-mono"
-              style={{
-                fontSize: 11.5,
-                color: "oklch(0.972 0.008 75 / 0.55)",
-                marginTop: 6,
-              }}
-            >
-              capturado este mês · últimos 14 dias abaixo
-            </div>
-            <div
-              style={{
-                marginTop: 16,
-                padding: 12,
-                background: "oklch(0.972 0.008 75 / 0.05)",
-                borderRadius: 12,
-                border: "1px solid oklch(0.972 0.008 75 / 0.08)",
-              }}
-            >
-              <CaptureProgressChart
-                captures={data.receivables90d.map((r) => ({
-                  capturedAt: r.capturedAt,
-                  amountCapturedCents: r.amountCapturedCents,
-                }))}
-              />
-            </div>
-            <Link
-              href="/app/trava"
-              className="mt-4 inline-flex w-full items-center justify-between rounded-xl px-4 py-3 text-sm font-medium transition-opacity"
-              style={{
-                border: "1px solid oklch(0.972 0.008 75 / 0.18)",
-                color: "var(--af-paper)",
-              }}
-            >
-              <span>abrir liquidação ao vivo</span>
-              <ArrowUpRight className="size-4" style={{ opacity: 0.7 }} />
-            </Link>
-          </GradientMesh>
+          </AfCard>
 
           {/* CANAIS CONECTADOS */}
           <AfCard padding={0} radius={18} className="overflow-hidden">
