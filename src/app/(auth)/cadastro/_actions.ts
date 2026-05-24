@@ -3,11 +3,8 @@
 import { z } from "zod";
 
 import { createSession, hashPassword } from "@/lib/auth";
+import { analyzeCadastro } from "@/lib/credit-engine/analyze";
 import { db } from "@/lib/db";
-import {
-  calculateScore,
-  calculateCashflowStability,
-} from "@/lib/scoring";
 import type { ChannelType } from "@/generated/prisma/client";
 
 const ChannelInput = z.object({
@@ -29,25 +26,46 @@ const OnboardingSchema = z.object({
   email: z.string().email(),
   password: z.string().min(6),
   cnpj: z.string().regex(/^\d{14}$/),
+  cpf: z.string().regex(/^\d{11}$/),
+  birthDate: z.string().date(),
   businessName: z.string().min(2),
+  declaredBusinessActivity: z.string().min(2),
   phone: z.string().min(10),
   addressCep: z.string().regex(/^\d{8}$/),
   addressCity: z.string().min(2),
   addressState: z.string().length(2),
   addressNeighborhood: z.string().min(2),
   monthsActive: z.number().int().nonnegative(),
+  hasCadUnico: z.boolean().default(false),
+  pluggyItemId: z.string().optional(),
+  initialCreditAmount: z
+    .union([z.literal(200), z.literal(400), z.literal(600), z.literal(800)])
+    .default(400),
   channels: z.array(ChannelInput).min(1, "Conecte pelo menos um canal"),
 });
 
-export async function completeOnboardingAction(
-  input: z.infer<typeof OnboardingSchema>,
-): Promise<{
+export type OnboardingInput = z.infer<typeof OnboardingSchema>;
+
+export interface CompleteOnboardingResult {
   ok: boolean;
   error?: string;
-  score?: number;
-  approvedLimitCents?: string;
-  approved?: boolean;
-}> {
+  // Motor result (pra UI mostrar tela rica)
+  decision?: "APPROVED" | "MANUAL_REVIEW" | "REJECTED";
+  recommendedLimitCents?: string;
+  suggestedFeePercent?: number;
+  riskLevel?: "BAIXO" | "MEDIO" | "ALTO";
+  confidenceLevel?: "ALTA" | "MEDIA" | "BAIXA";
+  scoreFinal?: number;
+  usedOpenFinance?: boolean;
+  positiveFactors?: string[];
+  attentionFactors?: string[];
+  userExplanation?: string;
+  engine?: "motor" | "fallback-local";
+}
+
+export async function completeOnboardingAction(
+  input: OnboardingInput,
+): Promise<CompleteOnboardingResult> {
   const parsed = OnboardingSchema.safeParse(input);
   if (!parsed.success) {
     return { ok: false, error: parsed.error.issues[0]?.message };
@@ -64,26 +82,32 @@ export async function completeOnboardingAction(
   });
   if (existingCnpj) return { ok: false, error: "CNPJ já cadastrado" };
 
-  const totalMonthlyCents = data.channels.reduce(
-    (a, c) => a + c.monthlyRevenueCents,
-    0,
-  );
-  const medianRevenueCents = BigInt(totalMonthlyCents);
+  const existingCpf = await db.entrepreneurProfile.findUnique({
+    where: { cpf: data.cpf },
+  });
+  if (existingCpf) return { ok: false, error: "CPF já cadastrado" };
 
-  // Estabilidade simulada: se canais > 1, assumimos boa distribuição
-  const stability =
-    data.channels.length >= 3
-      ? 0.85
-      : data.channels.length === 2
-        ? 0.7
-        : 0.55;
-
-  const scoreResult = calculateScore({
-    monthlyRevenueCents: medianRevenueCents,
-    monthsActive: data.monthsActive,
-    channelsCount: data.channels.length,
-    cashflowStabilityScore: stability,
-    supplierHistoryScore: 0,
+  // Roda o motor de crédito (com fallback) ANTES de criar o usuário —
+  // se motor diz REJECTED, ainda criamos cadastro mas mostramos resultado
+  // honestamente. APPROVED/MANUAL_REVIEW também são persistidos pro audit trail.
+  const analysis = await analyzeCadastro({
+    user: {
+      name: data.name,
+      cpf: data.cpf,
+      cnpj: data.cnpj,
+      birthDate: data.birthDate,
+      declaredBusinessActivity: data.declaredBusinessActivity,
+      city: data.addressCity,
+      state: data.addressState.toUpperCase(),
+      hasCadUnico: data.hasCadUnico,
+      monthsOperating: data.monthsActive,
+    },
+    channels: data.channels.map((c) => ({
+      type: c.type,
+      monthlyRevenueCents: c.monthlyRevenueCents,
+    })),
+    pluggyItemId: data.pluggyItemId,
+    initialCreditRequest: { amount: data.initialCreditAmount },
   });
 
   const businessSince = new Date();
@@ -98,6 +122,11 @@ export async function completeOnboardingAction(
       entrepreneur: {
         create: {
           cnpj: data.cnpj,
+          cpf: data.cpf,
+          birthDate: new Date(data.birthDate),
+          declaredBusinessActivity: data.declaredBusinessActivity,
+          hasCadUnico: data.hasCadUnico,
+          pluggyItemId: data.pluggyItemId,
           businessName: data.businessName,
           phone: data.phone,
           addressCep: data.addressCep,
@@ -114,22 +143,25 @@ export async function completeOnboardingAction(
               })),
             },
           },
-          scoreSnapshots: {
+          creditAnalyses: {
             create: {
-              score: scoreResult.score,
-              approvedLimitCents: scoreResult.approvedLimitCents,
-              rationale: scoreResult.rationale,
-              inputsJson: {
-                monthlyRevenueCents: medianRevenueCents.toString(),
-                monthsActive: data.monthsActive,
-                channelsCount: data.channels.length,
-                cashflowStabilityScore: stability,
-                supplierHistoryScore: 0,
-                factors: scoreResult.factors.map((f) => ({
-                  ...f,
-                  rawValue: String(f.rawValue),
-                })),
-              },
+              engineVersion: analysis.engineVersion,
+              decision: analysis.decision,
+              riskLevel: analysis.riskLevel,
+              confidenceLevel: analysis.confidenceLevel,
+              recommendedLimitCents: analysis.recommendedLimitCents,
+              suggestedFeePercent: analysis.suggestedFeePercent,
+              scoreFinal: analysis.scoreFinal,
+              usedOpenFinance: analysis.usedOpenFinance,
+              positiveFactors: analysis.positiveFactors,
+              attentionFactors: analysis.attentionFactors,
+              userExplanation: analysis.userExplanation,
+              rawInputJson: JSON.parse(
+                JSON.stringify(analysis.raw.input),
+              ),
+              rawResultJson: JSON.parse(
+                JSON.stringify(analysis.raw.motorResult ?? null),
+              ),
             },
           },
         },
@@ -141,8 +173,16 @@ export async function completeOnboardingAction(
 
   return {
     ok: true,
-    score: scoreResult.score,
-    approvedLimitCents: scoreResult.approvedLimitCents.toString(),
-    approved: scoreResult.approved,
+    decision: analysis.decision,
+    recommendedLimitCents: analysis.recommendedLimitCents.toString(),
+    suggestedFeePercent: analysis.suggestedFeePercent,
+    riskLevel: analysis.riskLevel,
+    confidenceLevel: analysis.confidenceLevel,
+    scoreFinal: analysis.scoreFinal,
+    usedOpenFinance: analysis.usedOpenFinance,
+    positiveFactors: analysis.positiveFactors,
+    attentionFactors: analysis.attentionFactors,
+    userExplanation: analysis.userExplanation,
+    engine: analysis.engine,
   };
 }
