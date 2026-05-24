@@ -19,7 +19,8 @@ import {
   Clock,
 } from "lucide-react";
 import { toast } from "sonner";
-import { PluggyConnect } from "pluggy-connect-sdk";
+// Pluggy SDK importado dinamicamente dentro do handler — referencia `window`
+// no load do módulo, o que quebra SSR no Next se importado no topo.
 
 import {
   Counter,
@@ -178,6 +179,7 @@ export function OnboardingFlow({ nextUrl = "/app" }: { nextUrl?: string }) {
         return;
       }
 
+      const { PluggyConnect } = await import("pluggy-connect-sdk");
       const pc = new PluggyConnect({
         connectToken: data.accessToken as string,
         onSuccess: (itemData) => {
