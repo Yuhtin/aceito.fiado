@@ -41,3 +41,19 @@ yarn-error.log*
 next-env.d.ts
 
 /src/generated/prisma
+
+# Playwright + screenshots gerados localmente
+/.playwright-mcp
+/*.png
+/cockpit-*.png
+/trava-*.png
+/fiado-*.png
+/op-*.png
+/landing-*.png
+/supplier-*.png
+/login-*.png
+/score-*.png
+/historico-*.png
+/onboarding-*.png
+/final-*.png
+/showcase-*.png
