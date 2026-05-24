@@ -119,6 +119,12 @@ model EntrepreneurProfile {
   addressNeighborhood String
   avatarUrl           String?
   businessSince       DateTime
+  // Campos pro motor de crédito (Pluggy + análise estendida)
+  cpf                      String?  @unique
+  birthDate                DateTime?
+  declaredBusinessActivity String?
+  hasCadUnico              Boolean  @default(false)
+  pluggyItemId             String?
   createdAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt
 
@@ -127,8 +133,31 @@ model EntrepreneurProfile {
   orders           Order[]
   pixTransactions  PixTransaction[]
   checkoutSessions CheckoutSession[]
+  creditAnalyses   CreditAnalysis[]
 
   @@index([cnpj])
+}
+
+model CreditAnalysis {
+  id                          String   @id @default(cuid())
+  entrepreneurId              String
+  entrepreneur                EntrepreneurProfile @relation(fields: [entrepreneurId], references: [id], onDelete: Cascade)
+  engineVersion               String
+  decision                    String   // APPROVED, MANUAL_REVIEW, REJECTED
+  riskLevel                   String   // BAIXO, MEDIO, ALTO
+  confidenceLevel             String   // ALTA, MEDIA, BAIXA
+  recommendedLimitCents       BigInt
+  suggestedFeePercent         Float
+  scoreFinal                  Int
+  usedOpenFinance             Boolean  @default(false)
+  positiveFactors             String[]
+  attentionFactors            String[]
+  userExplanation             String
+  rawInputJson                Json
+  rawResultJson               Json
+  createdAt                   DateTime @default(now())
+
+  @@index([entrepreneurId, createdAt])
 }
 
 model SupplierProfile {
