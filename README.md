@@ -1,5 +1,20 @@
 # Aceito Fiado
 
+> **🌐 Demo ao vivo:** https://aceitofiado.daviduarte.com.br
+>
+> **Atalho rápido:** botão **"ver demo"** na landing loga automaticamente como a Joana e cai no app — sem cadastro.
+>
+> **Usuários de teste** (senha pra todos: `aceito123`):
+>
+> | Email | Papel | Negócio |
+> |---|---|---|
+> | `joana@ondapreta.com.br` | MEI (cliente) | Onda Preta Biquínis · Heliópolis/SP |
+> | `compras@distropical.com.br` | Lojista | Distribuidora Tropical Brás (têxtil) |
+> | `pedidos@afrocosmeticos.com.br` | Lojista | Atacado Afro Cosméticos |
+> | `atendimento@brastexteis.com.br` | Lojista | Brás Têxteis Estampas |
+
+---
+
 Infraestrutura de crédito produtivo embutido para MEIs alimentícios.
 
 O Aceito Fiado permite que fornecedores ofereçam venda a prazo com mais segurança, usando análise de risco, checkout fiado, gestão de cobrança, trava de recebíveis, split de pagamentos e liquidez opcional dos recebíveis.
