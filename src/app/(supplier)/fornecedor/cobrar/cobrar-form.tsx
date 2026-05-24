@@ -4,6 +4,8 @@
 import { useState } from "react";
 import { toast } from "sonner";
 
+import { QrDisplay } from "@/components/checkout/qr-display";
+
 import { createCheckoutAction, type CobrarItem } from "./_actions";
 
 interface Props {
@@ -123,7 +125,14 @@ export function CobrarForm({ supplierName }: Props) {
       </div>
       <div className="bg-[var(--af-preto)] p-9 text-[var(--af-branco)] flex flex-col items-center justify-center text-center">
         {result ? (
-          <p className="font-mono text-sm">{result.payUrl}</p>
+          <QrDisplay
+            payUrl={result.payUrl}
+            code={result.code}
+            amountCents={items.reduce((s, it) => s + it.priceCents * it.qty, 0)}
+            prazoDays={prazo}
+            pollFor={result.code.replace(/-/g, "")}
+            onConfirmed={() => toast.success("MEI confirmou! Pode liberar a venda.")}
+          />
         ) : (
           <p className="af-eb text-[var(--af-cinza-soft)]">
             preencha e gere o QrCode
