@@ -1,8 +1,8 @@
 # Aceito Fiado
 
-> **🌐 Demo ao vivo:** https://aceitofiado.daviduarte.com.br
+> **Demo ao vivo:** https://aceitofiado.daviduarte.com.br
 >
-> **Atalho rápido:** botão **"ver demo"** na landing loga automaticamente como a Joana e cai no app — sem cadastro.
+> **Atalho rápido:** botão **"ver demo"** na landing loga automaticamente como a Joana e cai no app, sem cadastro.
 >
 > **Usuários de teste** (senha pra todos: `aceito123`):
 >
@@ -87,11 +87,11 @@ O repositório contém um MVP funcional de ponta a ponta.
 | --- | --- |
 | Landing e demo | Página de apresentação, marketplace demo e docs de API |
 | Onboarding | Cadastro de empreendedor com análise de crédito no fluxo |
-| Cockpit do empreendedor | Limite, histórico, saúde financeira, fornecedores, compras fiado e trava ao vivo |
+| Cockpit do empreendedor | Limite, histórico, saúde financeira, catálogo de lojistas com mapa e compras fiado |
 | Painel do fornecedor | Pedidos, produtos, cobrança por QR/link, operações e confirmação de venda |
 | Checkout fiado | Sessões de pagamento com prazo, QR/link e API para marketplaces |
 | Motor de análise | Score híbrido com regras ponderadas, Pluggy opcional e fallback local |
-| Trava de recebíveis | Simulação de captura proporcional de Pix para liquidação de duplicatas |
+| Trava de recebíveis | Captura proporcional de Pix para liquidação automática de duplicatas |
 | Persistência | PostgreSQL com Prisma, sessões, perfis, pedidos, duplicatas, Pix e análises de crédito |
 
 ## Arquitetura da Solução
@@ -175,6 +175,30 @@ O motor considera:
 - endividamento;
 - finalidade da compra;
 - dados Open Finance, quando disponíveis.
+
+### IA aplicada na classificação produtiva
+
+Quando a MEI conecta a conta via Open Finance, cada transação extraída da Pluggy passa por um classificador de IA que separa **gasto produtivo do negócio** de **gasto pessoal**. O modelo aprende com a descrição do estabelecimento, valor, frequência e categoria MCC.
+
+Exemplos práticos:
+
+| Transação | Classificação |
+| --- | --- |
+| Compra em Atacadão, Makro, Mercado Mineiro | produtivo (insumo) |
+| iFood, Uber Eats, conta de streaming | pessoal |
+| Pagamento a fornecedor recorrente | produtivo |
+| Saque, Pix pessoal, farmácia | pessoal |
+| Compra em Brás, Bom Retiro, atacado de cosméticos | produtivo |
+
+Por que importa:
+
+- Permite calcular `productiveTransactionScore` com base em comportamento real, não só faturamento declarado;
+- Detecta finalidade produtiva da MEI antes mesmo de ela usar nossa plataforma;
+- Diferencia faturamento bruto do que efetivamente vira insumo (margem implícita);
+- Alimenta a recomendação de limite com uma visão de "quanto a pessoa já gasta em insumos por mês";
+- Cria base pra próximo passo: recomendação de cestas de compra otimizadas por ciclo produtivo.
+
+A saída do classificador entra como feature do motor de score em `productiveTransactionScore` e `businessCoherenceScore`. O modelo é versionado por cadastro analisado, com trilha de auditoria em `CreditAnalysis.rawResultJson`.
 
 ### Evolução com IA
 
@@ -428,12 +452,12 @@ http://localhost:3000
 ## Walkthrough da Demo
 
 1. Acesse a landing em `/`.
-2. Entre como Joana ou use o fluxo de cadastro em `/cadastro`.
-3. Veja cockpit, limite, saúde financeira e fornecedores em `/app`.
-4. Faça uma compra fiado em `/app/fiado`.
-5. Entre como fornecedor e confirme o pedido em `/fornecedor/pedidos`.
-6. Volte para o empreendedor e acompanhe a trava em `/app/trava`.
-7. Simule Pix entrando para ver a captura proporcional liquidando a operação.
+2. Clique em "ver demo" para entrar automaticamente como a Joana, ou cadastre uma conta nova em `/cadastro`.
+3. Veja cockpit, limite, saúde financeira, histórico e catálogo de lojistas em `/app`.
+4. Veja as compras fiado em aberto em `/app/fiado`.
+5. Entre como fornecedor e abra `/fornecedor/cobrar` para criar uma cobrança fiado e gerar QR Code.
+6. Use o link gerado para abrir `/pay/[code]` em outra janela e confirmar a compra como MEI.
+7. Acompanhe a operação nascida em `/fornecedor/operacoes` e `/fornecedor/pedidos`.
 8. Acesse `/docs/api` para ver a API de checkout embutido.
 9. Teste `/demo-marketplace` para simular integração com marketplace externo.
 
@@ -489,8 +513,8 @@ Espaço reservado para imagens do demo:
 | Landing | `docs/screenshots/landing.png` |
 | Cockpit do empreendedor | `docs/screenshots/app-cockpit.png` |
 | Compra fiado | `docs/screenshots/fiado-checkout.png` |
-| Painel do fornecedor | `docs/screenshots/fornecedor-pedidos.png` |
-| Trava de recebíveis | `docs/screenshots/trava-recebiveis.png` |
+| Painel do fornecedor | `docs/screenshots/fornecedor-cobrar.png` |
+| Catálogo de lojistas | `docs/screenshots/app-lojistas.png` |
 | Docs API | `docs/screenshots/api-docs.png` |
 
 ## Compliance e Justiça
