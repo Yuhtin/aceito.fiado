@@ -30,10 +30,10 @@ export function ConfirmOrderButton({ orderId }: { orderId: string }) {
       type="button"
       onClick={handleConfirm}
       disabled={pending}
-      className="inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-sm font-medium transition-opacity disabled:opacity-50"
+      className="inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-sm font-semibold transition-opacity disabled:opacity-50 hover:opacity-80"
       style={{
-        background: "var(--af-terra)",
-        color: "var(--af-paper)",
+        background: "var(--af-dourado)",
+        color: "var(--af-preto)",
         fontFamily: "var(--af-sans)",
       }}
     >

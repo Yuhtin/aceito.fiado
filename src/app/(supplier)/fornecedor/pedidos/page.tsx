@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ChevronRight, Store } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 
 import { OrderStatusBadge } from "@/app/(entrepreneur)/app/_components/order-status-badge";
 import { AfCard, Eyebrow, Money } from "@/components/af";
@@ -29,33 +29,33 @@ export default async function FornecedorPedidos() {
       />
       <div
         className="px-6 py-7 md:px-10 md:py-8"
-        style={{ background: "var(--af-paper-2)" }}
+        style={{ background: "var(--af-creme)" }}
       >
-        <AfCard padding={0} radius={20} className="overflow-hidden">
+        <AfCard padding={0} radius={20} className="overflow-hidden" style={{ background: "var(--af-branco)" }}>
           {orders.length === 0 && (
             <p
               className="px-7 py-12 text-center text-sm"
-              style={{ color: "var(--af-ink-soft)" }}
+              style={{ color: "var(--af-cinza)" }}
             >
               nenhum pedido recebido ainda.
             </p>
           )}
           <div
             className="divide-y"
-            style={{ borderColor: "var(--af-ink-08)" }}
+            style={{ borderColor: "var(--af-borda)" }}
           >
             {orders.map((o) => (
               <Link
                 key={o.id}
                 href={`/fornecedor/pedidos/${o.id}`}
-                className="flex items-center gap-4 px-7 py-4 transition-colors hover:bg-[oklch(0.985_0.005_75_/_0.5)]"
+                className="flex items-center gap-4 px-7 py-4 transition-colors hover:bg-[var(--af-creme)]"
               >
                 <div
                   style={{
                     width: 40,
                     height: 40,
-                    background: "var(--af-ink)",
-                    color: "var(--af-paper)",
+                    background: "var(--af-preto)",
+                    color: "var(--af-branco)",
                     borderRadius: 10,
                     display: "flex",
                     alignItems: "center",
@@ -70,7 +70,7 @@ export default async function FornecedorPedidos() {
                 <div className="min-w-0 flex-1">
                   <p
                     className="af-body truncate"
-                    style={{ fontSize: 14, fontWeight: 500, margin: 0 }}
+                    style={{ fontSize: 14, fontWeight: 500, margin: 0, color: "var(--af-preto)" }}
                   >
                     {o.entrepreneur.businessName}
                   </p>
@@ -78,7 +78,7 @@ export default async function FornecedorPedidos() {
                     className="af-mono"
                     style={{
                       fontSize: 11,
-                      color: "var(--af-ink-soft)",
+                      color: "var(--af-cinza)",
                       margin: "3px 0 0",
                     }}
                   >
@@ -95,7 +95,7 @@ export default async function FornecedorPedidos() {
                 </div>
                 <ChevronRight
                   className="size-4"
-                  style={{ color: "var(--af-ink-soft)" }}
+                  style={{ color: "var(--af-cinza-soft)" }}
                 />
               </Link>
             ))}

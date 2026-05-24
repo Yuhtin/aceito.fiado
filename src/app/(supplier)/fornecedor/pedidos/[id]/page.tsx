@@ -11,7 +11,6 @@ import { OrderStatusBadge } from "@/app/(entrepreneur)/app/_components/order-sta
 import {
   AfCard,
   Eyebrow,
-  GradientMesh,
   Money,
   Tag,
 } from "@/components/af";
@@ -52,7 +51,7 @@ export default async function SupplierOrderDetail({ params }: Props) {
           <Link
             href="/fornecedor/pedidos"
             className="inline-flex items-center gap-1 transition-opacity hover:opacity-100 opacity-70"
-            style={{ color: "var(--af-ink-soft)" }}
+            style={{ color: "var(--af-cinza)" }}
           >
             <ArrowLeft className="size-3" /> pedidos
           </Link>
@@ -65,19 +64,19 @@ export default async function SupplierOrderDetail({ params }: Props) {
         }
         description={
           <span className="inline-flex flex-wrap items-center gap-x-3 gap-y-1.5 text-sm">
-            <Tag color="var(--af-ink)">
+            <Tag color="var(--af-preto)">
               {order.duplicata?.numero ?? `pedido #${order.id.slice(0, 8)}`}
             </Tag>
             <span
               className="inline-flex items-center gap-1"
-              style={{ color: "var(--af-ink-soft)" }}
+              style={{ color: "var(--af-cinza)" }}
             >
               <MapPin className="size-3.5" />
               {order.entrepreneur.addressCity}/{order.entrepreneur.addressState}
             </span>
             <span
               className="af-mono"
-              style={{ fontSize: 11.5, color: "var(--af-ink-soft)" }}
+              style={{ fontSize: 11.5, color: "var(--af-cinza)" }}
             >
               CNPJ {formatCNPJ(order.entrepreneur.cnpj)}
             </span>
@@ -87,43 +86,42 @@ export default async function SupplierOrderDetail({ params }: Props) {
 
       <div
         className="grid gap-6 px-6 py-7 md:px-10 md:py-8 lg:grid-cols-[1.5fr_1fr]"
-        style={{ background: "var(--af-paper-2)" }}
+        style={{ background: "var(--af-creme)" }}
       >
         <div className="space-y-5">
           {/* AÇÃO */}
           {isAwaiting && (
-            <GradientMesh
+            <div
               className="overflow-hidden"
               style={{
                 borderRadius: 20,
-                border: "1px solid var(--af-terra)",
+                border: "1px solid var(--af-dourado)",
+                background: "var(--af-dourado-soft)",
               }}
             >
               <div className="grid gap-4 p-7 md:grid-cols-[1fr_auto] md:items-center">
                 <div>
-                  <Eyebrow color="var(--af-terra)">
+                  <Eyebrow color="var(--af-dourado-dark)">
                     aguarda sua confirmação
                   </Eyebrow>
                   <h2
-                    className="af-h-tight"
+                    className="af-display mt-3"
                     style={{
                       fontSize: 28,
-                      margin: "10px 0 0",
-                      color: "var(--af-ink-deep)",
+                      color: "var(--af-preto)",
                     }}
                   >
                     confirme e receba{" "}
-                    <span style={{ color: "var(--af-terra)" }}>
+                    <span style={{ color: "var(--af-dourado-dark)" }}>
                       {formatBRL(order.supplierReceiveCents)}
                     </span>{" "}
                     à vista
                   </h2>
                   <p
-                    className="af-body"
+                    className="af-body mt-3"
                     style={{
                       fontSize: 13.5,
-                      color: "var(--af-ink-2)",
-                      margin: "10px 0 0",
+                      color: "var(--af-cinza)",
                       maxWidth: 540,
                     }}
                   >
@@ -136,38 +134,36 @@ export default async function SupplierOrderDetail({ params }: Props) {
                   <ConfirmOrderButton orderId={order.id} />
                 </div>
               </div>
-            </GradientMesh>
+            </div>
           )}
 
           {/* ITENS */}
-          <AfCard padding={0} radius={20} className="overflow-hidden">
+          <AfCard padding={0} radius={20} className="overflow-hidden" style={{ background: "var(--af-branco)" }}>
             <div className="px-7 pt-6 pb-3">
               <Eyebrow>pedido · {order.items.length} item{order.items.length === 1 ? "" : "s"}</Eyebrow>
               <h2
-                className="af-h"
+                className="af-display mt-2"
                 style={{
                   fontSize: 18,
-                  margin: "6px 0 0",
-                  color: "var(--af-ink-deep)",
+                  color: "var(--af-preto)",
                 }}
               >
                 solicitado {formatRelativeTime(order.requestedAt)}
               </h2>
               <p
-                className="af-mono"
+                className="af-mono mt-1"
                 style={{
                   fontSize: 11,
-                  color: "var(--af-ink-soft)",
-                  margin: "4px 0 0",
+                  color: "var(--af-cinza)",
                 }}
               >
                 {formatDate(order.requestedAt, true)}
               </p>
             </div>
-            <div style={{ borderTop: "1px solid var(--af-ink-08)" }}>
+            <div style={{ borderTop: "1px solid var(--af-borda)" }}>
               <div
                 className="divide-y"
-                style={{ borderColor: "var(--af-ink-08)" }}
+                style={{ borderColor: "var(--af-borda)" }}
               >
                 {order.items.map((item) => (
                   <div
@@ -178,8 +174,8 @@ export default async function SupplierOrderDetail({ params }: Props) {
                       style={{
                         width: 40,
                         height: 40,
-                        background: "var(--af-paper-3)",
-                        color: "var(--af-ink-soft)",
+                        background: "var(--af-creme-2)",
+                        color: "var(--af-cinza)",
                         borderRadius: 10,
                         display: "flex",
                         alignItems: "center",
@@ -191,7 +187,7 @@ export default async function SupplierOrderDetail({ params }: Props) {
                     <div className="min-w-0 flex-1">
                       <p
                         className="af-body truncate"
-                        style={{ fontSize: 14, fontWeight: 500, margin: 0 }}
+                        style={{ fontSize: 14, fontWeight: 500, margin: 0, color: "var(--af-preto)" }}
                       >
                         {item.product.name}
                       </p>
@@ -199,7 +195,7 @@ export default async function SupplierOrderDetail({ params }: Props) {
                         className="af-mono"
                         style={{
                           fontSize: 11,
-                          color: "var(--af-ink-soft)",
+                          color: "var(--af-cinza)",
                           margin: "2px 0 0",
                         }}
                       >
@@ -213,7 +209,7 @@ export default async function SupplierOrderDetail({ params }: Props) {
                 ))}
               </div>
             </div>
-            <div style={{ borderTop: "1px solid var(--af-ink-08)" }} />
+            <div style={{ borderTop: "1px solid var(--af-borda)" }} />
             <div className="space-y-2 px-7 py-4 text-sm">
               <Row label="subtotal" value={formatBRL(order.subtotalCents)} />
               <Row
@@ -221,7 +217,7 @@ export default async function SupplierOrderDetail({ params }: Props) {
                 value={`−${formatBRL(order.subtotalCents - order.supplierReceiveCents)}`}
                 muted
               />
-              <div style={{ borderTop: "1px solid var(--af-ink-08)" }} />
+              <div style={{ borderTop: "1px solid var(--af-borda)" }} />
               <Row
                 label="você recebe à vista"
                 value={formatBRL(order.supplierReceiveCents)}
@@ -233,13 +229,13 @@ export default async function SupplierOrderDetail({ params }: Props) {
 
         <div className="space-y-5">
           {/* HOW IT WORKS */}
-          <AfCard padding={22} radius={18}>
+          <AfCard padding={22} radius={18} style={{ background: "var(--af-branco)" }}>
             <div
               className="inline-flex items-center gap-1.5"
-              style={{ color: "var(--af-terra)" }}
+              style={{ color: "var(--af-dourado-dark)" }}
             >
               <HandCoins className="size-3.5" />
-              <Eyebrow color="var(--af-terra)">
+              <Eyebrow color="var(--af-dourado-dark)">
                 o que acontece quando você confirma
               </Eyebrow>
             </div>
@@ -249,7 +245,7 @@ export default async function SupplierOrderDetail({ params }: Props) {
                   AceitoFiado faz Pix de{" "}
                   <span
                     className="af-mono"
-                    style={{ color: "var(--af-ink-deep)", fontWeight: 600 }}
+                    style={{ color: "var(--af-preto)", fontWeight: 600 }}
                   >
                     {formatBRL(order.supplierReceiveCents)}
                   </span>{" "}
@@ -271,8 +267,8 @@ export default async function SupplierOrderDetail({ params }: Props) {
                       height: 22,
                       marginTop: 1,
                       borderRadius: 99,
-                      background: "var(--af-terra-soft)",
-                      color: "var(--af-terra)",
+                      background: "var(--af-dourado-soft)",
+                      color: "var(--af-dourado-dark)",
                       fontSize: 10,
                       fontWeight: 600,
                     }}
@@ -281,7 +277,7 @@ export default async function SupplierOrderDetail({ params }: Props) {
                   </span>
                   <span
                     className="af-body"
-                    style={{ fontSize: 13.5, color: "var(--af-ink-2)" }}
+                    style={{ fontSize: 13.5, color: "var(--af-cinza)" }}
                   >
                     {txt}
                   </span>
@@ -291,7 +287,7 @@ export default async function SupplierOrderDetail({ params }: Props) {
           </AfCard>
 
           {/* EMPREENDEDORA */}
-          <AfCard padding={22} radius={18}>
+          <AfCard padding={22} radius={18} style={{ background: "var(--af-branco)" }}>
             <Eyebrow>sobre a empreendedora</Eyebrow>
             <dl className="mt-4 space-y-2.5 text-sm">
               <KV k="razão social" v={order.entrepreneur.businessName} />
@@ -335,19 +331,19 @@ function Row({
       <span
         style={{
           color: strong
-            ? "var(--af-ink-deep)"
+            ? "var(--af-preto)"
             : muted
-              ? "var(--af-ink-soft)"
-              : "var(--af-ink-2)",
+              ? "var(--af-cinza-soft)"
+              : "var(--af-cinza)",
           fontWeight: strong ? 500 : 400,
         }}
       >
         {label}
       </span>
       <span
-        className={strong ? "af-n" : "af-mono"}
+        className={strong ? "af-mono" : "af-mono"}
         style={{
-          color: strong ? "var(--af-ink-deep)" : "var(--af-ink-2)",
+          color: strong ? "var(--af-preto)" : "var(--af-cinza)",
           fontSize: strong ? 18 : 13,
           fontWeight: strong ? 600 : 500,
         }}
@@ -361,8 +357,8 @@ function Row({
 function KV({ k, v }: { k: string; v: React.ReactNode }) {
   return (
     <div className="grid grid-cols-[1fr_1.5fr] gap-3">
-      <dt style={{ color: "var(--af-ink-soft)" }}>{k}</dt>
-      <dd style={{ color: "var(--af-ink)" }}>{v}</dd>
+      <dt style={{ color: "var(--af-cinza)" }}>{k}</dt>
+      <dd style={{ color: "var(--af-preto)" }}>{v}</dd>
     </div>
   );
 }
