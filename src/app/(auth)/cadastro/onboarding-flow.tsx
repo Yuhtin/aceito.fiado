@@ -22,6 +22,7 @@ import { toast } from "sonner";
 
 import {
   completeOnboardingAction,
+  completeSupplierOnboardingAction,
   type CompleteOnboardingResult,
 } from "./_actions";
 
@@ -38,7 +39,21 @@ type ChannelType =
 
 type CreditAmount = 200 | 400 | 600 | 800;
 
+type Role = "ENTREPRENEUR" | "SUPPLIER";
+
+type SupplierCategory =
+  | "TEXTIL"
+  | "COSMETICOS"
+  | "ALIMENTOS"
+  | "BEBIDAS"
+  | "PAPELARIA"
+  | "ACESSORIOS"
+  | "CALCADOS"
+  | "BAZAR"
+  | "OUTROS";
+
 type FormState = {
+  role: Role | null;
   name: string;
   email: string;
   password: string;
@@ -53,9 +68,15 @@ type FormState = {
   monthlyRevenueCents: number;
   initialCreditAmount: CreditAmount;
   pluggyItemId: string;
+  // Supplier-only
+  supplierCategory: SupplierCategory | null;
+  addressCity: string;
+  addressState: string;
+  addressNeighborhood: string;
 };
 
 const INITIAL: FormState = {
+  role: null,
   name: "",
   email: "",
   password: "",
@@ -70,6 +91,10 @@ const INITIAL: FormState = {
   monthlyRevenueCents: 0,
   initialCreditAmount: 400,
   pluggyItemId: "",
+  supplierCategory: null,
+  addressCity: "",
+  addressState: "",
+  addressNeighborhood: "",
 };
 
 type DoneState = {
@@ -169,14 +194,17 @@ interface StepDef {
   optional?: boolean;
 }
 
-const STEPS: StepDef[] = [
+const COMMON_STEPS_AFTER_ROLE: StepDef[] = [
   { id: "name", validate: (f) => f.name.trim().length >= 2 },
   { id: "email", validate: (f) => /^.+@.+\..+$/.test(f.email) },
   { id: "password", validate: (f) => f.password.length >= 6 },
-  { id: "cpf", validate: (f) => onlyDigits(f.cpf).length === 11 },
-  { id: "birthDate", validate: (f) => /^\d{4}-\d{2}-\d{2}$/.test(f.birthDate) },
   { id: "cnpj", validate: (f) => onlyDigits(f.cnpj).length === 14 },
   { id: "businessName", validate: (f) => f.businessName.trim().length >= 2 },
+];
+
+const ENTREPRENEUR_STEPS_AFTER_COMMON: StepDef[] = [
+  { id: "cpf", validate: (f) => onlyDigits(f.cpf).length === 11 },
+  { id: "birthDate", validate: (f) => /^\d{4}-\d{2}-\d{2}$/.test(f.birthDate) },
   {
     id: "activity",
     validate: (f) => f.declaredBusinessActivity.trim().length >= 2,
@@ -188,7 +216,28 @@ const STEPS: StepDef[] = [
   { id: "pluggy", validate: () => true, optional: true },
 ];
 
-const TOTAL_STEPS = STEPS.length;
+const SUPPLIER_STEPS_AFTER_COMMON: StepDef[] = [
+  { id: "category", validate: (f) => f.supplierCategory !== null },
+  {
+    id: "location",
+    validate: (f) =>
+      f.addressCity.length >= 2 &&
+      f.addressState.length === 2 &&
+      f.addressNeighborhood.length >= 2,
+  },
+];
+
+function getSteps(role: Role | null): StepDef[] {
+  const first: StepDef = {
+    id: "role",
+    validate: (f) => f.role !== null,
+  };
+  if (!role) return [first];
+  if (role === "SUPPLIER") {
+    return [first, ...COMMON_STEPS_AFTER_ROLE, ...SUPPLIER_STEPS_AFTER_COMMON];
+  }
+  return [first, ...COMMON_STEPS_AFTER_ROLE, ...ENTREPRENEUR_STEPS_AFTER_COMMON];
+}
 
 // ─────────────────────── Animation variants ───────────────────────
 
@@ -213,9 +262,11 @@ export function OnboardingFlow({ nextUrl = "/app" }: { nextUrl?: string }) {
     setForm((p) => ({ ...p, [key]: value }));
   }
 
-  const currentStep = STEPS[step];
+  const steps = useMemo(() => getSteps(form.role), [form.role]);
+  const totalSteps = steps.length;
+  const currentStep = steps[step];
   const canAdvance = currentStep?.validate(form) ?? false;
-  const isLast = step === TOTAL_STEPS - 1;
+  const isLast = step === totalSteps - 1;
 
   function advance() {
     if (!canAdvance && !currentStep?.optional) return;
@@ -223,7 +274,7 @@ export function OnboardingFlow({ nextUrl = "/app" }: { nextUrl?: string }) {
       void submit();
       return;
     }
-    setStep((s) => Math.min(TOTAL_STEPS - 1, s + 1));
+    setStep((s) => Math.min(totalSteps - 1, s + 1));
   }
 
   function back() {
@@ -232,6 +283,14 @@ export function OnboardingFlow({ nextUrl = "/app" }: { nextUrl?: string }) {
   }
 
   async function submit() {
+    if (form.role === "SUPPLIER") {
+      await submitSupplier();
+      return;
+    }
+    await submitEntrepreneur();
+  }
+
+  async function submitEntrepreneur() {
     setCalculating(true);
     const start = Date.now();
 
@@ -288,6 +347,32 @@ export function OnboardingFlow({ nextUrl = "/app" }: { nextUrl?: string }) {
       engine: result.engine!,
     });
     setCalculating(false);
+  }
+
+  async function submitSupplier() {
+    setCalculating(true);
+    const result = await completeSupplierOnboardingAction({
+      name: form.name,
+      email: form.email,
+      password: form.password,
+      cnpj: onlyDigits(form.cnpj),
+      businessName: form.businessName,
+      category: form.supplierCategory!,
+      addressCity: form.addressCity,
+      addressState: form.addressState.toUpperCase(),
+      addressNeighborhood: form.addressNeighborhood,
+      description: "",
+      phone: "",
+      addressCep: "00000000",
+      pixKey: "",
+    });
+    setCalculating(false);
+    if (!result.ok) {
+      toast.error(result.error ?? "não conseguimos cadastrar agora");
+      return;
+    }
+    toast.success(`bem-vinda, ${result.businessName}!`);
+    router.push("/fornecedor");
   }
 
   async function handleConnectPluggy() {
@@ -350,13 +435,21 @@ export function OnboardingFlow({ nextUrl = "/app" }: { nextUrl?: string }) {
   // ── Step flow ──
   return (
     <div className="flex flex-col px-6 py-8 lg:px-14 lg:py-12 min-h-[calc(100vh-110px)]">
-      <ProgressBar current={step} total={TOTAL_STEPS} />
+      <ProgressBar current={step} total={totalSteps} />
 
       <div className="flex-1 flex items-center mt-12 lg:mt-16">
         <div className="w-full max-w-xl">
           <AnimatePresence mode="wait">
             <motion.div key={currentStep.id} {...slide}>
-              {renderStep(step, form, update, handleConnectPluggy, pluggyLoading)}
+              {renderStep(
+                steps[step]?.id ?? "role",
+                step,
+                totalSteps,
+                form,
+                update,
+                handleConnectPluggy,
+                pluggyLoading,
+              )}
             </motion.div>
           </AnimatePresence>
         </div>
@@ -377,17 +470,33 @@ export function OnboardingFlow({ nextUrl = "/app" }: { nextUrl?: string }) {
 // ─────────────────────── Step renderers ───────────────────────
 
 function renderStep(
-  step: number,
+  stepId: string,
+  stepIdx: number,
+  totalSteps: number,
   form: FormState,
   update: <K extends keyof FormState>(k: K, v: FormState[K]) => void,
   handleConnectPluggy: () => void,
   pluggyLoading: boolean,
 ) {
-  switch (STEPS[step].id) {
+  const eyebrowText = `passo ${stepIdx + 1} de ${totalSteps}`;
+  switch (stepId) {
+    case "role":
+      return (
+        <FieldShell
+          eyebrow="começar"
+          question="você é quem?"
+          hint="escolha o seu papel. o resto do cadastro se ajusta automaticamente."
+        >
+          <RoleCards
+            selected={form.role}
+            onSelect={(r) => update("role", r)}
+          />
+        </FieldShell>
+      );
     case "name":
       return (
         <FieldShell
-          eyebrow={`pergunta 1 de ${TOTAL_STEPS}`}
+          eyebrow={eyebrowText}
           question="como você se chama?"
           hint="seu nome completo, pra gente conhecer você."
         >
@@ -402,7 +511,7 @@ function renderStep(
     case "email":
       return (
         <FieldShell
-          eyebrow={`pergunta 2 de ${TOTAL_STEPS}`}
+          eyebrow={eyebrowText}
           question={
             <>
               prazer, <span style={{ color: "var(--af-dourado)" }}>
@@ -424,7 +533,7 @@ function renderStep(
     case "password":
       return (
         <FieldShell
-          eyebrow={`pergunta 3 de ${TOTAL_STEPS}`}
+          eyebrow={eyebrowText}
           question="cria uma senha"
           hint="mínimo 6 caracteres. anota num lugar seguro."
         >
@@ -440,7 +549,7 @@ function renderStep(
     case "cpf":
       return (
         <FieldShell
-          eyebrow={`pergunta 4 de ${TOTAL_STEPS}`}
+          eyebrow={eyebrowText}
           question="qual seu CPF?"
           hint="precisamos pra verificar sua identidade. seus dados ficam só com a gente."
         >
@@ -456,7 +565,7 @@ function renderStep(
     case "birthDate":
       return (
         <FieldShell
-          eyebrow={`pergunta 5 de ${TOTAL_STEPS}`}
+          eyebrow={eyebrowText}
           question="quando você nasceu?"
           hint="ajuda a confirmar quem você é."
         >
@@ -471,7 +580,7 @@ function renderStep(
     case "cnpj":
       return (
         <FieldShell
-          eyebrow={`pergunta 6 de ${TOTAL_STEPS}`}
+          eyebrow={eyebrowText}
           question="qual o CNPJ do seu MEI?"
           hint="você precisa ser MEI pra usar a gente — é o que dá fé à duplicata."
         >
@@ -487,7 +596,7 @@ function renderStep(
     case "businessName":
       return (
         <FieldShell
-          eyebrow={`pergunta 7 de ${TOTAL_STEPS}`}
+          eyebrow={eyebrowText}
           question="como o seu negócio se chama?"
           hint="o nome que as suas clientes conhecem."
         >
@@ -502,7 +611,7 @@ function renderStep(
     case "activity":
       return (
         <FieldShell
-          eyebrow={`pergunta 8 de ${TOTAL_STEPS}`}
+          eyebrow={eyebrowText}
           question="o que você vende?"
           hint="ajuda a entender seu ramo. pode escolher uma sugestão ou digitar."
         >
@@ -522,7 +631,7 @@ function renderStep(
     case "time":
       return (
         <FieldShell
-          eyebrow={`pergunta 9 de ${TOTAL_STEPS}`}
+          eyebrow={eyebrowText}
           question="há quanto tempo você empreende?"
           hint="conta o tempo total — formal ou informal vale."
         >
@@ -552,7 +661,7 @@ function renderStep(
     case "channels":
       return (
         <FieldShell
-          eyebrow={`pergunta 10 de ${TOTAL_STEPS}`}
+          eyebrow={eyebrowText}
           question="por onde você vende?"
           hint="escolhe todos os canais. quanto mais variado, melhor."
         >
@@ -574,7 +683,7 @@ function renderStep(
     case "revenue":
       return (
         <FieldShell
-          eyebrow={`pergunta 11 de ${TOTAL_STEPS}`}
+          eyebrow={eyebrowText}
           question="quanto entra por mês, somando tudo?"
           hint="média dos últimos 3 meses. sem pressão de precisão — escolhe a faixa."
         >
@@ -592,7 +701,7 @@ function renderStep(
     case "credit":
       return (
         <FieldShell
-          eyebrow={`pergunta 12 de ${TOTAL_STEPS}`}
+          eyebrow={eyebrowText}
           question="de quanto você precisa pra começar?"
           hint="é o limite que você quer testar nas próximas compras. dá pra aumentar depois."
         >
@@ -606,7 +715,7 @@ function renderStep(
     case "pluggy":
       return (
         <FieldShell
-          eyebrow={`última pergunta — opcional`}
+          eyebrow={`${eyebrowText} · opcional`}
           question="quer conectar Open Finance?"
           hint="se conectar, a gente analisa seu fluxo bancário real e te aprova melhor. é seguro (Pluggy, sandbox demo)."
         >
@@ -615,6 +724,53 @@ function renderStep(
             loading={pluggyLoading}
             onConnect={handleConnectPluggy}
           />
+        </FieldShell>
+      );
+    case "category":
+      return (
+        <FieldShell
+          eyebrow={eyebrowText}
+          question="qual o ramo da sua loja?"
+          hint="ajuda os MEIs a te encontrar pelo tipo de produto."
+        >
+          <SupplierCategoryChips
+            selected={form.supplierCategory}
+            onSelect={(v) => update("supplierCategory", v)}
+          />
+        </FieldShell>
+      );
+    case "location":
+      return (
+        <FieldShell
+          eyebrow={eyebrowText}
+          question="onde fica sua loja?"
+          hint="cidade, bairro e UF. aparece no mapa pra MEIs perto."
+        >
+          <div className="grid gap-3">
+            <TextInput
+              value={form.addressCity}
+              onChange={(v) => update("addressCity", v)}
+              placeholder="cidade — São Paulo"
+              autoFocus
+              size="sm"
+            />
+            <div className="grid grid-cols-[1fr_120px] gap-3">
+              <TextInput
+                value={form.addressNeighborhood}
+                onChange={(v) => update("addressNeighborhood", v)}
+                placeholder="bairro — Brás"
+                size="sm"
+              />
+              <TextInput
+                value={form.addressState}
+                onChange={(v) =>
+                  update("addressState", v.toUpperCase().slice(0, 2))
+                }
+                placeholder="UF"
+                size="sm"
+              />
+            </div>
+          </div>
         </FieldShell>
       );
   }
@@ -901,6 +1057,154 @@ function CreditChips({
             >
               início
             </div>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+function RoleCards({
+  selected,
+  onSelect,
+}: {
+  selected: Role | null;
+  onSelect: (r: Role) => void;
+}) {
+  const cards: {
+    value: Role;
+    label: string;
+    pitch: string;
+    detail: string;
+    icon: typeof Store;
+  }[] = [
+    {
+      value: "ENTREPRENEUR",
+      label: "MEI afro",
+      pitch: "quero comprar fiado",
+      detail: "Empreendedora preta com CNPJ MEI que precisa de capital pra estoque ou insumo. Vai pagar a prazo nos lojistas parceiros.",
+      icon: Sparkles,
+    },
+    {
+      value: "SUPPLIER",
+      label: "lojista",
+      pitch: "quero aceitar fiado",
+      detail: "Loja, atacado ou distribuidora que vende pra MEIs. Recebe à vista da gente. A AceitoFiado assume o risco.",
+      icon: Store,
+    },
+  ];
+  return (
+    <div className="grid gap-3 sm:grid-cols-2">
+      {cards.map((c) => {
+        const isSelected = selected === c.value;
+        const Icon = c.icon;
+        return (
+          <button
+            key={c.value}
+            type="button"
+            onClick={() => onSelect(c.value)}
+            className="rounded-2xl p-5 text-left transition-all"
+            style={{
+              background: isSelected ? "var(--af-preto)" : "var(--af-branco)",
+              color: isSelected ? "var(--af-branco)" : "var(--af-preto)",
+              border: `2px solid ${isSelected ? "var(--af-dourado)" : "var(--af-borda)"}`,
+            }}
+          >
+            <div className="flex items-center justify-between mb-3">
+              <div
+                className="grid size-9 place-items-center rounded-md"
+                style={{
+                  background: isSelected ? "var(--af-dourado)" : "var(--af-creme-2)",
+                  color: isSelected ? "var(--af-preto)" : "var(--af-preto)",
+                }}
+              >
+                <Icon className="size-4" />
+              </div>
+              {isSelected && (
+                <Check
+                  className="size-4"
+                  style={{ color: "var(--af-dourado)" }}
+                />
+              )}
+            </div>
+            <div
+              className="af-display"
+              style={{
+                fontSize: 22,
+                letterSpacing: "-0.02em",
+                lineHeight: 1,
+              }}
+            >
+              {c.label}
+            </div>
+            <div
+              className="af-mono mt-1"
+              style={{
+                fontSize: 11,
+                color: isSelected ? "var(--af-dourado)" : "var(--af-cinza)",
+                letterSpacing: "0.06em",
+              }}
+            >
+              {c.pitch}
+            </div>
+            <p
+              className="af-body mt-3"
+              style={{
+                fontSize: 13,
+                lineHeight: 1.4,
+                color: isSelected
+                  ? "rgba(250,250,250,0.7)"
+                  : "var(--af-cinza)",
+              }}
+            >
+              {c.detail}
+            </p>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+const SUPPLIER_CATEGORIES: { value: SupplierCategory; label: string }[] = [
+  { value: "TEXTIL", label: "Têxtil / Moda" },
+  { value: "COSMETICOS", label: "Cosméticos" },
+  { value: "ALIMENTOS", label: "Alimentos" },
+  { value: "BEBIDAS", label: "Bebidas" },
+  { value: "ACESSORIOS", label: "Acessórios" },
+  { value: "CALCADOS", label: "Calçados" },
+  { value: "PAPELARIA", label: "Papelaria" },
+  { value: "BAZAR", label: "Bazar" },
+  { value: "OUTROS", label: "Outro" },
+];
+
+function SupplierCategoryChips({
+  selected,
+  onSelect,
+}: {
+  selected: SupplierCategory | null;
+  onSelect: (v: SupplierCategory) => void;
+}) {
+  return (
+    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+      {SUPPLIER_CATEGORIES.map((c) => {
+        const isSelected = selected === c.value;
+        return (
+          <button
+            key={c.value}
+            type="button"
+            onClick={() => onSelect(c.value)}
+            className="rounded-2xl px-4 py-3.5 transition-all"
+            style={{
+              background: isSelected ? "var(--af-preto)" : "var(--af-branco)",
+              color: isSelected ? "var(--af-branco)" : "var(--af-preto)",
+              border: `2px solid ${isSelected ? "var(--af-dourado)" : "var(--af-borda)"}`,
+              fontFamily: "var(--af-sans)",
+              fontSize: 14,
+              fontWeight: 600,
+            }}
+          >
+            {c.label}
           </button>
         );
       })}
