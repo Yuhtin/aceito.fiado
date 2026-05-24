@@ -37,6 +37,9 @@ const SUPPLIERS = [
     description:
       "Distribuidora de tecidos, aviamentos e linha praia no Brás desde 2008. Atende marcas independentes em todo o Brasil.",
     pixKey: "11222333000144",
+    latitude: -23.5275,
+    longitude: -46.6394,
+    serviceTags: ["têxtil", "atacado", "estampa"],
     products: [
       {
         sku: "TEC-LYC-001",
@@ -104,6 +107,9 @@ const SUPPLIERS = [
     description:
       "Atacado especializado em cosméticos para cabelos crespos e cacheados. Curadoria de marcas pretas brasileiras.",
     pixKey: "22333444000155",
+    latitude: -23.5587,
+    longitude: -46.6520,
+    serviceTags: ["cosméticos", "cabelo crespo", "beleza preta"],
     products: [
       {
         sku: "COSM-MAC-300",
@@ -145,6 +151,9 @@ const SUPPLIERS = [
     description:
       "Tecidos estampados, com referências afrocentradas. Estampas exclusivas em parceria com designers.",
     pixKey: "33444555000166",
+    latitude: -23.5280,
+    longitude: -46.6310,
+    serviceTags: ["têxtil", "estampa", "atacado"],
     products: [
       {
         sku: "TEC-EST-AFR1",
@@ -207,6 +216,7 @@ async function main() {
   await db.pixTransaction.deleteMany();
   await db.duplicata.deleteMany();
   await db.orderItem.deleteMany();
+  await db.checkoutSession.deleteMany();
   await db.order.deleteMany();
   await db.scoreSnapshot.deleteMany();
   await db.channel.deleteMany();
@@ -240,6 +250,9 @@ async function main() {
           category: s.category,
           description: s.description,
           pixKey: s.pixKey,
+          latitude: s.latitude,
+          longitude: s.longitude,
+          serviceTags: s.serviceTags,
         },
       });
       await db.product.createMany({
