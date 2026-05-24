@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { AfLogo, GradientMesh } from "@/components/af";
+import { AfLogo } from "@/components/af";
 
 export default function AuthLayout({
   children,
@@ -8,15 +8,21 @@ export default function AuthLayout({
   children: React.ReactNode;
 }) {
   return (
-    <GradientMesh className="flex min-h-screen flex-col">
-      <header className="px-8 py-5">
+    <div
+      className="min-h-screen"
+      style={{ background: "var(--af-creme)", color: "var(--af-preto)" }}
+    >
+      {/* mobile header */}
+      <header
+        className="flex items-center px-6 py-5 lg:hidden"
+        style={{ borderBottom: "1px solid var(--af-borda)" }}
+      >
         <Link href="/" className="inline-flex items-center gap-2">
           <AfLogo size={22} />
         </Link>
       </header>
-      <main className="flex flex-1 items-center justify-center px-6 pb-12">
-        {children}
-      </main>
-    </GradientMesh>
+
+      {children}
+    </div>
   );
 }
