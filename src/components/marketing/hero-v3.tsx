@@ -81,7 +81,7 @@ export function HeroV3() {
                 href="/cadastro"
                 className="inline-flex items-center gap-2 px-6 py-4 rounded-[10px] bg-[var(--af-dourado)] text-[var(--af-preto)] font-semibold text-[14px]"
               >
-                criar conta de lojista →
+                criar conta →
               </Link>
               <a
                 href="#demo"
@@ -109,7 +109,7 @@ export function HeroV3() {
             className="absolute inset-0"
             style={{
               background:
-                "linear-gradient(140deg, rgba(10,10,10,0.55) 0%, transparent 35%, transparent 60%, rgba(10,10,10,0.9) 100%)",
+                "linear-gradient(140deg, rgba(10,10,10,0.55) 0%, transparent 30%, transparent 45%, rgba(10,10,10,0.85) 75%, rgba(10,10,10,0.95) 100%)",
             }}
           />
           {/* Receipt floating */}
@@ -132,11 +132,14 @@ export function HeroV3() {
               <span>28d</span>
             </div>
           </div>
-          {/* Quote bottom */}
-          <div className="absolute bottom-9 left-9 right-9 z-10">
+          {/* Quote — posicionado mais alto pra não competir com a roupa branca */}
+          <div className="absolute bottom-24 lg:bottom-32 left-9 right-9 z-10">
             <div
               className="af-display text-[22px] leading-[1.08]"
-              style={{ maxWidth: 380 }}
+              style={{
+                maxWidth: 380,
+                textShadow: "0 2px 24px rgba(10,10,10,0.6)",
+              }}
             >
               "primeira vez<br />
               que{" "}
@@ -144,7 +147,10 @@ export function HeroV3() {
               <br />
               foi pra mim."
             </div>
-            <div className="font-mono text-[11px] text-white/60 mt-3.5 tracking-wide">
+            <div
+              className="font-mono text-[11px] text-white/70 mt-3.5 tracking-wide"
+              style={{ textShadow: "0 2px 16px rgba(10,10,10,0.6)" }}
+            >
               JOANA BEZERRA · ONDA PRETA BIQUÍNIS · HELIÓPOLIS/SP
             </div>
           </div>

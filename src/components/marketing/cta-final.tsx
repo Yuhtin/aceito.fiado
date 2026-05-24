@@ -23,7 +23,7 @@ export function CtaFinal() {
             href="/cadastro"
             className="px-7 py-4 rounded-[10px] bg-[var(--af-dourado)] text-[var(--af-preto)] font-semibold text-[14px]"
           >
-            criar conta de lojista →
+            criar conta →
           </Link>
           <Link
             href="/demo-marketplace"

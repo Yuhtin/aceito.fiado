@@ -1069,7 +1069,7 @@ const CALC_STEPS = [
   "lendo seu cadastro",
   "olhando seus canais",
   "modelando seu fluxo",
-  "aplicando travas de segurança",
+  "checando limites de segurança",
   "definindo seu limite",
 ];
 
