@@ -57,26 +57,26 @@ export function TravaLiveStream({
     <div className="grid md:grid-cols-2">
       <div
         style={{
-          borderRight: "1px solid var(--af-ink-08)",
+          borderRight: "1px solid var(--af-borda)",
         }}
         className="md:border-r"
       >
         <div
           className="flex items-center gap-2 px-5 py-3"
           style={{
-            background: "var(--af-paper-3)",
-            borderBottom: "1px solid var(--af-ink-08)",
+            background: "var(--af-borda)",
+            borderBottom: "1px solid var(--af-borda)",
           }}
         >
           <Smartphone
             className="size-3"
-            style={{ color: "var(--af-ink-soft)" }}
+            style={{ color: "var(--af-cinza)" }}
           />
           <span
             className="af-mono"
             style={{
               fontSize: 10,
-              color: "var(--af-ink-soft)",
+              color: "var(--af-cinza)",
               letterSpacing: "0.12em",
               textTransform: "uppercase",
               fontWeight: 500,
@@ -85,10 +85,10 @@ export function TravaLiveStream({
             pix recebidos
           </span>
           <span className="ml-auto">
-            <PulseDot color="var(--af-mata-2)" size={5} />
+            <PulseDot color="var(--af-sucesso)" size={5} />
           </span>
         </div>
-        <ul className="max-h-[440px] overflow-y-auto divide-y" style={{ borderColor: "var(--af-ink-08)" }}>
+        <ul className="max-h-[440px] overflow-y-auto divide-y" style={{ borderColor: "var(--af-borda)" }}>
           <AnimatePresence initial={false}>
             {pix.map((p) => (
               <motion.li
@@ -104,8 +104,8 @@ export function TravaLiveStream({
                     width: 32,
                     height: 32,
                     borderRadius: 9,
-                    background: "var(--af-paper-3)",
-                    color: "var(--af-mata)",
+                    background: "var(--af-borda)",
+                    color: "var(--af-sucesso)",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
@@ -124,7 +124,7 @@ export function TravaLiveStream({
                     className="af-mono truncate"
                     style={{
                       fontSize: 10,
-                      color: "var(--af-ink-soft)",
+                      color: "var(--af-cinza)",
                       margin: "2px 0 0",
                     }}
                   >
@@ -138,7 +138,7 @@ export function TravaLiveStream({
                       className="af-mono"
                       style={{
                         fontSize: 10,
-                        color: "var(--af-terra)",
+                        color: "var(--af-dourado)",
                         margin: "2px 0 0",
                       }}
                     >
@@ -159,19 +159,19 @@ export function TravaLiveStream({
         <div
           className="flex items-center gap-2 px-5 py-3"
           style={{
-            background: "var(--af-paper-3)",
-            borderBottom: "1px solid var(--af-ink-08)",
+            background: "var(--af-borda)",
+            borderBottom: "1px solid var(--af-borda)",
           }}
         >
           <Lock
             className="size-3"
-            style={{ color: "var(--af-ink-soft)" }}
+            style={{ color: "var(--af-cinza)" }}
           />
           <span
             className="af-mono"
             style={{
               fontSize: 10,
-              color: "var(--af-ink-soft)",
+              color: "var(--af-cinza)",
               letterSpacing: "0.12em",
               textTransform: "uppercase",
               fontWeight: 500,
@@ -180,10 +180,10 @@ export function TravaLiveStream({
             capturas pra duplicata
           </span>
           <span className="ml-auto">
-            <PulseDot color="var(--af-acafrao)" size={5} />
+            <PulseDot color="var(--af-dourado)" size={5} />
           </span>
         </div>
-        <ul className="max-h-[440px] overflow-y-auto divide-y" style={{ borderColor: "var(--af-ink-08)" }}>
+        <ul className="max-h-[440px] overflow-y-auto divide-y" style={{ borderColor: "var(--af-borda)" }}>
           <AnimatePresence initial={false}>
             {receivables.map((r) => (
               <motion.li
@@ -205,7 +205,7 @@ export function TravaLiveStream({
                     className="af-n"
                     style={{
                       fontSize: 13,
-                      color: "var(--af-mata-2)",
+                      color: "var(--af-sucesso)",
                       fontWeight: 600,
                     }}
                   >
@@ -217,7 +217,7 @@ export function TravaLiveStream({
                 </div>
                 <div
                   className="mt-1 flex items-center justify-between gap-2"
-                  style={{ color: "var(--af-ink-soft)" }}
+                  style={{ color: "var(--af-cinza)" }}
                 >
                   <span className="truncate text-[10.5px]">
                     origem Pix de {r.payerName} ·{" "}
@@ -237,8 +237,8 @@ export function TravaLiveStream({
                     className="af-mono mt-2 inline-block rounded-full px-2 py-0.5"
                     style={{
                       fontSize: 9.5,
-                      background: "var(--af-paper-3)",
-                      color: "var(--af-ink-soft)",
+                      background: "var(--af-borda)",
+                      color: "var(--af-cinza)",
                       letterSpacing: "0.02em",
                     }}
                   >
@@ -250,7 +250,7 @@ export function TravaLiveStream({
             {receivables.length === 0 && (
               <p
                 className="px-5 py-7 text-center text-xs"
-                style={{ color: "var(--af-ink-soft)" }}
+                style={{ color: "var(--af-cinza)" }}
               >
                 nenhuma captura ainda.
               </p>

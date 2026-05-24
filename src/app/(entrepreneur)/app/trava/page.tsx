@@ -97,7 +97,7 @@ export default async function TravaPage() {
         eyebrow="trava de recebíveis"
         title={
           <>
-            seu Pix liquida sua dívida <span style={{ color: "var(--af-terra)" }}>— no automático.</span>
+            seu Pix liquida sua dívida <span style={{ color: "var(--af-dourado)" }}>— no automático.</span>
           </>
         }
         description="Cada Pix recebido direciona uma fatia pra liquidar as duplicatas ativas. Registrado em B3, instrução irrevogável durante o prazo da operação."
@@ -106,19 +106,19 @@ export default async function TravaPage() {
 
       <div
         className="grid gap-5 px-6 py-7 md:px-10 md:py-8 lg:grid-cols-[1.5fr_1fr]"
-        style={{ background: "var(--af-paper-2)" }}
+        style={{ background: "var(--af-creme-2)" }}
       >
         <div className="space-y-5">
           {/* OPERAÇÕES SOB TRAVA */}
           <AfCard padding={0} radius={20} className="overflow-hidden">
             <div style={{ padding: "24px 28px 14px" }}>
-              <Eyebrow>operações sob trava · {activeOrdersData.length}</Eyebrow>
+              <p className="af-eb">operações sob trava · {activeOrdersData.length}</p>
               <h2
-                className="af-h"
+                className="af-display"
                 style={{
                   fontSize: 22,
                   margin: "8px 0 0",
-                  color: "var(--af-ink-deep)",
+                  color: "var(--af-preto)",
                 }}
               >
                 ordenadas por vencimento
@@ -127,20 +127,20 @@ export default async function TravaPage() {
                 className="af-body"
                 style={{
                   fontSize: 13,
-                  color: "var(--af-ink-soft)",
+                  color: "var(--af-cinza)",
                   margin: "6px 0 0",
                 }}
               >
                 o Pix vai sendo aplicado em cascata, mais antigo primeiro.
               </p>
             </div>
-            <div style={{ borderTop: "1px solid var(--af-ink-08)" }}>
+            <div style={{ borderTop: "1px solid var(--af-borda)" }}>
               {activeOrdersData.length === 0 && (
-                <p className="px-7 py-10 text-center text-sm" style={{ color: "var(--af-ink-soft)" }}>
+                <p className="px-7 py-10 text-center text-sm" style={{ color: "var(--af-cinza)" }}>
                   nenhuma operação ativa. sem operação, não há captura.
                 </p>
               )}
-              <div className="divide-y" style={{ borderColor: "var(--af-ink-08)" }}>
+              <div className="divide-y" style={{ borderColor: "var(--af-borda)" }}>
                 {activeOrdersData.map((o) => {
                   const paid = BigInt(o.paidCents);
                   const total = BigInt(o.customerPayCents);
@@ -152,7 +152,7 @@ export default async function TravaPage() {
                         <div>
                           <p
                             className="af-body"
-                            style={{ fontSize: 14.5, fontWeight: 500, margin: 0 }}
+                            style={{ fontSize: 14.5, fontWeight: 500, margin: 0, color: "var(--af-preto)" }}
                           >
                             {o.supplierName}
                           </p>
@@ -160,7 +160,7 @@ export default async function TravaPage() {
                             className="af-mono"
                             style={{
                               fontSize: 11,
-                              color: "var(--af-ink-soft)",
+                              color: "var(--af-cinza)",
                               margin: "3px 0 0",
                             }}
                           >
@@ -179,8 +179,8 @@ export default async function TravaPage() {
                             fontSize: 11,
                             padding: "4px 10px",
                             borderRadius: 99,
-                            background: "var(--af-terra-soft)",
-                            color: "var(--af-terra)",
+                            background: "var(--af-dourado-soft)",
+                            color: "var(--af-dourado)",
                             fontWeight: 500,
                           }}
                         >
@@ -194,7 +194,7 @@ export default async function TravaPage() {
                             height: 6,
                             overflow: "hidden",
                             borderRadius: 99,
-                            background: "var(--af-paper-3)",
+                            background: "var(--af-borda)",
                           }}
                         >
                           <div
@@ -204,14 +204,14 @@ export default async function TravaPage() {
                               borderRadius: 99,
                               width: `${pct}%`,
                               background:
-                                "linear-gradient(to right, var(--af-terra), oklch(0.7 0.17 45))",
+                                "linear-gradient(to right, var(--af-dourado), oklch(0.7 0.17 45))",
                               transition: "width 1.2s ease",
                             }}
                           />
                         </div>
-                        <div className="mt-2 flex justify-between text-[11px]" style={{ color: "var(--af-ink-soft)" }}>
+                        <div className="mt-2 flex justify-between text-[11px]" style={{ color: "var(--af-cinza)" }}>
                           <span>
-                            <span style={{ color: "var(--af-mata)", fontWeight: 600 }} className="font-mono">
+                            <span style={{ color: "var(--af-sucesso)", fontWeight: 600 }} className="font-mono">
                               {formatBRL(paid)}
                             </span>{" "}
                             capturado
@@ -226,7 +226,7 @@ export default async function TravaPage() {
                         <Link
                           href={`/app/fiado/op/${o.id}`}
                           className="text-xs font-medium inline-flex items-center gap-1"
-                          style={{ color: "var(--af-ink-soft)" }}
+                          style={{ color: "var(--af-cinza)" }}
                         >
                           ver detalhes <ArrowRight className="size-3" />
                         </Link>
@@ -251,11 +251,11 @@ export default async function TravaPage() {
               <div>
                 <Eyebrow>capturas dos últimos dias</Eyebrow>
                 <h2
-                  className="af-h"
+                  className="af-display"
                   style={{
                     fontSize: 20,
                     margin: "8px 0 0",
-                    color: "var(--af-ink-deep)",
+                    color: "var(--af-preto)",
                   }}
                 >
                   atualiza sozinho a cada Pix recebido
@@ -264,8 +264,8 @@ export default async function TravaPage() {
               <span
                 className="af-mono inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px]"
                 style={{
-                  background: "var(--af-mata-2)",
-                  color: "var(--af-paper)",
+                  background: "var(--af-sucesso)",
+                  color: "var(--af-branco)",
                   opacity: 0.9,
                   letterSpacing: "0.12em",
                   textTransform: "uppercase",
@@ -275,14 +275,14 @@ export default async function TravaPage() {
                 <span
                   className="size-1.5 rounded-full"
                   style={{
-                    background: "var(--af-paper)",
+                    background: "var(--af-branco)",
                     animation: "af-pulse 1.6s ease-in-out infinite",
                   }}
                 />
                 ao vivo
               </span>
             </div>
-            <div style={{ borderTop: "1px solid var(--af-ink-08)" }}>
+            <div style={{ borderTop: "1px solid var(--af-borda)" }}>
               <TravaLiveStream
                 initialReceivables={recentReceivables.map((r) => ({
                   id: r.id,
@@ -316,7 +316,7 @@ export default async function TravaPage() {
             style={{
               borderRadius: 20,
               padding: 24,
-              color: "var(--af-paper)",
+              color: "var(--af-creme)",
               overflow: "hidden",
             }}
           >
@@ -335,7 +335,7 @@ export default async function TravaPage() {
               </Eyebrow>
               <SoundBars
                 count={5}
-                color="var(--af-acafrao)"
+                color="var(--af-dourado)"
                 height={14}
                 width={2}
               />
@@ -380,7 +380,7 @@ export default async function TravaPage() {
                 <div
                   style={{
                     width: "30%",
-                    background: "var(--af-terra)",
+                    background: "var(--af-dourado)",
                     padding: "10px 14px",
                     display: "flex",
                     flexDirection: "column",
@@ -405,7 +405,7 @@ export default async function TravaPage() {
                 <div
                   style={{
                     width: "70%",
-                    background: "var(--af-mata-2)",
+                    background: "var(--af-sucesso)",
                     padding: "10px 14px",
                     display: "flex",
                     flexDirection: "column",
@@ -449,9 +449,9 @@ export default async function TravaPage() {
 
           {/* COMO FUNCIONA */}
           <AfCard padding={20} radius={18}>
-            <div className="inline-flex items-center gap-1.5" style={{ color: "var(--af-terra)" }}>
+            <div className="inline-flex items-center gap-1.5" style={{ color: "var(--af-dourado)" }}>
               <Sparkles className="size-3.5" />
-              <Eyebrow color="var(--af-terra)">como a trava funciona</Eyebrow>
+              <Eyebrow color="var(--af-dourado)">como a trava funciona</Eyebrow>
             </div>
             <ol className="mt-4 space-y-3">
               {[
@@ -467,8 +467,8 @@ export default async function TravaPage() {
                       height: 22,
                       marginTop: 2,
                       borderRadius: 99,
-                      background: "var(--af-terra-soft)",
-                      color: "var(--af-terra)",
+                      background: "var(--af-dourado-soft)",
+                      color: "var(--af-dourado)",
                       fontSize: 11,
                     }}
                   >
@@ -478,7 +478,7 @@ export default async function TravaPage() {
                     className="af-body"
                     style={{
                       fontSize: 13.5,
-                      color: "var(--af-ink-2)",
+                      color: "var(--af-cinza)",
                       margin: 0,
                     }}
                   >
@@ -491,8 +491,8 @@ export default async function TravaPage() {
               className="af-mono mt-5 rounded-lg p-3"
               style={{
                 fontSize: 10.5,
-                background: "var(--af-paper-3)",
-                color: "var(--af-ink-soft)",
+                background: "var(--af-borda)",
+                color: "var(--af-cinza)",
                 lineHeight: 1.5,
               }}
             >
@@ -514,8 +514,8 @@ function SimulatePixButton({ entrepreneurId }: { entrepreneurId: string }) {
         type="submit"
         className="inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-medium transition-opacity hover:opacity-90"
         style={{
-          background: "var(--af-terra)",
-          color: "var(--af-paper)",
+          background: "var(--af-dourado)",
+          color: "var(--af-creme)",
           fontFamily: "var(--af-sans)",
         }}
       >
