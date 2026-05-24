@@ -5,7 +5,7 @@ import {
   ChevronRight,
   Inbox,
   Package,
-  TrendingUp,
+  Zap,
 } from "lucide-react";
 
 import { AfCard, Eyebrow, Money } from "@/components/af";
@@ -27,10 +27,10 @@ export default async function SupplierDashboard() {
         actions={
           <Link
             href="/fornecedor/produtos"
-            className="inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-medium"
+            className="inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-medium transition-opacity hover:opacity-80"
             style={{
-              background: "var(--af-ink)",
-              color: "var(--af-paper)",
+              background: "var(--af-preto)",
+              color: "var(--af-branco)",
             }}
           >
             <Package className="size-4" /> meus produtos
@@ -38,49 +38,80 @@ export default async function SupplierDashboard() {
         }
       />
 
+      {/* Hero strip — Cobrar fiado */}
+      <div
+        className="flex flex-col gap-4 px-6 py-5 md:flex-row md:items-center md:justify-between md:px-10"
+        style={{
+          background: "var(--af-dourado)",
+          borderBottom: "1px solid var(--af-dourado-dark)",
+        }}
+      >
+        <div>
+          <p
+            className="af-display"
+            style={{ fontSize: "clamp(20px, 2.5vw, 28px)", color: "var(--af-preto)" }}
+          >
+            Cobrar fiado
+          </p>
+          <p
+            className="af-body mt-1"
+            style={{ fontSize: 14, color: "var(--af-preto-soft)" }}
+          >
+            registre uma venda a prazo e receba Pix imediato da AceitoFiado.
+          </p>
+        </div>
+        <Link
+          href="/fornecedor/cobrar"
+          className="inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold transition-opacity hover:opacity-80"
+          style={{
+            background: "var(--af-preto)",
+            color: "var(--af-branco)",
+            whiteSpace: "nowrap",
+          }}
+        >
+          <Zap className="size-4" /> cobrar agora
+        </Link>
+      </div>
+
       <div
         className="px-6 py-7 md:px-10 md:py-8"
-        style={{ background: "var(--af-paper-2)" }}
+        style={{ background: "var(--af-creme)" }}
       >
         {/* KPIs */}
         <div className="grid gap-4 md:grid-cols-3">
-          <AfCard padding={24} radius={18}>
+          <AfCard padding={24} radius={18} style={{ background: "var(--af-branco)" }}>
             <div className="flex items-center justify-between">
               <Eyebrow>recebido (30 dias)</Eyebrow>
               <Banknote
                 className="size-4"
-                style={{ color: "var(--af-ink-soft)" }}
+                style={{ color: "var(--af-cinza-soft)" }}
               />
             </div>
             <div className="mt-4">
               <Money cents={data.totalReceived30d} size={36} weight={600} />
             </div>
             <p
-              className="af-mono"
-              style={{
-                fontSize: 11,
-                color: "var(--af-mata)",
-                margin: "8px 0 0",
-              }}
+              className="af-mono mt-2"
+              style={{ fontSize: 11, color: "var(--af-mata)" }}
             >
               à vista no Pix
             </p>
           </AfCard>
-          <AfCard padding={24} radius={18}>
+
+          <AfCard padding={24} radius={18} style={{ background: "var(--af-branco)" }}>
             <div className="flex items-center justify-between">
               <Eyebrow>pedidos aguardando</Eyebrow>
               <Inbox
                 className="size-4"
-                style={{ color: "var(--af-ink-soft)" }}
+                style={{ color: "var(--af-cinza-soft)" }}
               />
             </div>
             <p
-              className="af-n"
+              className="af-mono mt-3"
               style={{
                 fontSize: 38,
-                margin: "12px 0 0",
                 lineHeight: 1,
-                color: "var(--af-ink-deep)",
+                color: "var(--af-preto)",
               }}
             >
               {data.awaiting.length}
@@ -88,37 +119,33 @@ export default async function SupplierDashboard() {
             <Link
               href="/fornecedor/pedidos"
               className="af-mono mt-2 inline-flex items-center gap-1.5"
-              style={{ fontSize: 11, color: "var(--af-ink-soft)" }}
+              style={{ fontSize: 11, color: "var(--af-cinza)" }}
             >
               ver fila <ArrowRight className="size-3" />
             </Link>
           </AfCard>
-          <AfCard padding={24} radius={18}>
+
+          <AfCard padding={24} radius={18} style={{ background: "var(--af-branco)" }}>
             <div className="flex items-center justify-between">
               <Eyebrow>desconto padrão</Eyebrow>
-              <TrendingUp
+              <Banknote
                 className="size-4"
-                style={{ color: "var(--af-ink-soft)" }}
+                style={{ color: "var(--af-cinza-soft)" }}
               />
             </div>
             <p
-              className="af-n"
+              className="af-mono mt-3"
               style={{
                 fontSize: 38,
-                margin: "12px 0 0",
                 lineHeight: 1,
-                color: "var(--af-ink-deep)",
+                color: "var(--af-preto)",
               }}
             >
               {formatBps(data.profile.defaultDiscountBps)}
             </p>
             <p
-              className="af-body"
-              style={{
-                fontSize: 11.5,
-                color: "var(--af-ink-soft)",
-                margin: "8px 0 0",
-              }}
+              className="af-body mt-2"
+              style={{ fontSize: 11.5, color: "var(--af-cinza)" }}
             >
               cobrado da AceitoFiado pra liquidar à vista
             </p>
@@ -127,19 +154,15 @@ export default async function SupplierDashboard() {
 
         {/* PEDIDOS AGUARDANDO + ATIVAS */}
         <div className="mt-6 grid gap-5 md:grid-cols-[1.6fr_1fr]">
-          <AfCard padding={0} radius={20} className="overflow-hidden">
+          <AfCard padding={0} radius={20} className="overflow-hidden" style={{ background: "var(--af-branco)" }}>
             <div className="flex items-end justify-between px-7 pt-6 pb-3">
               <div>
                 <Eyebrow>pedidos aguardando você</Eyebrow>
                 <h2
-                  className="af-h"
-                  style={{
-                    fontSize: 22,
-                    margin: "8px 0 0",
-                    color: "var(--af-ink-deep)",
-                  }}
+                  className="af-display mt-2"
+                  style={{ fontSize: 22, color: "var(--af-preto)" }}
                 >
-                  confirme pra receber Pix imediato
+                  confirme pra receber Pix
                 </h2>
               </div>
               {data.awaiting.length > 0 && (
@@ -147,8 +170,9 @@ export default async function SupplierDashboard() {
                   className="af-mono inline-flex items-center gap-1.5 rounded-full px-2.5 py-1"
                   style={{
                     fontSize: 11,
-                    background: "var(--af-acafrao)",
-                    color: "var(--af-ink-deep)",
+                    background: "var(--af-dourado-soft)",
+                    color: "var(--af-dourado-dark)",
+                    border: "1px solid oklch(from var(--af-dourado) l c h / 0.3)",
                     fontWeight: 500,
                     letterSpacing: "0.06em",
                   }}
@@ -158,11 +182,11 @@ export default async function SupplierDashboard() {
                 </span>
               )}
             </div>
-            <div style={{ borderTop: "1px solid var(--af-ink-08)" }}>
+            <div style={{ borderTop: "1px solid var(--af-borda)" }}>
               {data.awaiting.length === 0 && (
                 <p
                   className="px-7 py-12 text-center text-sm"
-                  style={{ color: "var(--af-ink-soft)" }}
+                  style={{ color: "var(--af-cinza)" }}
                 >
                   nenhum pedido pendente. quando uma empreendedora comprar
                   fiado, ele aparece aqui.
@@ -170,20 +194,20 @@ export default async function SupplierDashboard() {
               )}
               <div
                 className="divide-y"
-                style={{ borderColor: "var(--af-ink-08)" }}
+                style={{ borderColor: "var(--af-borda)" }}
               >
                 {data.awaiting.map((o) => (
                   <Link
                     key={o.id}
                     href={`/fornecedor/pedidos/${o.id}`}
-                    className="flex items-start gap-4 px-7 py-4 transition-colors hover:bg-[oklch(0.985_0.005_75_/_0.5)]"
+                    className="flex items-start gap-4 px-7 py-4 transition-colors hover:bg-[var(--af-creme)]"
                   >
                     <div
                       style={{
                         width: 40,
                         height: 40,
-                        background: "var(--af-acafrao)",
-                        color: "var(--af-ink-deep)",
+                        background: "var(--af-dourado-soft)",
+                        color: "var(--af-dourado-dark)",
                         borderRadius: 10,
                         display: "flex",
                         alignItems: "center",
@@ -195,7 +219,7 @@ export default async function SupplierDashboard() {
                     <div className="min-w-0 flex-1">
                       <p
                         className="af-body truncate"
-                        style={{ fontSize: 14, fontWeight: 500, margin: 0 }}
+                        style={{ fontSize: 14, fontWeight: 500, margin: 0, color: "var(--af-preto)" }}
                       >
                         {o.entrepreneur.businessName}
                       </p>
@@ -203,7 +227,7 @@ export default async function SupplierDashboard() {
                         className="af-mono"
                         style={{
                           fontSize: 11,
-                          color: "var(--af-ink-soft)",
+                          color: "var(--af-cinza)",
                           margin: "3px 0 0",
                         }}
                       >
@@ -216,7 +240,7 @@ export default async function SupplierDashboard() {
                         className="af-body mt-2 line-clamp-1"
                         style={{
                           fontSize: 12,
-                          color: "var(--af-ink-soft)",
+                          color: "var(--af-cinza)",
                           margin: "6px 0 0",
                         }}
                       >
@@ -231,7 +255,7 @@ export default async function SupplierDashboard() {
                         className="af-mono"
                         style={{
                           fontSize: 10,
-                          color: "var(--af-ink-soft)",
+                          color: "var(--af-cinza)",
                           margin: "4px 0 0",
                           textTransform: "uppercase",
                           letterSpacing: "0.1em",
@@ -242,7 +266,7 @@ export default async function SupplierDashboard() {
                     </div>
                     <ChevronRight
                       className="size-4 mt-1"
-                      style={{ color: "var(--af-ink-soft)" }}
+                      style={{ color: "var(--af-cinza-soft)" }}
                     />
                   </Link>
                 ))}
@@ -250,45 +274,41 @@ export default async function SupplierDashboard() {
             </div>
           </AfCard>
 
-          <AfCard padding={0} radius={20} className="overflow-hidden">
+          <AfCard padding={0} radius={20} className="overflow-hidden" style={{ background: "var(--af-branco)" }}>
             <div className="px-6 pt-6 pb-3">
               <Eyebrow>duplicatas vivas</Eyebrow>
               <h3
-                className="af-h"
-                style={{
-                  fontSize: 18,
-                  margin: "6px 0 0",
-                  color: "var(--af-ink-deep)",
-                }}
+                className="af-display mt-2"
+                style={{ fontSize: 18, color: "var(--af-preto)" }}
               >
                 já paguei, AceitoFiado cobra
               </h3>
             </div>
-            <div style={{ borderTop: "1px solid var(--af-ink-08)" }}>
+            <div style={{ borderTop: "1px solid var(--af-borda)" }}>
               {data.active.length === 0 && (
                 <p
                   className="px-6 py-10 text-center text-sm"
-                  style={{ color: "var(--af-ink-soft)" }}
+                  style={{ color: "var(--af-cinza)" }}
                 >
                   sem duplicatas vivas.
                 </p>
               )}
               <div
                 className="divide-y"
-                style={{ borderColor: "var(--af-ink-08)" }}
+                style={{ borderColor: "var(--af-borda)" }}
               >
                 {data.active.map((o) => (
                   <div key={o.id} className="px-6 py-4">
                     <div className="flex items-center justify-between gap-3">
                       <p
                         className="af-body truncate"
-                        style={{ fontSize: 13, fontWeight: 500, margin: 0 }}
+                        style={{ fontSize: 13, fontWeight: 500, margin: 0, color: "var(--af-preto)" }}
                       >
                         {o.entrepreneur.businessName}
                       </p>
                       <span
                         className="af-mono"
-                        style={{ fontSize: 10.5, color: "var(--af-ink-soft)" }}
+                        style={{ fontSize: 10.5, color: "var(--af-cinza)" }}
                       >
                         {o.duplicata?.numero ?? "—"}
                       </span>
@@ -297,7 +317,7 @@ export default async function SupplierDashboard() {
                       <Money cents={o.supplierReceiveCents} size={13} />
                       <span
                         className="af-mono"
-                        style={{ fontSize: 10.5, color: "var(--af-ink-soft)" }}
+                        style={{ fontSize: 10.5, color: "var(--af-cinza)" }}
                       >
                         pago{" "}
                         {o.fundedAt ? formatRelativeTime(o.fundedAt) : "—"}
