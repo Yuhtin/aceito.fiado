@@ -83,12 +83,12 @@ export function HeroV3() {
               >
                 criar conta →
               </Link>
-              <a
-                href="#demo"
+              <Link
+                href="/demo-marketplace"
                 className="inline-flex items-center gap-2 px-6 py-4 rounded-[10px] border border-white/25 text-[14px] font-semibold"
               >
                 ▸ ver demo
-              </a>
+              </Link>
             </div>
             <p className="font-mono text-[11.5px] mt-4 text-white/45">
               grátis pra cadastrar · sem mensalidade · taxa só quando o fiado é pago
