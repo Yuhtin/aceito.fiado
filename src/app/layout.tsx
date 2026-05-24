@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Fraunces } from "next/font/google";
+import { Geist, Geist_Mono } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import "./globals.css";
@@ -16,22 +16,15 @@ const geistMono = Geist_Mono({
   display: "swap",
 });
 
-const fraunces = Fraunces({
-  variable: "--font-fraunces",
-  subsets: ["latin"],
-  display: "swap",
-  axes: ["SOFT", "WONK", "opsz"],
-});
-
 export const metadata: Metadata = {
-  title: "AceitoFiado — capital de giro pra cadeia afroempreendedora",
+  title: "AceitoFiado — infraestrutura de crédito produtivo embutido",
   description:
-    "Crédito mercantil direto, sem score discriminatório: a empreendedora compra a prazo, o fornecedor recebe à vista, a gente cobra do recebível.",
+    "Fornecedores oferecem fiado seguro pra MEIs afro. Análise de risco, cobrança automática, trava de recebíveis no Pix, liquidez via parceiros financeiros. O Serasa não decide nada.",
   metadataBase: new URL("https://aceitofiado.com.br"),
   openGraph: {
     title: "AceitoFiado",
     description:
-      "Capital de giro pra cadeia afroempreendedora. Sem Serasa no caminho.",
+      "Capital de giro pra quem o algoritmo deixou de fora. Sem Serasa no caminho.",
     type: "website",
     locale: "pt_BR",
   },
@@ -43,9 +36,9 @@ export default function RootLayout({
   return (
     <html
       lang="pt-BR"
-      className={`${geistSans.variable} ${geistMono.variable} ${fraunces.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-background text-foreground">
+      <body className="min-h-full flex flex-col bg-af-paper text-af-ink">
         <TooltipProvider delayDuration={150}>
           {children}
           <Toaster richColors position="top-center" />

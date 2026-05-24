@@ -4,9 +4,6 @@ import { useActionState } from "react";
 import { Loader2 } from "lucide-react";
 
 import { loginAction, type AuthFormState } from "@/app/(auth)/_actions";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 
 const INITIAL: AuthFormState = { ok: false };
 
@@ -15,42 +12,84 @@ export function LoginForm({ prefillEmail }: { prefillEmail?: string }) {
 
   return (
     <form action={formAction} className="mt-7 space-y-4">
-      <div className="space-y-1.5">
-        <Label htmlFor="email">E-mail</Label>
-        <Input
-          id="email"
-          name="email"
-          type="email"
-          autoComplete="email"
-          required
-          defaultValue={prefillEmail ?? state.fields?.email ?? ""}
-          placeholder="seu-email@exemplo.com.br"
-        />
-      </div>
-      <div className="space-y-1.5">
-        <Label htmlFor="password">Senha</Label>
-        <Input
-          id="password"
-          name="password"
-          type="password"
-          required
-          autoComplete="current-password"
-          placeholder="••••••••"
-          defaultValue={prefillEmail ? "aceito123" : ""}
-        />
-      </div>
+      <Field
+        label="e-mail"
+        name="email"
+        type="email"
+        required
+        defaultValue={prefillEmail ?? state.fields?.email ?? ""}
+        placeholder="seu-email@exemplo.com.br"
+        autoComplete="email"
+      />
+      <Field
+        label="senha"
+        name="password"
+        type="password"
+        required
+        placeholder="••••••••"
+        defaultValue={prefillEmail ? "aceito123" : ""}
+        autoComplete="current-password"
+      />
       {state.error && (
-        <p className="rounded-lg border border-destructive/30 bg-destructive/5 px-3 py-2 text-sm text-destructive">
+        <p
+          className="rounded-xl px-3.5 py-2.5 text-sm"
+          style={{
+            background: "oklch(0.485 0.175 30 / 0.08)",
+            border: "1px solid oklch(0.485 0.175 30 / 0.3)",
+            color: "var(--af-brasa)",
+          }}
+        >
           {state.error}
         </p>
       )}
-      <Button type="submit" className="w-full" size="lg" disabled={isPending}>
-        {isPending ? (
-          <Loader2 className="size-4 animate-spin" />
-        ) : (
-          "Entrar"
-        )}
-      </Button>
+      <button
+        type="submit"
+        disabled={isPending}
+        className="inline-flex w-full items-center justify-center gap-2 rounded-xl py-3.5 text-sm font-medium transition-opacity disabled:opacity-50"
+        style={{
+          background: "var(--af-ink)",
+          color: "var(--af-paper)",
+          fontFamily: "var(--af-sans)",
+        }}
+      >
+        {isPending ? <Loader2 className="size-4 animate-spin" /> : "entrar →"}
+      </button>
     </form>
+  );
+}
+
+function Field({
+  label,
+  ...props
+}: {
+  label: string;
+  name: string;
+  type?: string;
+  required?: boolean;
+  defaultValue?: string;
+  placeholder?: string;
+  autoComplete?: string;
+}) {
+  return (
+    <div className="space-y-2">
+      <label
+        className="af-eb"
+        htmlFor={props.name}
+        style={{ color: "var(--af-ink-soft)" }}
+      >
+        {label}
+      </label>
+      <input
+        id={props.name}
+        {...props}
+        className="w-full rounded-xl px-4 py-3 text-sm transition-colors focus:outline-none focus:ring-2"
+        style={{
+          background: "var(--af-paper-2)",
+          border: "1px solid var(--af-ink-08)",
+          color: "var(--af-ink)",
+          fontFamily: "var(--af-sans)",
+        }}
+      />
+    </div>
   );
 }

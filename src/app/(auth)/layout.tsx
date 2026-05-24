@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { Logo } from "@/components/brand/logo";
+import { AfLogo, GradientMesh } from "@/components/af";
 
 export default function AuthLayout({
   children,
@@ -8,15 +8,15 @@ export default function AuthLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex min-h-screen flex-col bg-warm-radial">
-      <header className="px-6 py-5">
+    <GradientMesh className="flex min-h-screen flex-col">
+      <header className="px-8 py-5">
         <Link href="/" className="inline-flex items-center gap-2">
-          <Logo size="md" />
+          <AfLogo size={22} />
         </Link>
       </header>
       <main className="flex flex-1 items-center justify-center px-6 pb-12">
         {children}
       </main>
-    </div>
+    </GradientMesh>
   );
 }

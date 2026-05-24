@@ -5,9 +5,8 @@ import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowDownRight, Lock, Smartphone } from "lucide-react";
 
-import { Badge } from "@/components/ui/badge";
-import { formatBRL, formatRelativeTime } from "@/lib/format";
-import { cn } from "@/lib/utils";
+import { Money, PulseDot } from "@/components/af";
+import { formatRelativeTime } from "@/lib/format";
 
 type Receivable = {
   id: string;
@@ -31,20 +30,17 @@ type PixTx = {
 };
 
 export function TravaLiveStream({
-  entrepreneurId,
   initialReceivables,
   initialPix,
 }: {
-  entrepreneurId: string;
   initialReceivables: Receivable[];
   initialPix: PixTx[];
 }) {
   const router = useRouter();
   const [receivables, setReceivables] = useState(initialReceivables);
   const [pix, setPix] = useState(initialPix);
-  const [pending, startTransition] = useTransition();
+  const [, startTransition] = useTransition();
 
-  // Auto-refresh a cada 6s pra pegar novos Pix
   useEffect(() => {
     const interval = setInterval(() => {
       startTransition(() => router.refresh());
@@ -52,19 +48,47 @@ export function TravaLiveStream({
     return () => clearInterval(interval);
   }, [router]);
 
-  // Sync com props quando server re-renderiza
   useEffect(() => {
     setReceivables(initialReceivables);
     setPix(initialPix);
   }, [initialReceivables, initialPix]);
 
   return (
-    <div className="grid divide-y divide-border/60 md:grid-cols-2 md:divide-x md:divide-y-0">
-      <div>
-        <div className="flex items-center gap-2 border-b border-border/60 bg-muted/30 px-4 py-2 text-[11px] uppercase tracking-widest text-muted-foreground">
-          <Smartphone className="size-3" /> Pix recebidos
+    <div className="grid md:grid-cols-2">
+      <div
+        style={{
+          borderRight: "1px solid var(--af-ink-08)",
+        }}
+        className="md:border-r"
+      >
+        <div
+          className="flex items-center gap-2 px-5 py-3"
+          style={{
+            background: "var(--af-paper-3)",
+            borderBottom: "1px solid var(--af-ink-08)",
+          }}
+        >
+          <Smartphone
+            className="size-3"
+            style={{ color: "var(--af-ink-soft)" }}
+          />
+          <span
+            className="af-mono"
+            style={{
+              fontSize: 10,
+              color: "var(--af-ink-soft)",
+              letterSpacing: "0.12em",
+              textTransform: "uppercase",
+              fontWeight: 500,
+            }}
+          >
+            pix recebidos
+          </span>
+          <span className="ml-auto">
+            <PulseDot color="var(--af-mata-2)" size={5} />
+          </span>
         </div>
-        <ul className="max-h-[420px] divide-y divide-border/60 overflow-y-auto">
+        <ul className="max-h-[440px] overflow-y-auto divide-y" style={{ borderColor: "var(--af-ink-08)" }}>
           <AnimatePresence initial={false}>
             {pix.map((p) => (
               <motion.li
@@ -73,26 +97,56 @@ export function TravaLiveStream({
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.25 }}
-                className="flex items-center gap-3 px-4 py-3"
+                className="flex items-center gap-3 px-5 py-3"
               >
-                <div className="flex size-8 items-center justify-center rounded-lg bg-accent text-accent-foreground">
+                <div
+                  style={{
+                    width: 32,
+                    height: 32,
+                    borderRadius: 9,
+                    background: "var(--af-paper-3)",
+                    color: "var(--af-mata)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
                   <ArrowDownRight className="size-3.5" />
                 </div>
                 <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-medium">
+                  <p
+                    className="af-body truncate"
+                    style={{ fontSize: 13, fontWeight: 500, margin: 0 }}
+                  >
                     {p.payerName}
                   </p>
-                  <p className="truncate text-[11px] text-muted-foreground">
+                  <p
+                    className="af-mono truncate"
+                    style={{
+                      fontSize: 10,
+                      color: "var(--af-ink-soft)",
+                      margin: "2px 0 0",
+                    }}
+                  >
                     {p.channelLabel} · {formatRelativeTime(p.receivedAt)}
                   </p>
                 </div>
                 <div className="text-right">
-                  <p className="font-mono text-sm tabular-nums">
-                    {formatBRL(BigInt(p.valueCents))}
-                  </p>
+                  <Money cents={BigInt(p.valueCents)} size={13} weight={600} />
                   {p.captured && (
-                    <p className="font-mono text-[10px] text-primary tabular-nums">
-                      → {formatBRL(BigInt(p.capturedAmountCents))} travados
+                    <p
+                      className="af-mono"
+                      style={{
+                        fontSize: 10,
+                        color: "var(--af-terra)",
+                        margin: "2px 0 0",
+                      }}
+                    >
+                      → R${" "}
+                      {(Number(p.capturedAmountCents) / 100)
+                        .toFixed(2)
+                        .replace(".", ",")}{" "}
+                      travados
                     </p>
                   )}
                 </div>
@@ -102,10 +156,34 @@ export function TravaLiveStream({
         </ul>
       </div>
       <div>
-        <div className="flex items-center gap-2 border-b border-border/60 bg-muted/30 px-4 py-2 text-[11px] uppercase tracking-widest text-muted-foreground">
-          <Lock className="size-3" /> Capturas pra duplicata
+        <div
+          className="flex items-center gap-2 px-5 py-3"
+          style={{
+            background: "var(--af-paper-3)",
+            borderBottom: "1px solid var(--af-ink-08)",
+          }}
+        >
+          <Lock
+            className="size-3"
+            style={{ color: "var(--af-ink-soft)" }}
+          />
+          <span
+            className="af-mono"
+            style={{
+              fontSize: 10,
+              color: "var(--af-ink-soft)",
+              letterSpacing: "0.12em",
+              textTransform: "uppercase",
+              fontWeight: 500,
+            }}
+          >
+            capturas pra duplicata
+          </span>
+          <span className="ml-auto">
+            <PulseDot color="var(--af-acafrao)" size={5} />
+          </span>
         </div>
-        <ul className="max-h-[420px] divide-y divide-border/60 overflow-y-auto">
+        <ul className="max-h-[440px] overflow-y-auto divide-y" style={{ borderColor: "var(--af-ink-08)" }}>
           <AnimatePresence initial={false}>
             {receivables.map((r) => (
               <motion.li
@@ -114,36 +192,67 @@ export function TravaLiveStream({
                 animate={{ opacity: 1, x: 0, scale: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.35, type: "spring", damping: 18 }}
-                className="px-4 py-3"
+                className="px-5 py-3"
               >
                 <div className="flex items-center justify-between">
-                  <p className="truncate text-sm font-medium">
+                  <p
+                    className="af-body truncate"
+                    style={{ fontSize: 13, fontWeight: 500, margin: 0 }}
+                  >
                     {r.supplierName}
                   </p>
-                  <p className="font-mono text-sm font-semibold tabular-nums text-success">
-                    +{formatBRL(BigInt(r.amountCapturedCents))}
-                  </p>
-                </div>
-                <div className="mt-0.5 flex items-center justify-between gap-2 text-[11px] text-muted-foreground">
-                  <span className="truncate">
-                    Origem Pix de {r.payerName} ·{" "}
-                    <span className="font-mono">{formatBRL(BigInt(r.pixValueCents))}</span>
+                  <span
+                    className="af-n"
+                    style={{
+                      fontSize: 13,
+                      color: "var(--af-mata-2)",
+                      fontWeight: 600,
+                    }}
+                  >
+                    +R${" "}
+                    {(Number(r.amountCapturedCents) / 100)
+                      .toFixed(2)
+                      .replace(".", ",")}
                   </span>
-                  <span>{formatRelativeTime(r.capturedAt)}</span>
+                </div>
+                <div
+                  className="mt-1 flex items-center justify-between gap-2"
+                  style={{ color: "var(--af-ink-soft)" }}
+                >
+                  <span className="truncate text-[10.5px]">
+                    origem Pix de {r.payerName} ·{" "}
+                    <span className="af-mono">
+                      R${" "}
+                      {(Number(r.pixValueCents) / 100)
+                        .toFixed(2)
+                        .replace(".", ",")}
+                    </span>
+                  </span>
+                  <span className="af-mono text-[10.5px]">
+                    {formatRelativeTime(r.capturedAt)}
+                  </span>
                 </div>
                 {r.duplicata && (
-                  <Badge
-                    variant="outline"
-                    className="mt-1.5 font-mono text-[10px]"
+                  <span
+                    className="af-mono mt-2 inline-block rounded-full px-2 py-0.5"
+                    style={{
+                      fontSize: 9.5,
+                      background: "var(--af-paper-3)",
+                      color: "var(--af-ink-soft)",
+                      letterSpacing: "0.02em",
+                    }}
                   >
                     {r.duplicata}
-                  </Badge>
+                  </span>
                 )}
               </motion.li>
             ))}
             {receivables.length === 0 && (
-              <p className="px-4 py-6 text-center text-xs text-muted-foreground">
-                Nenhuma captura ainda.
+              <p
+                className="px-5 py-7 text-center text-xs"
+                style={{ color: "var(--af-ink-soft)" }}
+              >
+                nenhuma captura ainda.
               </p>
             )}
           </AnimatePresence>

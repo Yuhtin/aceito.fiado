@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
+import { AfCard, Eyebrow } from "@/components/af";
 import { LoginForm } from "./login-form";
 import { getCurrentUser } from "@/lib/auth";
 
@@ -23,46 +24,75 @@ export default async function EntrarPage({ searchParams }: Props) {
 
   return (
     <div className="w-full max-w-md">
-      <div className="rounded-3xl border border-border/60 bg-card/80 p-8 shadow-soft-lg backdrop-blur md:p-10">
-        <h1 className="font-display text-3xl font-medium leading-tight">
-          Entrar na sua conta
+      <AfCard padding={36} radius={24} className="shadow-af-lift">
+        <Eyebrow>entre na sua conta</Eyebrow>
+        <h1
+          className="af-h-tight"
+          style={{
+            fontSize: 32,
+            margin: "10px 0 0",
+            color: "var(--af-ink-deep)",
+          }}
+        >
+          bom ter você de volta.
         </h1>
-        <p className="mt-1.5 text-sm text-muted-foreground">
-          Acesse o cockpit pra ver limite, operações e trava de recebíveis.
+        <p
+          className="af-body"
+          style={{
+            fontSize: 14,
+            color: "var(--af-ink-soft)",
+            margin: "6px 0 0",
+          }}
+        >
+          acesse seu cockpit pra ver limite, operações e trava de recebíveis.
         </p>
 
         <LoginForm prefillEmail={demoEmail} />
 
-        <div className="mt-6 text-center text-sm text-muted-foreground">
-          Não tem conta?{" "}
+        <div
+          className="af-body mt-6 text-center"
+          style={{ fontSize: 14, color: "var(--af-ink-soft)" }}
+        >
+          não tem conta?{" "}
           <Link
             href="/cadastro"
-            className="font-medium text-foreground underline-offset-4 hover:underline"
+            className="font-medium underline-offset-4 hover:underline"
+            style={{ color: "var(--af-terra)" }}
           >
-            Cadastre-se agora
+            cadastre-se agora →
           </Link>
         </div>
-      </div>
+      </AfCard>
 
-      {/* Atalhos de demo */}
-      <div className="mt-6 rounded-2xl border border-dashed border-border/80 bg-card/40 p-4 text-xs text-muted-foreground backdrop-blur">
-        <p className="mb-2 font-semibold text-foreground">
-          Contas de demonstração
-        </p>
-        <p className="leading-relaxed">
-          Empreendedora:{" "}
-          <code className="font-mono text-foreground">
-            joana@ondapreta.com.br
-          </code>
-          {" · "}
-          Fornecedor:{" "}
-          <code className="font-mono text-foreground">
-            compras@distropical.com.br
-          </code>
-          <br />
-          Senha:{" "}
-          <code className="font-mono text-foreground">aceito123</code>
-        </p>
+      <div
+        className="mt-5 rounded-2xl p-4"
+        style={{
+          background: "oklch(0.972 0.008 75 / 0.5)",
+          border: "1px dashed var(--af-ink-12)",
+          backdropFilter: "blur(8px)",
+        }}
+      >
+        <Eyebrow>contas de demonstração</Eyebrow>
+        <div
+          className="af-mono mt-2 space-y-1"
+          style={{ fontSize: 11, color: "var(--af-ink-2)", lineHeight: 1.6 }}
+        >
+          <p>
+            empreendedora:{" "}
+            <span style={{ color: "var(--af-ink)" }}>
+              joana@ondapreta.com.br
+            </span>
+          </p>
+          <p>
+            fornecedor:{" "}
+            <span style={{ color: "var(--af-ink)" }}>
+              compras@distropical.com.br
+            </span>
+          </p>
+          <p>
+            senha: <span style={{ color: "var(--af-terra)" }}>aceito123</span>
+          </p>
+        </div>
       </div>
     </div>
   );

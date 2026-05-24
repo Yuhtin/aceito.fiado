@@ -1,427 +1,1082 @@
-import Link from "next/link";
 import {
-  ArrowRight,
-  ArrowUpRight,
-  CheckCircle2,
-  CircleDollarSign,
-  HandCoins,
-  Lock,
-  ShieldOff,
-  Store,
-  TrendingUp,
-  Users,
-} from "lucide-react";
-
-import { Logo } from "@/components/brand/logo";
-import { SiteFooter } from "@/components/marketing/site-footer";
-import { SiteHeader } from "@/components/marketing/site-header";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+  AfButton,
+  AfCard,
+  AfLogo,
+  BRLLive,
+  CodeBlock,
+  Counter,
+  Eyebrow,
+  GradientMesh,
+  Money,
+  PulseDot,
+  Tag,
+} from "@/components/af";
+import { TopNav } from "@/components/marketing/top-nav";
 
 export default function HomePage() {
   return (
-    <div className="flex min-h-screen flex-col bg-background text-foreground">
-      <SiteHeader />
+    <div className="af-screen min-h-screen">
+      <Hero />
+      <TrustBar />
+      <HowItWorks />
+      <TravaSection />
+      <Metrics />
+      <Testimonial />
+      <CTABanner />
+      <Footer />
+    </div>
+  );
+}
 
-      {/* HERO */}
-      <section className="relative overflow-hidden bg-warm-radial">
-        <div className="absolute inset-x-0 top-0 -z-10 h-[60vh] pattern-dots text-primary/[0.06]" />
-        <div className="mx-auto grid max-w-7xl gap-12 px-6 py-20 md:grid-cols-[1.15fr_1fr] md:py-28 md:gap-16 lg:py-32">
-          <div className="flex flex-col items-start">
-            <Badge
-              variant="outline"
-              className="mb-6 gap-1.5 border-primary/30 bg-primary/5 text-primary"
+function Hero() {
+  return (
+    <GradientMesh style={{ paddingBottom: 80 }}>
+      <TopNav />
+      <div className="px-14 pt-14 pb-0 mx-auto" style={{ maxWidth: 1320 }}>
+        <div className="flex items-center gap-2.5 mb-7">
+          <Tag color="var(--af-terra)">novo · v0.4</Tag>
+          <span style={{ fontSize: 13.5, color: "var(--af-ink-2)" }}>
+            Bacen autorizou o piloto.{" "}
+            <span
+              style={{
+                borderBottom: "1px solid currentColor",
+                cursor: "pointer",
+              }}
             >
-              <span className="size-1.5 rounded-full bg-primary" />
-              AfroCapital Hack — protótipo funcional
-            </Badge>
-            <h1 className="font-display text-5xl font-medium leading-[1.05] tracking-tight text-balance text-foreground md:text-6xl lg:text-7xl">
-              Capital de giro pra quem o{" "}
-              <span className="italic text-primary">Serasa</span> deixou
-              de fora.
-            </h1>
-            <p className="mt-6 max-w-xl text-lg leading-relaxed text-muted-foreground text-pretty">
-              A empreendedora compra a prazo do fornecedor parceiro. O fornecedor
-              recebe à vista. A gente cobra direto do Pix dela. O bureau de
-              crédito não decide nada na cadeia.
-            </p>
-            <div className="mt-8 flex flex-wrap items-center gap-3">
-              <Button asChild size="lg" className="gap-2 px-6">
-                <Link href="/cadastro">
-                  Quero capital de giro <ArrowRight className="size-4" />
-                </Link>
-              </Button>
-              <Button asChild size="lg" variant="outline" className="gap-2 px-6">
-                <Link href="/entrar">
-                  Entrar como fornecedor
-                </Link>
-              </Button>
-            </div>
-            <div className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-4 text-sm text-muted-foreground">
-              <div className="flex items-center gap-2">
-                <CheckCircle2 className="size-4 text-success" />
-                Sem consulta ao bureau
-              </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle2 className="size-4 text-success" />
-                Aprovação em segundos
-              </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle2 className="size-4 text-success" />
-                Duplicata escritural registrada
-              </div>
-            </div>
-          </div>
+              Ler o memorando →
+            </span>
+          </span>
+        </div>
 
-          {/* Card visual — preview do produto */}
-          <div className="relative">
-            <div className="pointer-events-none absolute -inset-10 -z-10 bg-[radial-gradient(circle_at_50%_30%,_oklch(0.55_0.17_35_/_0.15),_transparent_70%)]" />
-            <Card className="overflow-hidden border-border/60 bg-card shadow-soft-lg">
-              <div className="border-b border-border/60 bg-muted/40 px-5 py-3 flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <div className="size-2.5 rounded-full bg-destructive/70" />
-                  <div className="size-2.5 rounded-full bg-warning/70" />
-                  <div className="size-2.5 rounded-full bg-success/70" />
-                </div>
-                <p className="font-mono text-xs text-muted-foreground">
-                  app.aceitofiado.com.br/app
-                </p>
-                <div className="w-8" />
+        <h1
+          className="af-h-tight text-balance"
+          style={{
+            fontSize: "clamp(48px, 7vw, 92px)",
+            margin: 0,
+            maxWidth: 1100,
+            color: "var(--af-ink-deep)",
+          }}
+        >
+          Capital de giro pra quem o algoritmo deixou de fora.
+        </h1>
+
+        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-9 mt-9">
+          <p
+            className="af-body text-pretty"
+            style={{
+              fontSize: 19,
+              maxWidth: 560,
+              color: "var(--af-ink-2)",
+              margin: 0,
+            }}
+          >
+            AceitoFiado é a infraestrutura de crédito produtivo embutido pra cadeia
+            afroempreendedora brasileira. Fornecedores oferecem fiado seguro:
+            a gente analisa risco, cobra automático e trava o Pix. Sem Serasa no
+            meio.
+          </p>
+          <div className="flex gap-3 flex-shrink-0">
+            <AfButton variant="primary" size="xl" href="/cadastro">
+              conhecer o aceito
+            </AfButton>
+            <AfButton variant="outline" size="xl" icon="▸" href="/entrar?demo=joana">
+              ver demo de 90s
+            </AfButton>
+          </div>
+        </div>
+      </div>
+
+      {/* product preview + code block */}
+      <div className="px-14 mt-16 mx-auto" style={{ maxWidth: 1320 }}>
+        <div className="grid gap-6 lg:grid-cols-[1.1fr_1.3fr] items-stretch">
+          {/* phone preview tilted */}
+          <div
+            className="flex items-center justify-center relative overflow-hidden"
+            style={{
+              padding: 36,
+              background: "oklch(0.972 0.008 75 / 0.4)",
+              backdropFilter: "blur(20px)",
+              border: "1px solid oklch(0.21 0.025 250 / 0.06)",
+              borderRadius: 20,
+            }}
+          >
+            <div
+              style={{
+                width: 280,
+                height: 580,
+                background: "var(--af-paper)",
+                borderRadius: 36,
+                border: "1px solid var(--af-ink-12)",
+                boxShadow: "var(--af-shadow-lift)",
+                padding: "28px 22px",
+                transform: "perspective(1200px) rotateY(-8deg) rotateX(2deg)",
+                transformOrigin: "center",
+              }}
+            >
+              <Eyebrow>limite agora</Eyebrow>
+              <div style={{ marginTop: 12 }}>
+                <Money cents={842000} size={52} />
               </div>
-              <div className="p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-xs uppercase tracking-wider text-muted-foreground">
-                      Limite disponível
-                    </p>
-                    <p className="mt-1 font-display text-3xl font-medium tabular-nums">
-                      R$ 18.536,<span className="text-muted-foreground">37</span>
-                    </p>
-                  </div>
-                  <Badge className="bg-success/15 text-success border-success/30 hover:bg-success/15">
-                    Score 76%
-                  </Badge>
-                </div>
-                <div className="mt-5 grid grid-cols-2 gap-3">
-                  <div className="rounded-xl border border-border/70 bg-background/60 p-3">
-                    <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
-                      Próximo vencimento
-                    </p>
-                    <p className="mt-1 font-medium tabular-nums text-sm">
-                      em 40 dias
-                    </p>
-                    <p className="text-xs text-muted-foreground tabular-nums">
-                      R$ 1.732,50
-                    </p>
-                  </div>
-                  <div className="rounded-xl border border-border/70 bg-background/60 p-3">
-                    <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
-                      Já capturado
-                    </p>
-                    <p className="mt-1 font-medium tabular-nums text-sm text-success">
-                      R$ 1.732,50
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      100% via Pix travado
-                    </p>
-                  </div>
-                </div>
-                <div className="mt-5 rounded-xl border border-border/70 bg-gradient-to-br from-primary/5 to-accent/30 p-4">
-                  <div className="flex items-start gap-3">
-                    <div className="rounded-lg bg-primary/10 p-2 text-primary">
-                      <HandCoins className="size-4" />
-                    </div>
-                    <div className="flex-1">
-                      <p className="text-sm font-medium">
-                        Distribuidora Tropical aceita fiado
-                      </p>
-                      <p className="mt-0.5 text-xs text-muted-foreground">
-                        78 produtos disponíveis · 30, 45 ou 60 dias
-                      </p>
-                    </div>
-                    <ArrowUpRight className="size-4 text-muted-foreground" />
-                  </div>
-                </div>
-                <div className="mt-3 rounded-xl border border-border/70 p-4">
-                  <div className="flex items-center justify-between text-xs text-muted-foreground">
-                    <span>Captura do Pix nos últimos 7 dias</span>
-                    <span className="text-success">+ R$ 1.732,50</span>
-                  </div>
-                  <div className="mt-3 flex h-12 items-end gap-1">
-                    {[35, 48, 62, 41, 78, 56, 82].map((h, i) => (
+              <div
+                style={{
+                  marginTop: 18,
+                  height: 5,
+                  background: "var(--af-paper-3)",
+                  borderRadius: 99,
+                  overflow: "hidden",
+                  display: "flex",
+                }}
+              >
+                <div style={{ width: "30%", background: "var(--af-terra)" }} />
+                <div style={{ width: "70%", background: "var(--af-mata-2)" }} />
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  marginTop: 8,
+                }}
+              >
+                <span
+                  className="af-mono"
+                  style={{ fontSize: 10, color: "var(--af-terra)" }}
+                >
+                  R$ 3.580 comprometido
+                </span>
+                <span
+                  className="af-mono"
+                  style={{ fontSize: 10, color: "var(--af-mata)" }}
+                >
+                  R$ 8.420 livre
+                </span>
+              </div>
+              <div style={{ marginTop: 22 }}>
+                <Eyebrow>operações ativas</Eyebrow>
+                <div
+                  style={{
+                    marginTop: 10,
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 8,
+                  }}
+                >
+                  {(
+                    [
+                      ["Afroflora", 89],
+                      ["Aruanda", 23],
+                      ["Bahia Tempero", 89],
+                    ] as const
+                  ).map(([n, p]) => (
+                    <div
+                      key={n}
+                      style={{
+                        padding: 11,
+                        background: "var(--af-paper-2)",
+                        borderRadius: 10,
+                      }}
+                    >
                       <div
-                        key={i}
-                        className="flex-1 rounded-sm bg-gradient-to-t from-primary/40 to-primary"
-                        style={{ height: `${h}%` }}
-                      />
-                    ))}
-                  </div>
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          alignItems: "baseline",
+                        }}
+                      >
+                        <span
+                          className="af-body"
+                          style={{ fontSize: 12, fontWeight: 500 }}
+                        >
+                          {n}
+                        </span>
+                        <span
+                          className="af-mono"
+                          style={{ fontSize: 10, color: "var(--af-mata)" }}
+                        >
+                          {p}%
+                        </span>
+                      </div>
+                      <div
+                        style={{
+                          marginTop: 6,
+                          height: 3,
+                          background: "var(--af-ink-08)",
+                          borderRadius: 99,
+                        }}
+                      >
+                        <div
+                          style={{
+                            width: `${p}%`,
+                            height: "100%",
+                            background: "var(--af-mata-2)",
+                            borderRadius: 99,
+                          }}
+                        />
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
-            </Card>
-          </div>
-        </div>
-      </section>
-
-      {/* PROBLEMA: bureau penaliza */}
-      <section className="border-y border-border/60 bg-muted/30">
-        <div className="mx-auto max-w-7xl px-6 py-16 md:py-20">
-          <div className="grid gap-10 md:grid-cols-3">
-            <div>
-              <p className="font-mono text-xs uppercase tracking-widest text-primary">
-                O problema
-              </p>
-              <h2 className="mt-2 font-display text-3xl font-medium leading-tight md:text-4xl">
-                Algoritmo decide o que CEP fala. CEP fala o que Brasil já decidiu.
-              </h2>
             </div>
-            <Card className="border-border/60 p-6 shadow-soft">
-              <p className="font-display text-5xl font-medium tabular-nums text-primary">
-                3<span className="text-2xl">×</span>
-              </p>
-              <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-                Empreendedor negro tem crédito negado três vezes mais que branco,
-                em condições idênticas de faturamento (BID, 2022).
-              </p>
-            </Card>
-            <Card className="border-border/60 p-6 shadow-soft">
-              <p className="font-display text-5xl font-medium tabular-nums text-primary">
-                60<span className="text-2xl">%</span>
-              </p>
-              <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-                Está na informalidade ou em CEP periférico — variável mais
-                discriminatória dos modelos de score brasileiros.
-              </p>
-            </Card>
           </div>
-        </div>
-      </section>
 
-      {/* COMO FUNCIONA */}
-      <section id="como-funciona" className="mx-auto max-w-7xl px-6 py-20 md:py-28">
-        <div className="grid gap-3 text-center">
-          <p className="font-mono text-xs uppercase tracking-widest text-primary">
-            Como funciona
-          </p>
-          <h2 className="mx-auto max-w-2xl font-display text-4xl font-medium leading-tight md:text-5xl text-balance">
-            Três passos. Sem precisar passar pelo bureau.
-          </h2>
-          <p className="mx-auto max-w-xl text-base text-muted-foreground text-pretty">
-            A trava de recebíveis é o que faz a conta fechar — o risco é amarrado
-            ao Pix dela, não ao CPF dela.
-          </p>
-        </div>
+          {/* code block — cálculo do limite como API */}
+          <CodeBlock
+            title="aceito.fiado · cálculo do limite"
+            style={{
+              alignSelf: "stretch",
+              display: "flex",
+              flexDirection: "column",
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 8,
+                marginBottom: 12,
+              }}
+            >
+              <PulseDot color="var(--af-mata-2)" />
+              <span
+                className="af-mono"
+                style={{
+                  fontSize: 11,
+                  color: "oklch(0.972 0.008 75 / 0.5)",
+                }}
+              >
+                POST /v1/credit/score
+              </span>
+            </div>
+            <pre
+              style={{
+                margin: 0,
+                color: "oklch(0.972 0.008 75 / 0.85)",
+                whiteSpace: "pre",
+              }}
+            >
+              {`{
+  `}
+              <span style={{ color: "var(--af-acafrao)" }}>
+                &quot;empreendedora&quot;
+              </span>
+              {`: `}
+              <span style={{ color: "var(--af-dende)" }}>
+                &quot;joice@aceito.fiado&quot;
+              </span>
+              {`,
+  `}
+              <span style={{ color: "var(--af-acafrao)" }}>
+                &quot;canais_conectados&quot;
+              </span>
+              {`: [
+    `}
+              <span style={{ color: "var(--af-dende)" }}>
+                &quot;pix.cpf&quot;
+              </span>
+              {`,
+    `}
+              <span style={{ color: "var(--af-dende)" }}>
+                &quot;instagram.shop&quot;
+              </span>
+              {`,
+    `}
+              <span style={{ color: "var(--af-dende)" }}>
+                &quot;shopee.loja&quot;
+              </span>
+              {`
+  ],
+  `}
+              <span style={{ color: "var(--af-acafrao)" }}>
+                &quot;recebimento_medio_90d&quot;
+              </span>
+              {`: `}
+              <span style={{ color: "var(--af-mata-2)" }}>1252000</span>
+              {`,
+  `}
+              <span style={{ color: "var(--af-acafrao)" }}>
+                &quot;fator_trava&quot;
+              </span>
+              {`: `}
+              <span style={{ color: "var(--af-mata-2)" }}>0.30</span>
+              {`,
+  `}
+              <span style={{ color: "var(--af-acafrao)" }}>
+                &quot;prazo_medio_dias&quot;
+              </span>
+              {`: `}
+              <span style={{ color: "var(--af-mata-2)" }}>21</span>
+              {`,
 
-        <div className="mt-14 grid gap-6 md:grid-cols-3">
+  `}
+              <span style={{ color: "oklch(0.972 0.008 75 / 0.4)" }}>
+                // derivado · sem consultar bureau
+              </span>
+              {`
+  `}
+              <span style={{ color: "var(--af-acafrao)" }}>
+                &quot;limite_aprovado&quot;
+              </span>
+              {`: `}
+              <span
+                style={{
+                  color: "var(--af-terra-2)",
+                  fontWeight: 600,
+                }}
+              >
+                842000
+              </span>
+              {`,
+  `}
+              <span style={{ color: "var(--af-acafrao)" }}>
+                &quot;score_serasa&quot;
+              </span>
+              {`: `}
+              <span style={{ color: "var(--af-brasa)" }}>null</span>
+              {`
+}`}
+            </pre>
+            <div
+              style={{
+                marginTop: "auto",
+                paddingTop: 16,
+                borderTop: "1px solid oklch(0.972 0.008 75 / 0.08)",
+                display: "flex",
+                justifyContent: "space-between",
+              }}
+            >
+              <span
+                className="af-mono"
+                style={{
+                  fontSize: 11,
+                  color: "oklch(0.972 0.008 75 / 0.5)",
+                }}
+              >
+                200 OK · 142ms
+              </span>
+              <span
+                className="af-mono"
+                style={{ fontSize: 11, color: "var(--af-mata-2)" }}
+              >
+                ↑ R$ 1.420 vs. último mês
+              </span>
+            </div>
+          </CodeBlock>
+        </div>
+      </div>
+    </GradientMesh>
+  );
+}
+
+function TrustBar() {
+  return (
+    <div
+      className="px-14 py-12"
+      style={{
+        background: "var(--af-paper)",
+        borderTop: "1px solid var(--af-ink-08)",
+        borderBottom: "1px solid var(--af-ink-08)",
+      }}
+    >
+      <div
+        className="mx-auto flex flex-wrap items-center gap-12"
+        style={{ maxWidth: 1320 }}
+      >
+        <span className="af-eb flex-shrink-0">
+          1.847 empreendedoras operam de
+        </span>
+        <div className="flex flex-wrap gap-10 items-center justify-between flex-1 opacity-55">
+          {[
+            "Heliópolis",
+            "Capão Redondo",
+            "Brasilândia",
+            "Brás",
+            "Bom Retiro",
+            "Diadema",
+            "Guarulhos",
+          ].map((c) => (
+            <span
+              key={c}
+              style={{
+                fontFamily: "var(--af-sans)",
+                fontSize: 17,
+                fontWeight: 500,
+                letterSpacing: "-0.02em",
+              }}
+            >
+              {c}
+            </span>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function HowItWorks() {
+  return (
+    <div
+      id="como-funciona"
+      className="px-14 py-28"
+      style={{ background: "var(--af-paper)" }}
+    >
+      <div className="mx-auto" style={{ maxWidth: 1320 }}>
+        <Eyebrow>como funciona</Eyebrow>
+        <h2
+          className="af-h-tight text-balance"
+          style={{
+            fontSize: "clamp(40px, 5vw, 64px)",
+            margin: "20px 0 0",
+            maxWidth: 880,
+            color: "var(--af-ink-deep)",
+          }}
+        >
+          Três tempos. O Pix faz o último sozinho.
+        </h2>
+        <div className="grid md:grid-cols-3 gap-6 mt-16">
           {[
             {
               n: "01",
-              icon: TrendingUp,
-              title: "Você conecta seus canais",
-              body:
-                "Pix, Shopee, Mercado Livre, Instagram. A gente lê o fluxo real, calcula um score auditável e dá um limite proporcional ao que você fatura. Sem consulta a Serasa.",
+              t: "A empreendedora compra fiado.",
+              d: "No catálogo do fornecedor parceiro, vê limite e prazo na hora. Decide quanto, quando, com qual fatia de trava. Assina contrato em linguagem de gente em 40 segundos.",
+              tag: "PARA ELA",
+              color: "var(--af-terra)",
             },
             {
               n: "02",
-              icon: HandCoins,
-              title: "Compra a prazo, fornecedor recebe à vista",
-              body:
-                "Escolhe os produtos no catálogo dos fornecedores parceiros. Ele emite duplicata escritural e a gente liquida pra ele no mesmo dia. Você paga em 30, 45 ou 60 dias.",
+              t: "A gente paga o fornecedor à vista.",
+              d: "No mesmo dia da compra, o atacadista recebe 100% do valor. Capital de giro dele não trava esperando D+30. Em troca, ele topa precificar pra rede de aceito.fiado.",
+              tag: "PARA ELE",
+              color: "var(--af-mata)",
             },
             {
               n: "03",
-              icon: Lock,
-              title: "Pix trava sozinho até quitar",
-              body:
-                "Cada Pix que entra na sua conta direciona uma fatia (até 35%) pra liquidar a duplicata. Registrado em B3. Você não precisa lembrar de boleto nenhum.",
+              t: "O Pix dela liquida automático.",
+              d: "A maquininha continua igual. Cada Pix que entra, uma fatia (entre 15% e 50%, ela escolhe) volta pra liquidar a duplicata. Quando zera, acaba. Sem cobrança, sem ligação.",
+              tag: "PARA A REDE",
+              color: "var(--af-dende)",
             },
-          ].map((step) => (
-            <Card
-              key={step.n}
-              className="group relative overflow-hidden border-border/60 p-7 shadow-soft transition-shadow hover:shadow-soft-lg"
-            >
-              <div className="flex items-start justify-between">
-                <div className="rounded-xl bg-primary/10 p-2.5 text-primary">
-                  <step.icon className="size-5" />
-                </div>
-                <span className="font-mono text-sm text-muted-foreground">
-                  {step.n}
+          ].map((it) => (
+            <AfCard key={it.n} padding={28} radius={20}>
+              <div className="flex items-center justify-between">
+                <span
+                  className="af-n"
+                  style={{ fontSize: 32, color: it.color }}
+                >
+                  {it.n}
                 </span>
+                <Tag color={it.color}>{it.tag}</Tag>
               </div>
-              <h3 className="mt-5 font-display text-xl font-medium leading-tight">
-                {step.title}
+              <h3
+                className="af-h"
+                style={{
+                  fontSize: 24,
+                  margin: "40px 0 14px",
+                  color: "var(--af-ink-deep)",
+                }}
+              >
+                {it.t}
               </h3>
-              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                {step.body}
+              <p
+                className="af-body text-pretty"
+                style={{
+                  fontSize: 14.5,
+                  color: "var(--af-ink-2)",
+                  margin: 0,
+                }}
+              >
+                {it.d}
               </p>
-            </Card>
+            </AfCard>
           ))}
         </div>
-      </section>
+      </div>
+    </div>
+  );
+}
 
-      {/* POR QUE FUNCIONA — anti-bureau */}
-      <section id="por-que" className="border-y border-border/60 bg-warm-gradient">
-        <div className="mx-auto max-w-7xl px-6 py-20 md:py-24">
-          <div className="grid gap-12 md:grid-cols-[1fr_1.2fr] md:gap-16">
-            <div>
-              <p className="font-mono text-xs uppercase tracking-widest text-primary">
-                Resposta estrutural
-              </p>
-              <h2 className="mt-2 font-display text-4xl font-medium leading-tight md:text-5xl text-balance">
-                Não consertamos o algoritmo. Tiramos ele do caminho.
-              </h2>
-              <p className="mt-5 text-base leading-relaxed text-muted-foreground text-pretty">
-                Construir um bureau alternativo melhor que Serasa é uma corrida
-                de uma década. A jogada inteligente é construir uma cadeia onde
-                ele não decide nada.
-              </p>
-              <p className="mt-3 text-base leading-relaxed text-muted-foreground text-pretty">
-                Como? <strong className="text-foreground">A gente é o lender.</strong> Não precisamos
-                que ninguém aceite nossa decisão. Underwriting é cross-channel,
-                o risco é amarrado ao recebível, e o produto financeiro
-                (duplicata escritural) já é regulado.
-              </p>
-            </div>
+function TravaSection() {
+  return (
+    <GradientMesh dark style={{ padding: "130px 56px" }}>
+      <div
+        className="mx-auto grid md:grid-cols-2 gap-20 items-center"
+        style={{ maxWidth: 1320 }}
+      >
+        <div>
+          <Eyebrow color="oklch(0.972 0.008 75 / 0.6)">
+            a engrenagem é visível
+          </Eyebrow>
+          <h2
+            className="af-h-tight"
+            style={{
+              fontSize: "clamp(40px, 4.5vw, 60px)",
+              margin: "20px 0 0",
+              color: "var(--af-paper)",
+            }}
+          >
+            A trava do Pix acontece ao vivo,
+            <span style={{ color: "var(--af-acafrao)" }}> diante dela.</span>
+          </h2>
+          <p
+            className="af-body text-pretty"
+            style={{
+              fontSize: 17,
+              marginTop: 24,
+              color: "oklch(0.972 0.008 75 / 0.7)",
+              maxWidth: 540,
+            }}
+          >
+            Cada Pix que entra na conta dela dispara um split em milissegundos:
+            fatia da trava vai pro fornecedor; o resto fica com ela. Visível
+            antes, durante e depois. Auditável a cada operação. Esta é a
+            feature que substituiu o algoritmo de Serasa.
+          </p>
+          <div className="flex gap-3 mt-8">
+            <AfButton variant="paper" size="lg" href="/app/trava">
+              ver a trava ao vivo
+            </AfButton>
+            <AfButton
+              variant="ghost"
+              size="lg"
+              icon="↗"
+              style={{ color: "var(--af-paper)" }}
+            >
+              documentação da API
+            </AfButton>
+          </div>
+        </div>
 
-            <div className="space-y-3">
-              {[
-                {
-                  icon: ShieldOff,
-                  title: "Bureau não entra na decisão",
-                  body:
-                    "Score sai dos canais conectados, não do histórico de inadimplência registrado pelo Serasa.",
-                },
-                {
-                  icon: Lock,
-                  title: "Risco amarrado ao recebível",
-                  body:
-                    "Trava digital direciona até 35% do Pix da empreendedora. Default cai em uma ordem de magnitude.",
-                },
-                {
-                  icon: CircleDollarSign,
-                  title: "Estrutura financeira já existe",
-                  body:
-                    "Duplicata escritural (Lei 13.775/2018), trava B3 (Res. 4.734/2019), FIDC (Res. CVM 175). Nada inventado — só não aplicado nessa cadeia.",
-                },
-                {
-                  icon: Users,
-                  title: "Cadeia curada",
-                  body:
-                    "Fornecedores parceiros e empreendedoras na mesma plataforma. A liquidez circula dentro da cadeia afro.",
-                },
-              ].map((it) => (
-                <Card
-                  key={it.title}
-                  className="border-border/60 bg-card/80 p-5 shadow-soft"
+        <div
+          style={{
+            background: "oklch(0.972 0.008 75 / 0.06)",
+            border: "1px solid oklch(0.972 0.008 75 / 0.1)",
+            borderRadius: 20,
+            padding: 28,
+            color: "var(--af-paper)",
+            backdropFilter: "blur(12px)",
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              marginBottom: 18,
+            }}
+          >
+            <Eyebrow color="oklch(0.972 0.008 75 / 0.55)">
+              liquidação · hoje
+            </Eyebrow>
+            <PulseDot color="var(--af-acafrao)" label="ao vivo" />
+          </div>
+          <div className="af-n" style={{ fontSize: 64, lineHeight: 0.95 }}>
+            <span
+              style={{
+                fontSize: 22,
+                opacity: 0.4,
+                marginRight: 5,
+                verticalAlign: "0.55em",
+              }}
+            >
+              R$
+            </span>
+            <BRLLive initial={1247.5} ratePerSec={0.32} jitter={0.6} />
+          </div>
+          <div
+            style={{ display: "flex", gap: 18, marginTop: 10 }}
+            className="af-mono"
+          >
+            <span style={{ fontSize: 12, color: "var(--af-acafrao)" }}>
+              ↑ R$ 0,32/s
+            </span>
+            <span
+              style={{
+                fontSize: 12,
+                color: "oklch(0.972 0.008 75 / 0.55)",
+              }}
+            >
+              47% da meta · 1.847 empreendedoras
+            </span>
+          </div>
+          <div style={{ marginTop: 28 }}>
+            <div
+              style={{
+                display: "flex",
+                height: 56,
+                borderRadius: 12,
+                overflow: "hidden",
+              }}
+            >
+              <div
+                style={{
+                  width: "30%",
+                  background: "var(--af-terra)",
+                  padding: "12px 16px",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "space-between",
+                }}
+              >
+                <span
+                  className="af-mono"
+                  style={{
+                    fontSize: 10,
+                    color: "oklch(0.972 0.008 75 / 0.7)",
+                    letterSpacing: "0.1em",
+                    textTransform: "uppercase",
+                  }}
                 >
-                  <div className="flex gap-4">
-                    <div className="shrink-0 rounded-lg bg-primary/10 p-2.5 text-primary">
-                      <it.icon className="size-4" />
-                    </div>
-                    <div>
-                      <h3 className="text-base font-semibold leading-snug">
-                        {it.title}
-                      </h3>
-                      <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
-                        {it.body}
-                      </p>
-                    </div>
+                  30% trava
+                </span>
+                <span className="af-n" style={{ fontSize: 17 }}>
+                  → fornecedor
+                </span>
+              </div>
+              <div
+                style={{
+                  width: "70%",
+                  background: "var(--af-mata-2)",
+                  padding: "12px 16px",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "space-between",
+                }}
+              >
+                <span
+                  className="af-mono"
+                  style={{
+                    fontSize: 10,
+                    color: "oklch(0.972 0.008 75 / 0.7)",
+                    letterSpacing: "0.1em",
+                    textTransform: "uppercase",
+                  }}
+                >
+                  70%
+                </span>
+                <span className="af-n" style={{ fontSize: 17 }}>
+                  → empreendedora
+                </span>
+              </div>
+            </div>
+          </div>
+          <div style={{ marginTop: 20 }}>
+            <Eyebrow color="oklch(0.972 0.008 75 / 0.55)">
+              últimos pix · 60s
+            </Eyebrow>
+            <div style={{ marginTop: 12 }}>
+              {(
+                [
+                  ["Marcela P.", "pagou", "R$ 18,90", "30% → Afroflora", "agora"],
+                  ["Loja Tia Cida", "pagou", "R$ 42,50", "30% → Afroflora", "12s"],
+                  ["Renata S.", "pagou", "R$ 8,60", "25% → Aruanda", "34s"],
+                ] as const
+              ).map((row, i) => (
+                <div
+                  key={i}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    padding: "10px 0",
+                    borderBottom:
+                      i < 2 ? "1px solid oklch(0.972 0.008 75 / 0.08)" : "none",
+                  }}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 10,
+                    }}
+                  >
+                    <PulseDot color="var(--af-mata-2)" size={5} />
+                    <span style={{ fontSize: 13 }}>
+                      {row[0]} {row[1]}
+                    </span>
                   </div>
-                </Card>
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "baseline",
+                      gap: 12,
+                    }}
+                  >
+                    <span
+                      className="af-mono"
+                      style={{
+                        fontSize: 11,
+                        color: "oklch(0.972 0.008 75 / 0.55)",
+                      }}
+                    >
+                      {row[3]}
+                    </span>
+                    <span className="af-n" style={{ fontSize: 14 }}>
+                      {row[2]}
+                    </span>
+                  </div>
+                </div>
               ))}
             </div>
           </div>
         </div>
-      </section>
+      </div>
+    </GradientMesh>
+  );
+}
 
-      {/* PARA FORNECEDORES */}
-      <section
-        id="para-fornecedores"
-        className="mx-auto max-w-7xl px-6 py-20 md:py-28"
+function Metrics() {
+  return (
+    <div
+      className="px-14 py-28"
+      style={{ background: "var(--af-paper-2)" }}
+    >
+      <div className="mx-auto" style={{ maxWidth: 1320 }}>
+        <Eyebrow>até hoje · maio de 2026</Eyebrow>
+        <h2
+          className="af-h-tight"
+          style={{
+            fontSize: "clamp(36px, 4.5vw, 56px)",
+            margin: "20px 0 0",
+            maxWidth: 720,
+            color: "var(--af-ink-deep)",
+          }}
+        >
+          Sem consultar Serasa, nem uma vez.
+        </h2>
+        <div className="grid md:grid-cols-4 gap-6 mt-16">
+          {[
+            {
+              v: (
+                <>
+                  <span style={{ fontSize: 32, opacity: 0.4 }}>R$</span>{" "}
+                  <Counter to={4.2} decimals={1} suffix="M" />
+                </>
+              ),
+              l: "girados na cadeia",
+              sub: "+R$ 380k em 30 dias",
+            },
+            {
+              v: <Counter to={1847} />,
+              l: "empreendedoras ativas",
+              sub: "em 12 bairros · SP",
+            },
+            {
+              v: (
+                <>
+                  <Counter to={12} />
+                  <span style={{ opacity: 0.5 }}>d</span>
+                </>
+              ),
+              l: "prazo médio",
+              sub: "liquida antes do venc.",
+            },
+            {
+              v: <Counter to={0} />,
+              l: "consultas a bureau",
+              sub: "desde sempre",
+            },
+          ].map((m, i) => (
+            <div
+              key={i}
+              style={{
+                borderTop: "1px solid var(--af-ink-12)",
+                paddingTop: 24,
+              }}
+            >
+              <div
+                className="af-n"
+                style={{
+                  fontSize: 60,
+                  lineHeight: 0.95,
+                  color: "var(--af-ink-deep)",
+                }}
+              >
+                {m.v}
+              </div>
+              <div
+                className="af-body"
+                style={{
+                  fontSize: 15,
+                  marginTop: 14,
+                  color: "var(--af-ink-2)",
+                }}
+              >
+                {m.l}
+              </div>
+              <div
+                className="af-mono"
+                style={{
+                  fontSize: 11.5,
+                  color: "var(--af-ink-soft)",
+                  marginTop: 6,
+                }}
+              >
+                {m.sub}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Testimonial() {
+  return (
+    <div
+      className="px-14 py-28"
+      style={{ background: "var(--af-paper)" }}
+    >
+      <div className="mx-auto" style={{ maxWidth: 1100 }}>
+        <Eyebrow>vozes</Eyebrow>
+        <blockquote
+          className="af-h-tight text-pretty"
+          style={{
+            fontSize: "clamp(28px, 3.5vw, 48px)",
+            lineHeight: 1.15,
+            margin: "24px 0 0",
+            color: "var(--af-ink-deep)",
+          }}
+        >
+          “Banco me disse não três vezes em 2024 sem motivo. Mês passado fechei
+          o
+          <span style={{ color: "var(--af-terra)" }}>
+            {" "}maior pedido da loja{" "}
+          </span>
+          e a AceitoFiado liquidou em 11 dias sem eu ter que ligar pra
+          ninguém. É a primeira vez que crédito serviu pra mim.”
+        </blockquote>
+        <div
+          style={{
+            marginTop: 36,
+            display: "flex",
+            alignItems: "center",
+            gap: 16,
+          }}
+        >
+          <div
+            className="af-placeholder"
+            style={{ width: 56, height: 56, borderRadius: 99 }}
+          >
+            foto
+          </div>
+          <div>
+            <div
+              className="af-body"
+              style={{
+                fontSize: 16,
+                fontWeight: 500,
+                color: "var(--af-ink-deep)",
+              }}
+            >
+              Joice Oliveira
+            </div>
+            <div
+              className="af-mono"
+              style={{
+                fontSize: 12,
+                color: "var(--af-ink-soft)",
+                marginTop: 2,
+              }}
+            >
+              moda joice · capão redondo · sp · cliente desde out/2024
+            </div>
+          </div>
+          <div
+            style={{
+              marginLeft: "auto",
+              display: "flex",
+              gap: 12,
+            }}
+          >
+            <AfButton variant="outline" size="md" icon="←">
+              anterior
+            </AfButton>
+            <AfButton variant="outline" size="md">
+              próximo
+            </AfButton>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function CTABanner() {
+  return (
+    <GradientMesh style={{ padding: "120px 56px" }}>
+      <div
+        className="mx-auto text-center"
+        style={{ maxWidth: 1100 }}
       >
-        <div className="grid gap-12 md:grid-cols-2 md:gap-16">
-          <div className="space-y-5">
-            <p className="font-mono text-xs uppercase tracking-widest text-primary">
-              Para fornecedores
+        <Eyebrow>comece em 90 segundos</Eyebrow>
+        <h2
+          className="af-h-tight"
+          style={{
+            fontSize: "clamp(48px, 7vw, 88px)",
+            margin: "20px 0 0",
+            color: "var(--af-ink-deep)",
+          }}
+        >
+          Descubra seu limite
+          <br />
+          <span style={{ color: "var(--af-terra)" }}>
+            sem ninguém consultar nada.
+          </span>
+        </h2>
+        <div className="flex flex-wrap justify-center gap-3 mt-10">
+          <AfButton variant="primary" size="xl" href="/cadastro">
+            conhecer o aceito.fiado
+          </AfButton>
+          <AfButton variant="outline" size="xl" icon="▸" href="/entrar?demo=joana">
+            demonstração de 90s
+          </AfButton>
+        </div>
+        <p
+          className="af-mono"
+          style={{
+            fontSize: 12,
+            color: "var(--af-ink-soft)",
+            marginTop: 24,
+          }}
+        >
+          sem cartão · sem CNPJ · sem consulta a bureau · documento em pt-br
+          claro
+        </p>
+      </div>
+    </GradientMesh>
+  );
+}
+
+function Footer() {
+  return (
+    <div
+      className="px-14 py-20"
+      style={{
+        background: "var(--af-ink-deep)",
+        color: "var(--af-paper)",
+      }}
+    >
+      <div className="mx-auto" style={{ maxWidth: 1320 }}>
+        <div className="grid md:grid-cols-[1.5fr_1fr_1fr_1fr_1fr] gap-12">
+          <div>
+            <AfLogo
+              size={26}
+              color="var(--af-paper)"
+              accent="var(--af-acafrao)"
+            />
+            <p
+              className="af-body text-pretty"
+              style={{
+                fontSize: 13.5,
+                color: "oklch(0.972 0.008 75 / 0.6)",
+                margin: "16px 0 0",
+                maxWidth: 320,
+              }}
+            >
+              Infraestrutura de crédito produtivo embutido pra cadeia
+              afroempreendedora brasileira. Construído em Heliópolis, Capão e
+              Brasilândia.
             </p>
-            <h2 className="font-display text-4xl font-medium leading-tight md:text-5xl text-balance">
-              Vende mais. Recebe à vista. Sem risco de calote.
-            </h2>
-            <p className="text-base leading-relaxed text-muted-foreground text-pretty">
-              Seu cliente compra a prazo. Você recebe na mesma hora, com pequeno
-              desconto. A AceitoFiado assume o risco da duplicata. Você foca em
-              produção e logística.
-            </p>
-            <div className="flex flex-wrap items-center gap-3 pt-2">
-              <Button asChild size="lg" className="gap-2">
-                <Link href="/cadastro?role=supplier">
-                  Sou fornecedor <ArrowRight className="size-4" />
-                </Link>
-              </Button>
-              <Button asChild size="lg" variant="ghost" className="gap-2">
-                <Link href="/entrar">Já tenho conta</Link>
-              </Button>
+            <div
+              style={{
+                marginTop: 24,
+                display: "flex",
+                gap: 10,
+                alignItems: "center",
+              }}
+            >
+              <PulseDot
+                color="var(--af-acafrao)"
+                label="operando · todos os sistemas ok"
+              />
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
-            {[
-              { kpi: "+R$ 0", label: "Custo de cadastro" },
-              { kpi: "à vista", label: "Recebimento em até 24h" },
-              { kpi: "3%", label: "Desconto médio cobrado" },
-              { kpi: "0", label: "Risco de inadimplência" },
-            ].map((item) => (
-              <Card
-                key={item.label}
-                className="border-border/60 p-5 shadow-soft"
+          {(
+            [
+              [
+                "produto",
+                [
+                  "Cockpit",
+                  "Catálogo",
+                  "Trava ao vivo",
+                  "API para fornecedores",
+                  "Mudanças recentes",
+                ],
+              ],
+              [
+                "empresa",
+                ["Manifesto", "Imprensa", "Carreira (5)", "Contato"],
+              ],
+              [
+                "recursos",
+                ["Documentação", "Status", "Guia da empreendedora", "Termos"],
+              ],
+              [
+                "social",
+                ["Instagram", "LinkedIn", "Newsletter mensal", "GitHub"],
+              ],
+            ] as const
+          ).map(([title, items]) => (
+            <div key={title}>
+              <div
+                className="af-eb"
+                style={{ color: "oklch(0.972 0.008 75 / 0.5)" }}
               >
-                <p className="font-display text-3xl font-medium text-primary">
-                  {item.kpi}
-                </p>
-                <p className="mt-2 text-sm text-muted-foreground">
-                  {item.label}
-                </p>
-              </Card>
-            ))}
-          </div>
+                {title}
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 10,
+                  marginTop: 16,
+                }}
+              >
+                {items.map((it) => (
+                  <span
+                    key={it}
+                    style={{
+                      fontSize: 14,
+                      color: "oklch(0.972 0.008 75 / 0.85)",
+                      cursor: "pointer",
+                    }}
+                  >
+                    {it}
+                  </span>
+                ))}
+              </div>
+            </div>
+          ))}
         </div>
-      </section>
 
-      {/* CTA FINAL */}
-      <section className="relative overflow-hidden">
-        <div className="absolute inset-0 -z-10 bg-gradient-to-br from-primary via-primary to-[oklch(0.4_0.13_30)]" />
-        <div className="absolute inset-0 -z-10 pattern-dots text-white/10" />
-        <div className="mx-auto flex max-w-5xl flex-col items-center px-6 py-20 text-center text-primary-foreground md:py-28">
-          <Logo size="lg" variant="mono" className="text-primary-foreground" />
-          <h2 className="mt-8 font-display text-4xl font-medium leading-tight md:text-5xl text-balance">
-            Sua cadeia. Sua liquidez. Sem bureau no caminho.
-          </h2>
-          <p className="mt-5 max-w-xl text-lg text-primary-foreground/85 text-pretty">
-            Conecte seus canais em 5 minutos. Veja um limite real, calculado pelo
-            que você fatura — não pelo CEP que você mora.
-          </p>
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-            <Button asChild size="lg" variant="secondary" className="gap-2">
-              <Link href="/cadastro">
-                Começar agora <ArrowRight className="size-4" />
-              </Link>
-            </Button>
-            <Button
-              asChild
-              size="lg"
-              variant="outline"
-              className="border-primary-foreground/30 bg-transparent text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground"
-            >
-              <Link href="/entrar?demo=joana">
-                Ver demo da Joana <Store className="size-4" />
-              </Link>
-            </Button>
-          </div>
+        <div
+          style={{
+            marginTop: 60,
+            paddingTop: 28,
+            borderTop: "1px solid oklch(0.972 0.008 75 / 0.1)",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            flexWrap: "wrap",
+            gap: 12,
+          }}
+        >
+          <span
+            className="af-mono"
+            style={{ fontSize: 11, color: "oklch(0.972 0.008 75 / 0.5)" }}
+          >
+            AceitoFiado · Tecnologia LTDA · 55.328.114/0001-92 · Bacen Proc. Nº
+            XX.XXX/2024 · v0.4.2
+          </span>
+          <span
+            className="af-mono"
+            style={{ fontSize: 11, color: "oklch(0.972 0.008 75 / 0.5)" }}
+          >
+            © 2026 · São Paulo
+          </span>
         </div>
-      </section>
-
-      <SiteFooter />
+      </div>
     </div>
   );
 }

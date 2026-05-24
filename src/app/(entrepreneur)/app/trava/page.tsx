@@ -1,12 +1,18 @@
 import Link from "next/link";
 import { ArrowRight, Lock, Sparkles, TrendingUp } from "lucide-react";
 
+import {
+  AfButton,
+  AfCard,
+  BRLLive,
+  Eyebrow,
+  GradientMesh,
+  Money,
+  PulseDot,
+  SoundBars,
+} from "@/components/af";
 import { CaptureProgressChart } from "@/components/charts/capture-progress";
 import { PageHeader } from "@/components/shell/page-header";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
 import { requireEntrepreneur } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { formatBRL, formatBps, formatRelativeTime } from "@/lib/format";
@@ -61,7 +67,6 @@ export default async function TravaPage() {
     0n,
   );
 
-  // Para o gráfico: pega últimas capturas (qualquer pedido)
   const allReceivables90 = await db.receivable.findMany({
     where: {
       order: { entrepreneurId: user.entrepreneurId },
@@ -89,213 +94,412 @@ export default async function TravaPage() {
   return (
     <>
       <PageHeader
-        eyebrow="Trava de recebíveis"
-        title="Seu Pix liquida sua dívida — no automático"
-        description={
-          <span>
-            Cada Pix recebido direciona uma fatia pra liquidar as duplicatas
-            ativas. Registrado em B3, instrução irrevogável durante o prazo da
-            operação.
-          </span>
+        eyebrow="trava de recebíveis"
+        title={
+          <>
+            seu Pix liquida sua dívida <span style={{ color: "var(--af-terra)" }}>— no automático.</span>
+          </>
         }
-        actions={
-          <SimulatePixButton entrepreneurId={user.entrepreneurId} />
-        }
+        description="Cada Pix recebido direciona uma fatia pra liquidar as duplicatas ativas. Registrado em B3, instrução irrevogável durante o prazo da operação."
+        actions={<SimulatePixButton entrepreneurId={user.entrepreneurId} />}
       />
 
-      <div className="grid gap-5 px-6 py-6 md:px-10 md:py-8 lg:grid-cols-[1.5fr_1fr]">
+      <div
+        className="grid gap-5 px-6 py-7 md:px-10 md:py-8 lg:grid-cols-[1.5fr_1fr]"
+        style={{ background: "var(--af-paper-2)" }}
+      >
         <div className="space-y-5">
-          {/* OPERAÇÕES ATIVAS COM PROGRESSO */}
-          <Card className="border-border/60 shadow-soft">
-            <div className="px-6 pt-6 pb-3">
-              <h2 className="font-display text-xl font-medium">
-                Operações sob trava
+          {/* OPERAÇÕES SOB TRAVA */}
+          <AfCard padding={0} radius={20} className="overflow-hidden">
+            <div style={{ padding: "24px 28px 14px" }}>
+              <Eyebrow>operações sob trava · {activeOrdersData.length}</Eyebrow>
+              <h2
+                className="af-h"
+                style={{
+                  fontSize: 22,
+                  margin: "8px 0 0",
+                  color: "var(--af-ink-deep)",
+                }}
+              >
+                ordenadas por vencimento
               </h2>
-              <p className="text-sm text-muted-foreground">
-                Ordenadas por proximidade de vencimento. O Pix vai sendo
-                aplicado em cascata.
+              <p
+                className="af-body"
+                style={{
+                  fontSize: 13,
+                  color: "var(--af-ink-soft)",
+                  margin: "6px 0 0",
+                }}
+              >
+                o Pix vai sendo aplicado em cascata, mais antigo primeiro.
               </p>
             </div>
-            <Separator />
-            <div className="divide-y divide-border/60">
-              {activeOrdersData.map((o) => {
-                const paid = BigInt(o.paidCents);
-                const total = BigInt(o.customerPayCents);
-                const pct = total > 0n ? Number((paid * 1000n) / total) / 10 : 0;
-                const remaining = total - paid;
-                return (
-                  <div key={o.id} className="px-6 py-4">
-                    <div className="flex items-start justify-between gap-3">
-                      <div>
-                        <p className="text-sm font-medium">{o.supplierName}</p>
-                        <p className="font-mono text-xs text-muted-foreground">
-                          {o.duplicata ?? "—"}
-                          {o.dueDate && (
-                            <>
-                              {" · vence "}
-                              {formatRelativeTime(new Date(o.dueDate))}
-                            </>
-                          )}
-                        </p>
-                      </div>
-                      <Badge
-                        variant="outline"
-                        className="border-primary/30 bg-primary/10 text-primary text-[10px]"
-                      >
-                        Captura {formatBps(o.captureRateBps)}
-                      </Badge>
-                    </div>
-                    <div className="mt-3">
-                      <div className="relative h-2 overflow-hidden rounded-full bg-muted">
-                        <div
-                          className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-primary to-[oklch(0.7_0.17_45)]"
-                          style={{ width: `${pct}%` }}
-                        />
-                      </div>
-                      <div className="mt-1 flex justify-between text-[11px] text-muted-foreground">
-                        <span>
-                          <span className="font-mono text-success">
-                            {formatBRL(paid)}
-                          </span>{" "}
-                          capturado
-                        </span>
-                        <span>
-                          <span className="font-mono">
-                            {formatBRL(remaining > 0n ? remaining : 0n)}
-                          </span>{" "}
-                          restante de{" "}
-                          <span className="font-mono">{formatBRL(total)}</span>
-                        </span>
-                      </div>
-                    </div>
-                    <div className="mt-3 flex items-center justify-end">
-                      <Button asChild variant="ghost" size="sm" className="gap-1">
-                        <Link href={`/app/fiado/op/${o.id}`}>
-                          Ver detalhes <ArrowRight className="size-3.5" />
-                        </Link>
-                      </Button>
-                    </div>
-                  </div>
-                );
-              })}
+            <div style={{ borderTop: "1px solid var(--af-ink-08)" }}>
               {activeOrdersData.length === 0 && (
-                <div className="px-6 py-10 text-center text-sm text-muted-foreground">
-                  Nenhuma operação ativa. Sem operação, não há captura.
-                </div>
+                <p className="px-7 py-10 text-center text-sm" style={{ color: "var(--af-ink-soft)" }}>
+                  nenhuma operação ativa. sem operação, não há captura.
+                </p>
               )}
+              <div className="divide-y" style={{ borderColor: "var(--af-ink-08)" }}>
+                {activeOrdersData.map((o) => {
+                  const paid = BigInt(o.paidCents);
+                  const total = BigInt(o.customerPayCents);
+                  const pct = total > 0n ? Number((paid * 1000n) / total) / 10 : 0;
+                  const remaining = total - paid;
+                  return (
+                    <div key={o.id} className="px-7 py-5">
+                      <div className="flex items-start justify-between gap-3">
+                        <div>
+                          <p
+                            className="af-body"
+                            style={{ fontSize: 14.5, fontWeight: 500, margin: 0 }}
+                          >
+                            {o.supplierName}
+                          </p>
+                          <p
+                            className="af-mono"
+                            style={{
+                              fontSize: 11,
+                              color: "var(--af-ink-soft)",
+                              margin: "3px 0 0",
+                            }}
+                          >
+                            {o.duplicata ?? "—"}
+                            {o.dueDate && (
+                              <>
+                                {" · vence "}
+                                {formatRelativeTime(new Date(o.dueDate))}
+                              </>
+                            )}
+                          </p>
+                        </div>
+                        <span
+                          className="af-mono"
+                          style={{
+                            fontSize: 11,
+                            padding: "4px 10px",
+                            borderRadius: 99,
+                            background: "var(--af-terra-soft)",
+                            color: "var(--af-terra)",
+                            fontWeight: 500,
+                          }}
+                        >
+                          captura {formatBps(o.captureRateBps)}
+                        </span>
+                      </div>
+                      <div style={{ marginTop: 14 }}>
+                        <div
+                          style={{
+                            position: "relative",
+                            height: 6,
+                            overflow: "hidden",
+                            borderRadius: 99,
+                            background: "var(--af-paper-3)",
+                          }}
+                        >
+                          <div
+                            style={{
+                              position: "absolute",
+                              inset: "0 auto 0 0",
+                              borderRadius: 99,
+                              width: `${pct}%`,
+                              background:
+                                "linear-gradient(to right, var(--af-terra), oklch(0.7 0.17 45))",
+                              transition: "width 1.2s ease",
+                            }}
+                          />
+                        </div>
+                        <div className="mt-2 flex justify-between text-[11px]" style={{ color: "var(--af-ink-soft)" }}>
+                          <span>
+                            <span style={{ color: "var(--af-mata)", fontWeight: 600 }} className="font-mono">
+                              {formatBRL(paid)}
+                            </span>{" "}
+                            capturado
+                          </span>
+                          <span>
+                            <span className="font-mono">{formatBRL(remaining > 0n ? remaining : 0n)}</span>{" "}
+                            restante de <span className="font-mono">{formatBRL(total)}</span>
+                          </span>
+                        </div>
+                      </div>
+                      <div className="mt-3 flex items-center justify-end">
+                        <Link
+                          href={`/app/fiado/op/${o.id}`}
+                          className="text-xs font-medium inline-flex items-center gap-1"
+                          style={{ color: "var(--af-ink-soft)" }}
+                        >
+                          ver detalhes <ArrowRight className="size-3" />
+                        </Link>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
-          </Card>
+          </AfCard>
 
           {/* CAPTURAS AO VIVO */}
-          <Card className="border-border/60 shadow-soft">
-            <div className="flex items-center justify-between px-6 pt-6 pb-3">
+          <AfCard padding={0} radius={20} className="overflow-hidden">
+            <div
+              style={{
+                padding: "20px 28px 12px",
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "flex-end",
+              }}
+            >
               <div>
-                <h2 className="font-display text-xl font-medium">
-                  Capturas dos últimos dias
+                <Eyebrow>capturas dos últimos dias</Eyebrow>
+                <h2
+                  className="af-h"
+                  style={{
+                    fontSize: 20,
+                    margin: "8px 0 0",
+                    color: "var(--af-ink-deep)",
+                  }}
+                >
+                  atualiza sozinho a cada Pix recebido
                 </h2>
-                <p className="text-sm text-muted-foreground">
-                  Atualiza sozinho a cada Pix recebido
-                </p>
               </div>
-              <Badge
-                variant="outline"
-                className="gap-1.5 border-success/30 bg-success/10 text-success"
+              <span
+                className="af-mono inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px]"
+                style={{
+                  background: "var(--af-mata-2)",
+                  color: "var(--af-paper)",
+                  opacity: 0.9,
+                  letterSpacing: "0.12em",
+                  textTransform: "uppercase",
+                  fontWeight: 500,
+                }}
               >
-                <span className="size-1.5 rounded-full bg-success animate-pulse" />
-                Ao vivo
-              </Badge>
+                <span
+                  className="size-1.5 rounded-full"
+                  style={{
+                    background: "var(--af-paper)",
+                    animation: "af-pulse 1.6s ease-in-out infinite",
+                  }}
+                />
+                ao vivo
+              </span>
             </div>
-            <Separator />
-            <TravaLiveStream
-              entrepreneurId={user.entrepreneurId}
-              initialReceivables={recentReceivables.map((r) => ({
-                id: r.id,
-                amountCapturedCents: r.amountCapturedCents.toString(),
-                capturedAt: r.capturedAt.toISOString(),
-                payerName: r.pixTransaction.payerName,
-                pixValueCents: r.pixTransaction.valueCents.toString(),
-                txid: r.pixTransaction.txid,
-                supplierName: r.order.supplier.businessName,
-                duplicata: r.order.duplicata?.numero ?? null,
-              }))}
-              initialPix={recentPix.map((p) => ({
-                id: p.id,
-                payerName: p.payerName,
-                valueCents: p.valueCents.toString(),
-                channelLabel: p.channel?.label ?? "Direto",
-                receivedAt: p.receivedAt.toISOString(),
-                captured: p.captured,
-                capturedAmountCents: p.capturedAmountCents.toString(),
-              }))}
-            />
-          </Card>
+            <div style={{ borderTop: "1px solid var(--af-ink-08)" }}>
+              <TravaLiveStream
+                initialReceivables={recentReceivables.map((r) => ({
+                  id: r.id,
+                  amountCapturedCents: r.amountCapturedCents.toString(),
+                  capturedAt: r.capturedAt.toISOString(),
+                  payerName: r.pixTransaction.payerName,
+                  pixValueCents: r.pixTransaction.valueCents.toString(),
+                  txid: r.pixTransaction.txid,
+                  supplierName: r.order.supplier.businessName,
+                  duplicata: r.order.duplicata?.numero ?? null,
+                }))}
+                initialPix={recentPix.map((p) => ({
+                  id: p.id,
+                  payerName: p.payerName,
+                  valueCents: p.valueCents.toString(),
+                  channelLabel: p.channel?.label ?? "Direto",
+                  receivedAt: p.receivedAt.toISOString(),
+                  captured: p.captured,
+                  capturedAmountCents: p.capturedAmountCents.toString(),
+                }))}
+              />
+            </div>
+          </AfCard>
         </div>
 
+        {/* DIREITA */}
         <div className="space-y-5">
-          {/* RESUMO DA TRAVA */}
-          <Card className="overflow-hidden border-border/60 bg-sidebar text-sidebar-foreground shadow-soft-lg">
-            <div className="flex items-center gap-2 px-5 pt-5 pb-2 text-xs uppercase tracking-widest text-sidebar-foreground/60">
-              <Lock className="size-3.5" />
-              Captura sob trava (todo histórico)
+          {/* TOTAL CAPTURADO · DARK */}
+          <GradientMesh
+            dark
+            style={{
+              borderRadius: 20,
+              padding: 24,
+              color: "var(--af-paper)",
+              overflow: "hidden",
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                marginBottom: 14,
+              }}
+            >
+              <Eyebrow color="oklch(0.972 0.008 75 / 0.55)">
+                <span className="inline-flex items-center gap-1.5">
+                  <Lock className="size-3" /> trava · todo histórico
+                </span>
+              </Eyebrow>
+              <SoundBars
+                count={5}
+                color="var(--af-acafrao)"
+                height={14}
+                width={2}
+              />
             </div>
-            <div className="px-5 pb-5">
-              <p className="font-display text-3xl font-medium tabular-nums">
-                {formatBRL(totalCapturedAllTime)}
-              </p>
-              <p className="mt-0.5 text-xs text-sidebar-foreground/60">
-                de {formatBRL(totalDueAllTime)} totais
-              </p>
-              <div className="mt-3 rounded-xl bg-sidebar-accent/40 p-3">
-                <CaptureProgressChart
-                  captures={allReceivables90.map((r) => ({
-                    capturedAt: r.capturedAt,
-                    amountCapturedCents: r.amountCapturedCents,
-                  }))}
-                />
+            <div className="af-n" style={{ fontSize: 48, lineHeight: 0.95 }}>
+              <span
+                style={{
+                  fontSize: 20,
+                  opacity: 0.4,
+                  marginRight: 4,
+                  verticalAlign: "0.5em",
+                }}
+              >
+                R$
+              </span>
+              <BRLLive
+                initial={Number(totalCapturedAllTime) / 100}
+                ratePerSec={0.27}
+                jitter={0.6}
+              />
+            </div>
+            <div
+              className="af-mono"
+              style={{
+                fontSize: 12,
+                color: "oklch(0.972 0.008 75 / 0.55)",
+                marginTop: 6,
+              }}
+            >
+              de {formatBRL(totalDueAllTime, { withSymbol: true })} totais
+            </div>
+            {/* split bar */}
+            <div style={{ marginTop: 22 }}>
+              <div
+                style={{
+                  display: "flex",
+                  height: 50,
+                  borderRadius: 12,
+                  overflow: "hidden",
+                }}
+              >
+                <div
+                  style={{
+                    width: "30%",
+                    background: "var(--af-terra)",
+                    padding: "10px 14px",
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <span
+                    className="af-mono"
+                    style={{
+                      fontSize: 9,
+                      color: "oklch(0.972 0.008 75 / 0.7)",
+                      letterSpacing: "0.1em",
+                      textTransform: "uppercase",
+                    }}
+                  >
+                    30% trava
+                  </span>
+                  <span className="af-n" style={{ fontSize: 14 }}>
+                    → fornecedor
+                  </span>
+                </div>
+                <div
+                  style={{
+                    width: "70%",
+                    background: "var(--af-mata-2)",
+                    padding: "10px 14px",
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <span
+                    className="af-mono"
+                    style={{
+                      fontSize: 9,
+                      color: "oklch(0.972 0.008 75 / 0.7)",
+                      letterSpacing: "0.1em",
+                      textTransform: "uppercase",
+                    }}
+                  >
+                    70%
+                  </span>
+                  <span className="af-n" style={{ fontSize: 14 }}>
+                    → você
+                  </span>
+                </div>
               </div>
             </div>
-          </Card>
+            <div
+              style={{
+                marginTop: 18,
+                padding: 12,
+                background: "oklch(0.972 0.008 75 / 0.05)",
+                borderRadius: 12,
+                border: "1px solid oklch(0.972 0.008 75 / 0.08)",
+              }}
+            >
+              <CaptureProgressChart
+                captures={allReceivables90.map((r) => ({
+                  capturedAt: r.capturedAt,
+                  amountCapturedCents: r.amountCapturedCents,
+                }))}
+              />
+            </div>
+          </GradientMesh>
 
           {/* COMO FUNCIONA */}
-          <Card className="border-border/60 p-5 shadow-soft">
-            <div className="flex items-center gap-2 text-xs uppercase tracking-widest text-primary">
-              <Sparkles className="size-3.5" /> Como a trava funciona
+          <AfCard padding={20} radius={18}>
+            <div className="inline-flex items-center gap-1.5" style={{ color: "var(--af-terra)" }}>
+              <Sparkles className="size-3.5" />
+              <Eyebrow color="var(--af-terra)">como a trava funciona</Eyebrow>
             </div>
-            <ol className="mt-3 space-y-3 text-sm">
-              <li className="flex gap-3">
-                <span className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full bg-primary/15 font-mono text-[10px] font-semibold text-primary">
-                  1
-                </span>
-                <span className="text-muted-foreground">
-                  Quando o fornecedor é pago à vista, a duplicata é registrada
-                  em B3 com instrução de domicílio bancário.
-                </span>
-              </li>
-              <li className="flex gap-3">
-                <span className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full bg-primary/15 font-mono text-[10px] font-semibold text-primary">
-                  2
-                </span>
-                <span className="text-muted-foreground">
-                  Cada Pix que entra na sua conta é interceptado: parte é
-                  redirecionada pra liquidar a duplicata ativa mais próxima.
-                </span>
-              </li>
-              <li className="flex gap-3">
-                <span className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full bg-primary/15 font-mono text-[10px] font-semibold text-primary">
-                  3
-                </span>
-                <span className="text-muted-foreground">
-                  Você não precisa abrir nenhum app: o saldo da operação cai
-                  sozinho.
-                </span>
-              </li>
+            <ol className="mt-4 space-y-3">
+              {[
+                "Quando o fornecedor é pago à vista, a duplicata é registrada em B3 com instrução de domicílio bancário.",
+                "Cada Pix que entra na sua conta é interceptado: parte é redirecionada pra liquidar a duplicata mais próxima.",
+                "Você não precisa abrir nenhum app: o saldo da operação cai sozinho.",
+              ].map((step, i) => (
+                <li key={i} className="flex gap-3">
+                  <span
+                    className="af-mono flex shrink-0 items-center justify-center font-semibold"
+                    style={{
+                      width: 22,
+                      height: 22,
+                      marginTop: 2,
+                      borderRadius: 99,
+                      background: "var(--af-terra-soft)",
+                      color: "var(--af-terra)",
+                      fontSize: 11,
+                    }}
+                  >
+                    {i + 1}
+                  </span>
+                  <span
+                    className="af-body"
+                    style={{
+                      fontSize: 13.5,
+                      color: "var(--af-ink-2)",
+                      margin: 0,
+                    }}
+                  >
+                    {step}
+                  </span>
+                </li>
+              ))}
             </ol>
-            <p className="mt-4 rounded-lg bg-muted/60 p-3 text-[11px] text-muted-foreground">
-              <strong className="text-foreground">Base regulatória:</strong> Res.
-              BC 4.734/2019 (registradoras de recebíveis), Lei 13.775/2018
-              (duplicata escritural).
+            <p
+              className="af-mono mt-5 rounded-lg p-3"
+              style={{
+                fontSize: 10.5,
+                background: "var(--af-paper-3)",
+                color: "var(--af-ink-soft)",
+                lineHeight: 1.5,
+              }}
+            >
+              base regulatória · res. BC 4.734/2019 (registradoras) · Lei
+              13.775/2018 (duplicata escritural)
             </p>
-          </Card>
+          </AfCard>
         </div>
       </div>
     </>
@@ -304,12 +508,20 @@ export default async function TravaPage() {
 
 function SimulatePixButton({ entrepreneurId }: { entrepreneurId: string }) {
   return (
-    <form action={`/api/sim/pix`} method="POST">
+    <form action="/api/sim/pix" method="POST">
       <input type="hidden" name="entrepreneurId" value={entrepreneurId} />
-      <Button type="submit" className="gap-2">
+      <button
+        type="submit"
+        className="inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-medium transition-opacity hover:opacity-90"
+        style={{
+          background: "var(--af-terra)",
+          color: "var(--af-paper)",
+          fontFamily: "var(--af-sans)",
+        }}
+      >
         <TrendingUp className="size-4" />
-        Simular Pix entrando
-      </Button>
+        simular Pix entrando
+      </button>
     </form>
   );
 }

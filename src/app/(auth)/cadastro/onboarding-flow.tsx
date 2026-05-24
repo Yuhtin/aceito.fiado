@@ -7,37 +7,32 @@ import {
   ArrowRight,
   AtSign,
   Banknote,
-  Building2,
   CheckCircle2,
   Loader2,
-  MapPin,
   Plus,
   ShoppingBag,
   Smartphone,
   Sparkles,
   Store,
   Trash2,
-  X,
 } from "lucide-react";
 import { toast } from "sonner";
 
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Progress } from "@/components/ui/progress";
-import { Separator } from "@/components/ui/separator";
+import {
+  AfCard,
+  Counter,
+  Eyebrow,
+  GradientMesh,
+  Money,
+  PulseDot,
+} from "@/components/af";
 import {
   formatBRL,
   maskCEPInput,
   maskCNPJInput,
   maskPhoneInput,
 } from "@/lib/format";
-import {
-  calculateScore,
-  SCORING_CONSTANTS,
-} from "@/lib/scoring";
+import { calculateScore, SCORING_CONSTANTS } from "@/lib/scoring";
 import { cn } from "@/lib/utils";
 
 import { completeOnboardingAction } from "./_actions";
@@ -82,10 +77,10 @@ const INITIAL: FormState = {
 };
 
 const STEPS = [
-  { id: 1, title: "Sua conta", icon: Building2 },
-  { id: 2, title: "Negócio", icon: Store },
-  { id: 3, title: "Canais", icon: Smartphone },
-  { id: 4, title: "Score", icon: Sparkles },
+  { id: 1, title: "sua conta" },
+  { id: 2, title: "negócio" },
+  { id: 3, title: "canais" },
+  { id: 4, title: "score" },
 ] as const;
 
 export function OnboardingFlow() {
@@ -103,7 +98,6 @@ export function OnboardingFlow() {
     setForm((p) => ({ ...p, [key]: value }));
   }
 
-  // Cálculo de score em tempo real (preview)
   const livePreview = useMemo(() => {
     const totalRevenue = form.channels.reduce(
       (a, c) => a + parseRevenueCents(c.monthlyRevenue),
@@ -113,7 +107,7 @@ export function OnboardingFlow() {
       (c) => parseRevenueCents(c.monthlyRevenue) > 0,
     );
     if (valid.length === 0)
-      return { score: 0, approved: false, limit: 0n, breakdown: null };
+      return { score: 0, approved: false, limit: 0n };
     const stability =
       valid.length >= 3 ? 0.85 : valid.length === 2 ? 0.7 : 0.55;
     const result = calculateScore({
@@ -127,7 +121,6 @@ export function OnboardingFlow() {
       score: result.score,
       approved: result.approved,
       limit: result.approvedLimitCents,
-      breakdown: result.factors,
     };
   }, [form.channels, form.monthsActive]);
 
@@ -141,7 +134,7 @@ export function OnboardingFlow() {
       .filter((c) => c.label.length > 0 && c.monthlyRevenueCents > 0);
 
     if (validChannels.length === 0) {
-      toast.error("Adicione pelo menos um canal com faturamento.");
+      toast.error("adicione pelo menos um canal com faturamento.");
       return;
     }
 
@@ -165,7 +158,7 @@ export function OnboardingFlow() {
       });
       if (!result.ok) {
         setSubmitting(false);
-        toast.error(result.error ?? "Não conseguimos cadastrar agora");
+        toast.error(result.error ?? "não conseguimos cadastrar agora");
         return;
       }
       setDone({
@@ -177,7 +170,6 @@ export function OnboardingFlow() {
     })();
   }
 
-  // Validação por step
   function canContinue(): boolean {
     if (step === 1) {
       return (
@@ -199,7 +191,8 @@ export function OnboardingFlow() {
     }
     if (step === 3) {
       return form.channels.some(
-        (c) => c.label.length > 0 && parseRevenueCents(c.monthlyRevenue) > 0,
+        (c) =>
+          c.label.length > 0 && parseRevenueCents(c.monthlyRevenue) > 0,
       );
     }
     return true;
@@ -208,134 +201,206 @@ export function OnboardingFlow() {
   if (done) {
     return (
       <div className="w-full max-w-2xl">
-        <Card className="overflow-hidden border-border/60 bg-card/90 p-10 shadow-soft-lg backdrop-blur">
+        <AfCard padding={40} radius={24} className="shadow-af-lift">
           <div className="flex flex-col items-center text-center">
             {done.approved ? (
               <>
-                <div className="flex size-20 items-center justify-center rounded-full bg-success/15 text-success">
+                <div
+                  className="flex size-20 items-center justify-center rounded-full"
+                  style={{
+                    background: "oklch(0.420 0.085 155 / 0.12)",
+                    color: "var(--af-mata)",
+                  }}
+                >
                   <CheckCircle2 className="size-10" />
                 </div>
-                <h1 className="mt-6 font-display text-3xl font-medium">
-                  Você está aprovada, {form.name.split(" ")[0]} ✦
-                </h1>
-                <p className="mt-1 text-sm text-muted-foreground">
-                  Sem consulta ao Serasa. Sem CEP no algoritmo.
-                </p>
-                <div className="mt-8 w-full rounded-2xl border border-border/60 bg-warm-gradient p-6">
-                  <p className="text-xs uppercase tracking-widest text-primary">
-                    Seu limite aprovado
-                  </p>
-                  <p className="mt-2 font-display text-5xl font-medium tabular-nums">
-                    {formatBRL(done.limit)}
-                  </p>
-                  <p className="mt-1 text-sm text-muted-foreground">
-                    Score {Math.round(done.score * 100)}% · disponível imediatamente
-                  </p>
-                </div>
-                <Button
-                  size="lg"
-                  className="mt-8 gap-2 px-8"
-                  onClick={() => router.push("/app")}
+                <h1
+                  className="af-h-tight mt-6"
+                  style={{
+                    fontSize: 32,
+                    margin: "24px 0 0",
+                    color: "var(--af-ink-deep)",
+                  }}
                 >
-                  Ver meu cockpit <ArrowRight className="size-4" />
-                </Button>
+                  você está aprovada,{" "}
+                  <span style={{ color: "var(--af-terra)" }}>
+                    {form.name.split(" ")[0]}
+                  </span>{" "}
+                  ✦
+                </h1>
+                <p
+                  className="af-body"
+                  style={{
+                    fontSize: 14,
+                    color: "var(--af-ink-soft)",
+                    margin: "8px 0 0",
+                  }}
+                >
+                  sem consulta ao Serasa. sem CEP no algoritmo.
+                </p>
+                <GradientMesh
+                  className="mt-8 w-full overflow-hidden"
+                  style={{ borderRadius: 18, padding: 28 }}
+                >
+                  <Eyebrow>seu limite aprovado</Eyebrow>
+                  <div style={{ marginTop: 8 }}>
+                    <Money cents={Number(done.limit)} size={56} weight={600} />
+                  </div>
+                  <p
+                    className="af-mono"
+                    style={{
+                      fontSize: 12,
+                      color: "var(--af-ink-soft)",
+                      margin: "6px 0 0",
+                    }}
+                  >
+                    score {Math.round(done.score * 100)}% · disponível
+                    imediatamente
+                  </p>
+                </GradientMesh>
+                <button
+                  type="button"
+                  onClick={() => router.push("/app")}
+                  className="mt-8 inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-sm font-medium"
+                  style={{
+                    background: "var(--af-ink)",
+                    color: "var(--af-paper)",
+                    fontFamily: "var(--af-sans)",
+                  }}
+                >
+                  ver meu cockpit
+                  <ArrowRight className="size-4" />
+                </button>
               </>
             ) : (
               <>
-                <div className="flex size-20 items-center justify-center rounded-full bg-warning/15 text-warning-foreground">
+                <div
+                  className="flex size-20 items-center justify-center rounded-full"
+                  style={{
+                    background: "oklch(0.795 0.130 85 / 0.15)",
+                    color: "var(--af-acafrao)",
+                  }}
+                >
                   <Sparkles className="size-10" />
                 </div>
-                <h1 className="mt-6 font-display text-3xl font-medium">
-                  Ainda não dá pra liberar limite
+                <h1
+                  className="af-h-tight"
+                  style={{
+                    fontSize: 30,
+                    margin: "24px 0 0",
+                    color: "var(--af-ink-deep)",
+                  }}
+                >
+                  ainda não dá pra liberar limite
                 </h1>
-                <p className="mt-2 max-w-md text-sm text-muted-foreground text-pretty">
-                  Seu score ficou em{" "}
-                  <strong className="text-foreground">
+                <p
+                  className="af-body text-pretty"
+                  style={{
+                    fontSize: 14,
+                    color: "var(--af-ink-soft)",
+                    margin: "10px 0 0",
+                    maxWidth: 440,
+                  }}
+                >
+                  seu score ficou em{" "}
+                  <strong style={{ color: "var(--af-ink)" }}>
                     {Math.round(done.score * 100)}%
                   </strong>
                   , abaixo do mínimo de{" "}
-                  {Math.round(SCORING_CONSTANTS.APPROVAL_THRESHOLD * 100)}%. Não é
-                  rejeição: é convite pra conectar mais canais. Cada canal
-                  conectado vira sinal e aumenta seu limite.
+                  {Math.round(SCORING_CONSTANTS.APPROVAL_THRESHOLD * 100)}%. Não
+                  é rejeição: é convite pra conectar mais canais.
                 </p>
-                <div className="mt-8 grid w-full gap-3 text-left text-sm">
-                  <div className="rounded-xl border border-border/60 bg-muted/40 p-4">
-                    <p className="font-medium">Como subir seu score:</p>
-                    <ul className="mt-2 list-disc space-y-1 pl-5 text-muted-foreground">
-                      <li>Conectar mais canais de venda (marketplace, feira, Pix)</li>
-                      <li>Esperar 30 dias pra acumular histórico de fluxo</li>
-                      <li>Construir relacionamento com um fornecedor da rede</li>
-                    </ul>
-                  </div>
-                </div>
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="mt-8 gap-2 px-8"
+                <button
+                  type="button"
                   onClick={() => router.push("/app")}
+                  className="mt-8 inline-flex items-center gap-2 rounded-full px-7 py-3 text-sm font-medium"
+                  style={{
+                    background: "transparent",
+                    color: "var(--af-ink)",
+                    border: "1px solid var(--af-ink-20)",
+                    fontFamily: "var(--af-sans)",
+                  }}
                 >
-                  Entrar mesmo assim <ArrowRight className="size-4" />
-                </Button>
+                  entrar mesmo assim <ArrowRight className="size-4" />
+                </button>
               </>
             )}
           </div>
-        </Card>
+        </AfCard>
       </div>
     );
   }
 
   return (
     <div className="w-full max-w-3xl">
-      {/* Stepper */}
-      <ol className="mb-8 grid grid-cols-4 gap-2">
+      {/* stepper */}
+      <ol className="mb-6 grid grid-cols-4 gap-2">
         {STEPS.map((s) => {
           const reached = s.id <= step;
           const active = s.id === step;
           return (
             <li
               key={s.id}
-              className={cn(
-                "flex flex-col items-start gap-1 rounded-xl border px-3 py-2 transition-colors",
-                active
-                  ? "border-primary bg-primary/5"
+              className="rounded-2xl px-3.5 py-2.5 transition-colors"
+              style={{
+                background: active
+                  ? "var(--af-paper)"
                   : reached
-                    ? "border-success/40 bg-success/5"
-                    : "border-border/60 bg-card/40",
-              )}
+                    ? "oklch(0.420 0.085 155 / 0.05)"
+                    : "oklch(0.972 0.008 75 / 0.3)",
+                border: `1px solid ${
+                  active
+                    ? "var(--af-terra)"
+                    : reached
+                      ? "oklch(0.420 0.085 155 / 0.3)"
+                      : "var(--af-ink-08)"
+                }`,
+              }}
             >
               <div className="flex items-center gap-1.5">
                 <span
-                  className={cn(
-                    "flex size-5 items-center justify-center rounded-full text-[10px] font-medium",
-                    active
-                      ? "bg-primary text-primary-foreground"
+                  className="grid size-5 place-items-center rounded-full text-[10px] font-semibold"
+                  style={{
+                    background: active
+                      ? "var(--af-terra)"
                       : reached
-                        ? "bg-success text-success-foreground"
-                        : "bg-muted text-muted-foreground",
-                  )}
+                        ? "var(--af-mata)"
+                        : "var(--af-paper-3)",
+                    color:
+                      active || reached
+                        ? "var(--af-paper)"
+                        : "var(--af-ink-soft)",
+                  }}
                 >
                   {reached && !active ? "✓" : s.id}
                 </span>
                 <span
-                  className={cn(
-                    "text-[10px] font-mono uppercase tracking-widest",
-                    active
-                      ? "text-primary"
+                  className="af-mono"
+                  style={{
+                    fontSize: 10,
+                    color: active
+                      ? "var(--af-terra)"
                       : reached
-                        ? "text-success"
-                        : "text-muted-foreground",
-                  )}
+                        ? "var(--af-mata)"
+                        : "var(--af-ink-soft)",
+                    letterSpacing: "0.12em",
+                    textTransform: "uppercase",
+                    fontWeight: 500,
+                  }}
                 >
-                  Passo {s.id}
+                  passo {s.id}
                 </span>
               </div>
               <p
-                className={cn(
-                  "text-sm font-medium",
-                  active || reached
-                    ? "text-foreground"
-                    : "text-muted-foreground",
-                )}
+                className="af-body mt-1"
+                style={{
+                  fontSize: 14,
+                  fontWeight: 500,
+                  color:
+                    active || reached
+                      ? "var(--af-ink-deep)"
+                      : "var(--af-ink-soft)",
+                }}
               >
                 {s.title}
               </p>
@@ -344,33 +409,47 @@ export function OnboardingFlow() {
         })}
       </ol>
 
-      <Card className="border-border/60 bg-card/90 shadow-soft-lg backdrop-blur">
-        {/* STEP 1 — conta */}
+      <AfCard padding={0} radius={24} className="shadow-af-lift overflow-hidden">
         {step === 1 && (
-          <div className="p-7 md:p-10">
-            <h2 className="font-display text-2xl font-medium">
-              Cria sua conta
+          <div className="p-9">
+            <Eyebrow>passo 1 de 4</Eyebrow>
+            <h2
+              className="af-h-tight"
+              style={{
+                fontSize: 28,
+                margin: "10px 0 0",
+                color: "var(--af-ink-deep)",
+              }}
+            >
+              cria sua conta
             </h2>
-            <p className="mt-1 text-sm text-muted-foreground">
-              Sua identificação na plataforma. Em 5 minutos a gente termina.
+            <p
+              className="af-body"
+              style={{
+                fontSize: 14,
+                color: "var(--af-ink-soft)",
+                margin: "6px 0 0",
+              }}
+            >
+              em 5 minutos a gente termina.
             </p>
-            <div className="mt-6 grid gap-4">
+            <div className="mt-7 space-y-4">
               <Field
-                label="Seu nome completo"
+                label="seu nome completo"
                 value={form.name}
                 onChange={(v) => update("name", v)}
-                placeholder="Ex: Joana Bezerra"
+                placeholder="ex: Joana Bezerra"
               />
               <Field
                 type="email"
-                label="E-mail"
+                label="e-mail"
                 value={form.email}
                 onChange={(v) => update("email", v.toLowerCase())}
                 placeholder="seunome@exemplo.com.br"
               />
               <Field
                 type="password"
-                label="Senha (mínimo 6 caracteres)"
+                label="senha (mínimo 6 caracteres)"
                 value={form.password}
                 onChange={(v) => update("password", v)}
                 placeholder="••••••••"
@@ -379,21 +458,35 @@ export function OnboardingFlow() {
           </div>
         )}
 
-        {/* STEP 2 — negócio */}
         {step === 2 && (
-          <div className="p-7 md:p-10">
-            <h2 className="font-display text-2xl font-medium">
-              Sobre o seu negócio
+          <div className="p-9">
+            <Eyebrow>passo 2 de 4</Eyebrow>
+            <h2
+              className="af-h-tight"
+              style={{
+                fontSize: 28,
+                margin: "10px 0 0",
+                color: "var(--af-ink-deep)",
+              }}
+            >
+              sobre seu negócio
             </h2>
-            <p className="mt-1 text-sm text-muted-foreground">
+            <p
+              className="af-body"
+              style={{
+                fontSize: 14,
+                color: "var(--af-ink-soft)",
+                margin: "6px 0 0",
+              }}
+            >
               CNPJ + endereço pra emissão da duplicata. CEP não entra no score.
             </p>
-            <div className="mt-6 grid gap-4 md:grid-cols-2">
+            <div className="mt-7 grid gap-4 md:grid-cols-2">
               <Field
-                label="Razão social"
+                label="razão social"
                 value={form.businessName}
                 onChange={(v) => update("businessName", v)}
-                placeholder="Ex: Onda Preta Biquínis"
+                placeholder="ex: Onda Preta Biquínis"
               />
               <Field
                 label="CNPJ"
@@ -402,15 +495,20 @@ export function OnboardingFlow() {
                 placeholder="00.000.000/0000-00"
               />
               <Field
-                label="WhatsApp"
+                label="whatsapp"
                 value={form.phone}
                 onChange={(v) => update("phone", maskPhoneInput(v))}
                 placeholder="(11) 99999-0000"
               />
-              <div className="space-y-1.5">
-                <Label>Há quanto tempo empreende?</Label>
+              <div className="space-y-2">
+                <label
+                  className="af-eb"
+                  style={{ color: "var(--af-ink-soft)" }}
+                >
+                  há quanto tempo empreende?
+                </label>
                 <div className="flex items-center gap-2">
-                  <Input
+                  <input
                     type="number"
                     min={0}
                     max={300}
@@ -418,9 +516,20 @@ export function OnboardingFlow() {
                     onChange={(e) =>
                       update("monthsActive", parseInt(e.target.value) || 0)
                     }
-                    className="w-24"
+                    className="w-24 rounded-xl px-4 py-3 text-sm focus:outline-none"
+                    style={{
+                      background: "var(--af-paper-2)",
+                      border: "1px solid var(--af-ink-08)",
+                      fontFamily: "var(--af-sans)",
+                      color: "var(--af-ink)",
+                    }}
                   />
-                  <span className="text-sm text-muted-foreground">meses</span>
+                  <span
+                    className="af-body"
+                    style={{ fontSize: 13, color: "var(--af-ink-soft)" }}
+                  >
+                    meses
+                  </span>
                 </div>
               </div>
               <Field
@@ -430,16 +539,16 @@ export function OnboardingFlow() {
                 placeholder="00000-000"
               />
               <Field
-                label="Bairro"
+                label="bairro"
                 value={form.addressNeighborhood}
                 onChange={(v) => update("addressNeighborhood", v)}
-                placeholder="Ex: Heliópolis"
+                placeholder="ex: Heliópolis"
               />
               <Field
-                label="Cidade"
+                label="cidade"
                 value={form.addressCity}
                 onChange={(v) => update("addressCity", v)}
-                placeholder="Ex: São Paulo"
+                placeholder="ex: São Paulo"
               />
               <Field
                 label="UF"
@@ -454,231 +563,364 @@ export function OnboardingFlow() {
           </div>
         )}
 
-        {/* STEP 3 — canais */}
         {step === 3 && (
-          <div className="p-7 md:p-10">
-            <h2 className="font-display text-2xl font-medium">
-              Conecte seus canais de venda
+          <div className="p-9">
+            <Eyebrow>passo 3 de 4</Eyebrow>
+            <h2
+              className="af-h-tight"
+              style={{
+                fontSize: 28,
+                margin: "10px 0 0",
+                color: "var(--af-ink-deep)",
+              }}
+            >
+              conecte onde o{" "}
+              <span style={{ color: "var(--af-terra)" }}>dinheiro entra.</span>
             </h2>
-            <p className="mt-1 text-sm text-muted-foreground">
-              É daqui que o score sai. Cada canal vira sinal de receita.
+            <p
+              className="af-body"
+              style={{
+                fontSize: 14,
+                color: "var(--af-ink-soft)",
+                margin: "6px 0 0",
+              }}
+            >
+              cada canal que você liga vira mais limite. a gente olha
+              recebimento — nunca histórico de dívida.
             </p>
 
-            <div className="mt-6 grid gap-3">
+            <div className="mt-6 space-y-3">
               {form.channels.map((channel, idx) => (
-                <Card
+                <div
                   key={idx}
-                  className="border-border/60 bg-background p-4 shadow-soft"
+                  className="grid items-center gap-3 rounded-2xl p-3"
+                  style={{
+                    background: "var(--af-paper-2)",
+                    border: "1px solid var(--af-ink-08)",
+                    gridTemplateColumns: "150px 1fr 170px auto",
+                  }}
                 >
-                  <div className="grid items-center gap-3 md:grid-cols-[140px_1fr_160px_auto]">
-                    <select
-                      value={channel.type}
+                  <select
+                    value={channel.type}
+                    onChange={(e) => {
+                      const next = [...form.channels];
+                      next[idx] = { ...next[idx], type: e.target.value };
+                      update("channels", next);
+                    }}
+                    className="h-10 rounded-xl px-3 text-sm focus:outline-none"
+                    style={{
+                      background: "var(--af-paper)",
+                      border: "1px solid var(--af-ink-08)",
+                      fontFamily: "var(--af-sans)",
+                      color: "var(--af-ink)",
+                    }}
+                  >
+                    {CHANNEL_TYPES.map((t) => (
+                      <option key={t.value} value={t.value}>
+                        {t.label}
+                      </option>
+                    ))}
+                  </select>
+                  <input
+                    value={channel.label}
+                    placeholder="apelido (ex: Pix Sicoob)"
+                    onChange={(e) => {
+                      const next = [...form.channels];
+                      next[idx] = { ...next[idx], label: e.target.value };
+                      update("channels", next);
+                    }}
+                    className="h-10 rounded-xl px-3.5 text-sm focus:outline-none"
+                    style={{
+                      background: "var(--af-paper)",
+                      border: "1px solid var(--af-ink-08)",
+                      fontFamily: "var(--af-sans)",
+                      color: "var(--af-ink)",
+                    }}
+                  />
+                  <div className="relative">
+                    <span
+                      className="af-mono pointer-events-none absolute left-3 top-1/2 -translate-y-1/2"
+                      style={{ fontSize: 11, color: "var(--af-ink-soft)" }}
+                    >
+                      R$/mês
+                    </span>
+                    <input
+                      inputMode="numeric"
+                      value={channel.monthlyRevenue}
+                      placeholder="0,00"
                       onChange={(e) => {
                         const next = [...form.channels];
-                        next[idx] = { ...next[idx], type: e.target.value };
+                        next[idx] = {
+                          ...next[idx],
+                          monthlyRevenue: e.target.value.replace(
+                            /[^\d,.]/g,
+                            "",
+                          ),
+                        };
                         update("channels", next);
                       }}
-                      className="h-9 rounded-md border border-input bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
-                    >
-                      {CHANNEL_TYPES.map((t) => (
-                        <option key={t.value} value={t.value}>
-                          {t.label}
-                        </option>
-                      ))}
-                    </select>
-                    <Input
-                      value={channel.label}
-                      placeholder="Apelido (ex: Pix Sicoob, Loja Shopee)"
-                      onChange={(e) => {
-                        const next = [...form.channels];
-                        next[idx] = { ...next[idx], label: e.target.value };
-                        update("channels", next);
+                      className="af-mono h-10 w-full rounded-xl pl-16 pr-3 text-right text-sm tabular-nums focus:outline-none"
+                      style={{
+                        background: "var(--af-paper)",
+                        border: "1px solid var(--af-ink-08)",
+                        color: "var(--af-ink)",
                       }}
                     />
-                    <div className="relative">
-                      <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
-                        R$/mês
-                      </span>
-                      <Input
-                        className="pl-16 font-mono tabular-nums"
-                        inputMode="numeric"
-                        value={channel.monthlyRevenue}
-                        placeholder="0,00"
-                        onChange={(e) => {
-                          const next = [...form.channels];
-                          next[idx] = {
-                            ...next[idx],
-                            monthlyRevenue: e.target.value.replace(
-                              /[^\d,.]/g,
-                              "",
-                            ),
-                          };
-                          update("channels", next);
-                        }}
-                      />
-                    </div>
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="icon"
-                      className="text-muted-foreground hover:text-destructive"
-                      onClick={() => {
-                        if (form.channels.length === 1) return;
-                        update(
-                          "channels",
-                          form.channels.filter((_, i) => i !== idx),
-                        );
-                      }}
-                    >
-                      <Trash2 className="size-4" />
-                    </Button>
                   </div>
-                </Card>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (form.channels.length === 1) return;
+                      update(
+                        "channels",
+                        form.channels.filter((_, i) => i !== idx),
+                      );
+                    }}
+                    className="grid size-10 place-items-center rounded-xl transition-colors hover:opacity-100 opacity-60"
+                    style={{ color: "var(--af-ink-soft)" }}
+                  >
+                    <Trash2 className="size-4" />
+                  </button>
+                </div>
               ))}
-              <Button
+              <button
                 type="button"
-                variant="outline"
-                className="gap-2"
                 onClick={() =>
                   update("channels", [
                     ...form.channels,
                     { type: "SHOPEE", label: "", monthlyRevenue: "" },
                   ])
                 }
+                className="inline-flex items-center justify-center gap-2 w-full rounded-2xl py-3 text-sm font-medium transition-colors"
+                style={{
+                  background: "transparent",
+                  border: "1px dashed var(--af-ink-12)",
+                  color: "var(--af-ink-soft)",
+                  fontFamily: "var(--af-sans)",
+                }}
               >
-                <Plus className="size-4" /> Adicionar canal
-              </Button>
+                <Plus className="size-4" /> adicionar canal
+              </button>
             </div>
 
-            {/* Preview do score em tempo real */}
-            <div className="mt-6 rounded-2xl border border-primary/40 bg-warm-gradient p-5">
-              <div className="flex items-center justify-between gap-3">
-                <div>
-                  <p className="text-xs uppercase tracking-widest text-primary">
-                    Prévia em tempo real
-                  </p>
-                  <p className="mt-1 font-display text-2xl font-medium">
-                    Limite estimado{" "}
-                    <span className="text-primary tabular-nums">
-                      {formatBRL(livePreview.limit)}
-                    </span>
-                  </p>
-                </div>
-                <Badge
-                  variant="outline"
-                  className={
-                    livePreview.approved
-                      ? "border-success/30 bg-success/10 text-success"
-                      : "border-warning/40 bg-warning/15 text-warning-foreground"
-                  }
-                >
-                  Score {Math.round(livePreview.score * 100)}%
-                </Badge>
+            {/* preview score · GradientMesh dark */}
+            <GradientMesh
+              dark
+              className="mt-6 overflow-hidden"
+              style={{ borderRadius: 18, padding: 22, color: "var(--af-paper)" }}
+            >
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  marginBottom: 12,
+                }}
+              >
+                <Eyebrow color="oklch(0.972 0.008 75 / 0.55)">
+                  prévia em tempo real
+                </Eyebrow>
+                <PulseDot color="var(--af-acafrao)" label="calculando" />
               </div>
-              <Progress
-                value={livePreview.score * 100}
-                className="mt-3 h-2"
-              />
-              <p className="mt-2 text-xs text-muted-foreground">
-                Mínimo pra aprovação: {Math.round(SCORING_CONSTANTS.APPROVAL_THRESHOLD * 100)}%.{" "}
-                Quanto mais canais e mais histórico, maior o limite.
-              </p>
-            </div>
+              <div className="af-n" style={{ fontSize: 46, lineHeight: 0.95 }}>
+                <span
+                  style={{
+                    fontSize: 18,
+                    opacity: 0.4,
+                    marginRight: 4,
+                    verticalAlign: "0.5em",
+                  }}
+                >
+                  R$
+                </span>
+                <Counter
+                  to={Number(livePreview.limit) / 100}
+                  duration={1200}
+                  decimals={2}
+                />
+              </div>
+              <div
+                style={{ display: "flex", gap: 14, marginTop: 8 }}
+                className="af-mono"
+              >
+                <span style={{ fontSize: 11, color: "var(--af-acafrao)" }}>
+                  score {Math.round(livePreview.score * 100)}%
+                </span>
+                <span
+                  style={{
+                    fontSize: 11,
+                    color: "oklch(0.972 0.008 75 / 0.55)",
+                  }}
+                >
+                  mínimo{" "}
+                  {Math.round(SCORING_CONSTANTS.APPROVAL_THRESHOLD * 100)}%
+                </span>
+              </div>
+              <div
+                style={{
+                  marginTop: 12,
+                  height: 4,
+                  background: "oklch(0.972 0.008 75 / 0.12)",
+                  borderRadius: 99,
+                  overflow: "hidden",
+                }}
+              >
+                <div
+                  style={{
+                    width: `${Math.min(100, livePreview.score * 100)}%`,
+                    height: "100%",
+                    background: livePreview.approved
+                      ? "var(--af-mata-2)"
+                      : "var(--af-acafrao)",
+                    transition: "width 0.6s ease",
+                  }}
+                />
+              </div>
+            </GradientMesh>
           </div>
         )}
 
-        {/* STEP 4 — confirmação */}
         {step === 4 && (
-          <div className="p-7 md:p-10">
-            <h2 className="font-display text-2xl font-medium">
-              Pronta pra ver seu limite?
+          <div className="p-9">
+            <Eyebrow>passo 4 de 4 · última revisão</Eyebrow>
+            <h2
+              className="af-h-tight"
+              style={{
+                fontSize: 28,
+                margin: "10px 0 0",
+                color: "var(--af-ink-deep)",
+              }}
+            >
+              pronta pra ver seu limite?
             </h2>
-            <p className="mt-1 text-sm text-muted-foreground">
-              Revise os dados. Ao confirmar, calculamos seu score e abrimos seu
+            <p
+              className="af-body"
+              style={{
+                fontSize: 14,
+                color: "var(--af-ink-soft)",
+                margin: "6px 0 0",
+              }}
+            >
+              revise os dados. ao confirmar, calculamos seu score e abrimos seu
               cockpit.
             </p>
-            <div className="mt-6 grid gap-4 md:grid-cols-2">
+            <div className="mt-7 grid gap-4 md:grid-cols-2">
               <Summary
-                title="Você"
+                title="você"
                 rows={[
-                  ["Nome", form.name],
-                  ["E-mail", form.email],
+                  ["nome", form.name],
+                  ["e-mail", form.email],
                 ]}
               />
               <Summary
-                title="Negócio"
+                title="negócio"
                 rows={[
-                  ["Razão social", form.businessName],
+                  ["razão social", form.businessName],
                   ["CNPJ", form.cnpj],
-                  ["Tempo de atividade", `${form.monthsActive} meses`],
+                  ["tempo de atividade", `${form.monthsActive} meses`],
                   [
-                    "Endereço",
+                    "endereço",
                     `${form.addressNeighborhood}, ${form.addressCity}/${form.addressState}`,
                   ],
                 ]}
               />
             </div>
-
-            <div className="mt-4 rounded-2xl border border-border/60 bg-background p-5">
-              <p className="text-xs uppercase tracking-widest text-muted-foreground">
-                Canais
-              </p>
+            <div
+              className="mt-4 rounded-2xl p-5"
+              style={{
+                background: "var(--af-paper-2)",
+                border: "1px solid var(--af-ink-08)",
+              }}
+            >
+              <Eyebrow>canais</Eyebrow>
               <ul className="mt-3 grid gap-2">
                 {form.channels.map((c, i) => (
-                  <li key={i} className="flex items-center justify-between text-sm">
+                  <li
+                    key={i}
+                    className="flex items-center justify-between text-sm"
+                  >
                     <span>{c.label || "—"}</span>
-                    <span className="font-mono tabular-nums">
+                    <span className="af-mono">
                       {formatBRL(parseRevenueCents(c.monthlyRevenue))}/mês
                     </span>
                   </li>
                 ))}
               </ul>
-              <Separator className="my-4" />
-              <div className="flex items-center justify-between">
-                <p className="text-sm font-medium">Limite estimado</p>
-                <p className="font-display text-2xl font-medium text-primary tabular-nums">
-                  {formatBRL(livePreview.limit)}
+              <div
+                style={{
+                  borderTop: "1px solid var(--af-ink-08)",
+                  marginTop: 16,
+                  paddingTop: 14,
+                }}
+                className="flex items-center justify-between"
+              >
+                <p
+                  className="af-body"
+                  style={{
+                    fontSize: 14,
+                    fontWeight: 500,
+                    margin: 0,
+                  }}
+                >
+                  limite estimado
                 </p>
+                <Money cents={Number(livePreview.limit)} size={26} weight={600} color="var(--af-terra)" />
               </div>
             </div>
           </div>
         )}
 
-        {/* Footer */}
-        <div className="flex items-center justify-between border-t border-border/60 px-7 py-4 md:px-10">
-          <Button
-            variant="ghost"
+        {/* footer nav */}
+        <div
+          className="flex items-center justify-between px-9 py-5"
+          style={{ borderTop: "1px solid var(--af-ink-08)" }}
+        >
+          <button
+            type="button"
             disabled={step === 1}
             onClick={() => setStep((s) => Math.max(1, s - 1))}
-            className="gap-2"
+            className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-opacity disabled:opacity-30"
+            style={{ color: "var(--af-ink-soft)" }}
           >
-            <ArrowLeft className="size-4" /> Voltar
-          </Button>
+            <ArrowLeft className="size-4" /> voltar
+          </button>
           {step < 4 ? (
-            <Button
+            <button
+              type="button"
               onClick={() => setStep((s) => Math.min(4, s + 1))}
               disabled={!canContinue()}
-              className="gap-2 px-6"
+              className="inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-medium transition-opacity disabled:opacity-40"
+              style={{
+                background: "var(--af-ink)",
+                color: "var(--af-paper)",
+                fontFamily: "var(--af-sans)",
+              }}
             >
-              Continuar <ArrowRight className="size-4" />
-            </Button>
+              continuar <ArrowRight className="size-4" />
+            </button>
           ) : (
-            <Button
+            <button
+              type="button"
               onClick={handleSubmit}
               disabled={submitting}
-              className="gap-2 px-6"
+              className="inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-medium transition-opacity disabled:opacity-50"
+              style={{
+                background: "var(--af-terra)",
+                color: "var(--af-paper)",
+                fontFamily: "var(--af-sans)",
+              }}
             >
               {submitting ? (
                 <Loader2 className="size-4 animate-spin" />
               ) : (
                 <>
-                  Calcular meu limite <Sparkles className="size-4" />
+                  calcular meu limite <Sparkles className="size-4" />
                 </>
               )}
-            </Button>
+            </button>
           )}
         </div>
-      </Card>
+      </AfCard>
     </div>
   );
 }
@@ -699,14 +941,26 @@ function Field({
   maxLength?: number;
 }) {
   return (
-    <div className="space-y-1.5">
-      <Label>{label}</Label>
-      <Input
+    <div className="space-y-2">
+      <label
+        className="af-eb"
+        style={{ color: "var(--af-ink-soft)" }}
+      >
+        {label}
+      </label>
+      <input
         type={type}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
         maxLength={maxLength}
+        className="w-full rounded-xl px-4 py-3 text-sm focus:outline-none"
+        style={{
+          background: "var(--af-paper-2)",
+          border: "1px solid var(--af-ink-08)",
+          color: "var(--af-ink)",
+          fontFamily: "var(--af-sans)",
+        }}
       />
     </div>
   );
@@ -720,15 +974,19 @@ function Summary({
   rows: [string, string][];
 }) {
   return (
-    <div className="rounded-2xl border border-border/60 bg-background p-5">
-      <p className="text-xs uppercase tracking-widest text-muted-foreground">
-        {title}
-      </p>
-      <dl className="mt-3 grid gap-1.5 text-sm">
+    <div
+      className="rounded-2xl p-5"
+      style={{
+        background: "var(--af-paper-2)",
+        border: "1px solid var(--af-ink-08)",
+      }}
+    >
+      <Eyebrow>{title}</Eyebrow>
+      <dl className="mt-3 grid gap-2 text-sm">
         {rows.map(([k, v]) => (
           <div key={k} className="grid grid-cols-[1fr_1.5fr] gap-3">
-            <dt className="text-muted-foreground">{k}</dt>
-            <dd>{v || "—"}</dd>
+            <dt style={{ color: "var(--af-ink-soft)" }}>{k}</dt>
+            <dd style={{ color: "var(--af-ink)" }}>{v || "—"}</dd>
           </div>
         ))}
       </dl>

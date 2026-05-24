@@ -2,18 +2,20 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
   ArrowLeft,
-  CircleDollarSign,
   HandCoins,
   MapPin,
   Package,
 } from "lucide-react";
 
 import { OrderStatusBadge } from "@/app/(entrepreneur)/app/_components/order-status-badge";
+import {
+  AfCard,
+  Eyebrow,
+  GradientMesh,
+  Money,
+  Tag,
+} from "@/components/af";
 import { PageHeader } from "@/components/shell/page-header";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
 import { requireSupplier } from "@/lib/auth";
 import { db } from "@/lib/db";
 import {
@@ -49,189 +51,268 @@ export default async function SupplierOrderDetail({ params }: Props) {
         eyebrow={
           <Link
             href="/fornecedor/pedidos"
-            className="inline-flex items-center gap-1 text-muted-foreground transition-colors hover:text-foreground"
+            className="inline-flex items-center gap-1 transition-opacity hover:opacity-100 opacity-70"
+            style={{ color: "var(--af-ink-soft)" }}
           >
-            <ArrowLeft className="size-3" /> Pedidos
+            <ArrowLeft className="size-3" /> pedidos
           </Link>
         }
         title={
-          <span className="inline-flex items-center gap-3">
+          <span className="inline-flex items-center gap-3 flex-wrap">
             {order.entrepreneur.businessName}
             <OrderStatusBadge status={order.status} />
           </span>
         }
         description={
-          <span className="inline-flex items-center gap-3 text-sm">
-            <Badge variant="outline" className="bg-muted text-foreground">
-              {order.duplicata?.numero ?? `Pedido #${order.id.slice(0, 8)}`}
-            </Badge>
-            <span className="inline-flex items-center gap-1 text-muted-foreground">
-              <MapPin className="size-3.5" /> {order.entrepreneur.addressCity}/
-              {order.entrepreneur.addressState}
+          <span className="inline-flex flex-wrap items-center gap-x-3 gap-y-1.5 text-sm">
+            <Tag color="var(--af-ink)">
+              {order.duplicata?.numero ?? `pedido #${order.id.slice(0, 8)}`}
+            </Tag>
+            <span
+              className="inline-flex items-center gap-1"
+              style={{ color: "var(--af-ink-soft)" }}
+            >
+              <MapPin className="size-3.5" />
+              {order.entrepreneur.addressCity}/{order.entrepreneur.addressState}
             </span>
-            <span className="font-mono text-xs text-muted-foreground">
+            <span
+              className="af-mono"
+              style={{ fontSize: 11.5, color: "var(--af-ink-soft)" }}
+            >
               CNPJ {formatCNPJ(order.entrepreneur.cnpj)}
             </span>
           </span>
         }
       />
 
-      <div className="grid gap-6 px-6 py-6 md:px-10 md:py-8 lg:grid-cols-[1.5fr_1fr]">
+      <div
+        className="grid gap-6 px-6 py-7 md:px-10 md:py-8 lg:grid-cols-[1.5fr_1fr]"
+        style={{ background: "var(--af-paper-2)" }}
+      >
         <div className="space-y-5">
           {/* AÇÃO */}
           {isAwaiting && (
-            <Card className="overflow-hidden border-primary/40 bg-warm-gradient shadow-soft-lg">
-              <div className="grid gap-4 p-6 md:grid-cols-[1fr_auto] md:items-center">
+            <GradientMesh
+              className="overflow-hidden"
+              style={{
+                borderRadius: 20,
+                border: "1px solid var(--af-terra)",
+              }}
+            >
+              <div className="grid gap-4 p-7 md:grid-cols-[1fr_auto] md:items-center">
                 <div>
-                  <p className="text-xs uppercase tracking-widest text-primary">
-                    Aguarda sua confirmação
-                  </p>
-                  <h2 className="mt-1 font-display text-2xl font-medium leading-tight">
-                    Confirme o pedido e receba{" "}
-                    <span className="text-primary">
+                  <Eyebrow color="var(--af-terra)">
+                    aguarda sua confirmação
+                  </Eyebrow>
+                  <h2
+                    className="af-h-tight"
+                    style={{
+                      fontSize: 28,
+                      margin: "10px 0 0",
+                      color: "var(--af-ink-deep)",
+                    }}
+                  >
+                    confirme e receba{" "}
+                    <span style={{ color: "var(--af-terra)" }}>
                       {formatBRL(order.supplierReceiveCents)}
                     </span>{" "}
                     à vista
                   </h2>
-                  <p className="mt-2 text-sm text-muted-foreground">
-                    AceitoFiado faz o Pix pra sua chave{" "}
-                    <span className="font-mono">
-                      {formatCNPJ(user.supplierId.slice(0, 14).padStart(14, "0"))}
-                    </span>{" "}
-                    em até alguns minutos. Após confirmar, a duplicata é emitida
-                    em nome da empreendedora.
+                  <p
+                    className="af-body"
+                    style={{
+                      fontSize: 13.5,
+                      color: "var(--af-ink-2)",
+                      margin: "10px 0 0",
+                      maxWidth: 540,
+                    }}
+                  >
+                    AceitoFiado faz o Pix pra sua chave em até alguns minutos.
+                    após confirmar, a duplicata é emitida em nome da
+                    empreendedora.
                   </p>
                 </div>
                 <div className="flex flex-col gap-2 md:items-end">
                   <ConfirmOrderButton orderId={order.id} />
                 </div>
               </div>
-            </Card>
+            </GradientMesh>
           )}
 
           {/* ITENS */}
-          <Card className="border-border/60 shadow-soft">
-            <div className="px-6 pt-6 pb-3">
-              <h2 className="font-display text-lg font-medium">
-                Pedido — {order.items.length} item
-                {order.items.length === 1 ? "" : "s"}
+          <AfCard padding={0} radius={20} className="overflow-hidden">
+            <div className="px-7 pt-6 pb-3">
+              <Eyebrow>pedido · {order.items.length} item{order.items.length === 1 ? "" : "s"}</Eyebrow>
+              <h2
+                className="af-h"
+                style={{
+                  fontSize: 18,
+                  margin: "6px 0 0",
+                  color: "var(--af-ink-deep)",
+                }}
+              >
+                solicitado {formatRelativeTime(order.requestedAt)}
               </h2>
-              <p className="text-xs text-muted-foreground">
-                Solicitado {formatRelativeTime(order.requestedAt)} ·{" "}
+              <p
+                className="af-mono"
+                style={{
+                  fontSize: 11,
+                  color: "var(--af-ink-soft)",
+                  margin: "4px 0 0",
+                }}
+              >
                 {formatDate(order.requestedAt, true)}
               </p>
             </div>
-            <Separator />
-            <div className="divide-y divide-border/60">
-              {order.items.map((item) => (
-                <div
-                  key={item.id}
-                  className="flex items-center gap-4 px-6 py-3"
-                >
-                  <div className="flex size-10 items-center justify-center rounded-lg bg-accent text-accent-foreground">
-                    <Package className="size-4" />
+            <div style={{ borderTop: "1px solid var(--af-ink-08)" }}>
+              <div
+                className="divide-y"
+                style={{ borderColor: "var(--af-ink-08)" }}
+              >
+                {order.items.map((item) => (
+                  <div
+                    key={item.id}
+                    className="flex items-center gap-4 px-7 py-3.5"
+                  >
+                    <div
+                      style={{
+                        width: 40,
+                        height: 40,
+                        background: "var(--af-paper-3)",
+                        color: "var(--af-ink-soft)",
+                        borderRadius: 10,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <Package className="size-4" />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p
+                        className="af-body truncate"
+                        style={{ fontSize: 14, fontWeight: 500, margin: 0 }}
+                      >
+                        {item.product.name}
+                      </p>
+                      <p
+                        className="af-mono"
+                        style={{
+                          fontSize: 11,
+                          color: "var(--af-ink-soft)",
+                          margin: "2px 0 0",
+                        }}
+                      >
+                        SKU {item.product.sku} · {item.quantity}{" "}
+                        {item.product.unit} ×{" "}
+                        {formatBRL(item.unitPriceCents)}
+                      </p>
+                    </div>
+                    <Money cents={item.totalCents} size={14} />
                   </div>
-                  <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-medium">
-                      {item.product.name}
-                    </p>
-                    <p className="font-mono text-xs text-muted-foreground tabular-nums">
-                      SKU {item.product.sku} · {item.quantity}{" "}
-                      {item.product.unit} ×{" "}
-                      {formatBRL(item.unitPriceCents)}
-                    </p>
-                  </div>
-                  <p className="font-mono text-sm font-medium tabular-nums">
-                    {formatBRL(item.totalCents)}
-                  </p>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
-            <Separator />
-            <div className="space-y-1.5 px-6 py-4 text-sm">
-              <Row label="Subtotal" value={formatBRL(order.subtotalCents)} />
+            <div style={{ borderTop: "1px solid var(--af-ink-08)" }} />
+            <div className="space-y-2 px-7 py-4 text-sm">
+              <Row label="subtotal" value={formatBRL(order.subtotalCents)} />
               <Row
-                label={`Desconto AceitoFiado (${formatBps(order.supplierDiscountBps)})`}
+                label={`desconto AceitoFiado (${formatBps(order.supplierDiscountBps)})`}
                 value={`−${formatBRL(order.subtotalCents - order.supplierReceiveCents)}`}
                 muted
               />
-              <Separator />
+              <div style={{ borderTop: "1px solid var(--af-ink-08)" }} />
               <Row
-                label="Você recebe à vista"
+                label="você recebe à vista"
                 value={formatBRL(order.supplierReceiveCents)}
                 strong
               />
             </div>
-          </Card>
+          </AfCard>
         </div>
 
         <div className="space-y-5">
-          {/* RESUMO */}
-          <Card className="border-border/60 p-5 shadow-soft">
-            <div className="flex items-center gap-2 text-xs uppercase tracking-widest text-primary">
-              <HandCoins className="size-3.5" /> O que acontece quando você confirma
+          {/* HOW IT WORKS */}
+          <AfCard padding={22} radius={18}>
+            <div
+              className="inline-flex items-center gap-1.5"
+              style={{ color: "var(--af-terra)" }}
+            >
+              <HandCoins className="size-3.5" />
+              <Eyebrow color="var(--af-terra)">
+                o que acontece quando você confirma
+              </Eyebrow>
             </div>
-            <ol className="mt-3 space-y-2.5 text-sm">
-              <li className="flex gap-3">
-                <span className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full bg-primary/15 font-mono text-[10px] font-semibold text-primary">
-                  1
-                </span>
-                <span className="text-muted-foreground">
+            <ol className="mt-3 space-y-2.5">
+              {[
+                <>
                   AceitoFiado faz Pix de{" "}
-                  <span className="font-mono text-foreground">
+                  <span
+                    className="af-mono"
+                    style={{ color: "var(--af-ink-deep)", fontWeight: 600 }}
+                  >
                     {formatBRL(order.supplierReceiveCents)}
                   </span>{" "}
                   pra sua chave.
-                </span>
-              </li>
-              <li className="flex gap-3">
-                <span className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full bg-primary/15 font-mono text-[10px] font-semibold text-primary">
-                  2
-                </span>
-                <span className="text-muted-foreground">
-                  Duplicata escritural é emitida em nome da empreendedora e
+                </>,
+                <>
+                  duplicata escritural é emitida em nome da empreendedora e
                   registrada em CERC.
-                </span>
-              </li>
-              <li className="flex gap-3">
-                <span className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full bg-primary/15 font-mono text-[10px] font-semibold text-primary">
-                  3
-                </span>
-                <span className="text-muted-foreground">
-                  A AceitoFiado assume o risco: você não tem mais nada a cobrar.
-                </span>
-              </li>
+                </>,
+                <>
+                  AceitoFiado assume o risco — você não tem mais nada a cobrar.
+                </>,
+              ].map((txt, i) => (
+                <li key={i} className="flex gap-3">
+                  <span
+                    className="af-mono grid shrink-0 place-items-center"
+                    style={{
+                      width: 22,
+                      height: 22,
+                      marginTop: 1,
+                      borderRadius: 99,
+                      background: "var(--af-terra-soft)",
+                      color: "var(--af-terra)",
+                      fontSize: 10,
+                      fontWeight: 600,
+                    }}
+                  >
+                    {i + 1}
+                  </span>
+                  <span
+                    className="af-body"
+                    style={{ fontSize: 13.5, color: "var(--af-ink-2)" }}
+                  >
+                    {txt}
+                  </span>
+                </li>
+              ))}
             </ol>
-          </Card>
+          </AfCard>
 
           {/* EMPREENDEDORA */}
-          <Card className="border-border/60 p-5 shadow-soft">
-            <h3 className="font-display text-base font-medium">
-              Sobre a empreendedora
-            </h3>
-            <dl className="mt-3 space-y-2 text-sm">
-              <KV
-                k="Razão social"
-                v={order.entrepreneur.businessName}
-              />
+          <AfCard padding={22} radius={18}>
+            <Eyebrow>sobre a empreendedora</Eyebrow>
+            <dl className="mt-4 space-y-2.5 text-sm">
+              <KV k="razão social" v={order.entrepreneur.businessName} />
               <KV
                 k="CNPJ"
                 v={
-                  <span className="font-mono">
+                  <span className="af-mono">
                     {formatCNPJ(order.entrepreneur.cnpj)}
                   </span>
                 }
               />
               <KV
-                k="Endereço"
+                k="endereço"
                 v={`${order.entrepreneur.addressNeighborhood}, ${order.entrepreneur.addressCity}/${order.entrepreneur.addressState}`}
               />
               <KV
-                k="No AceitoFiado desde"
+                k="no AceitoFiado desde"
                 v={formatDate(order.entrepreneur.createdAt)}
               />
             </dl>
-          </Card>
+          </AfCard>
         </div>
       </div>
     </>
@@ -250,22 +331,26 @@ function Row({
   strong?: boolean;
 }) {
   return (
-    <div
-      className={
-        strong
-          ? "flex justify-between text-foreground"
-          : muted
-            ? "flex justify-between text-muted-foreground"
-            : "flex justify-between"
-      }
-    >
-      <span className={strong ? "font-medium" : ""}>{label}</span>
+    <div className="flex justify-between">
       <span
-        className={
-          strong
-            ? "font-display text-lg font-semibold tabular-nums"
-            : "font-mono tabular-nums"
-        }
+        style={{
+          color: strong
+            ? "var(--af-ink-deep)"
+            : muted
+              ? "var(--af-ink-soft)"
+              : "var(--af-ink-2)",
+          fontWeight: strong ? 500 : 400,
+        }}
+      >
+        {label}
+      </span>
+      <span
+        className={strong ? "af-n" : "af-mono"}
+        style={{
+          color: strong ? "var(--af-ink-deep)" : "var(--af-ink-2)",
+          fontSize: strong ? 18 : 13,
+          fontWeight: strong ? 600 : 500,
+        }}
       >
         {value}
       </span>
@@ -276,8 +361,8 @@ function Row({
 function KV({ k, v }: { k: string; v: React.ReactNode }) {
   return (
     <div className="grid grid-cols-[1fr_1.5fr] gap-3">
-      <dt className="text-muted-foreground">{k}</dt>
-      <dd className="text-foreground">{v}</dd>
+      <dt style={{ color: "var(--af-ink-soft)" }}>{k}</dt>
+      <dd style={{ color: "var(--af-ink)" }}>{v}</dd>
     </div>
   );
 }

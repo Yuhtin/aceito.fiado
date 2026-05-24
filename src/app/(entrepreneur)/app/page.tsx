@@ -10,19 +10,23 @@ import {
   Smartphone,
   Sparkles,
   Store,
-  TrendingUp,
 } from "lucide-react";
 
+import {
+  AfButton,
+  AfCard,
+  BRLLive,
+  Eyebrow,
+  GradientMesh,
+  Money,
+  PulseDot,
+  SoundBars,
+} from "@/components/af";
 import { CaptureProgressChart } from "@/components/charts/capture-progress";
 import { RevenueByChannelChart } from "@/components/charts/revenue-by-channel";
 import { PageHeader } from "@/components/shell/page-header";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
-import { Separator } from "@/components/ui/separator";
 import { requireEntrepreneur } from "@/lib/auth";
-import { formatBRL, formatDate, formatRelativeTime } from "@/lib/format";
+import { formatBRL, formatRelativeTime } from "@/lib/format";
 import { getEntrepreneurOverview } from "@/lib/queries";
 import { db } from "@/lib/db";
 
@@ -47,131 +51,166 @@ export default async function CockpitPage() {
     include: { _count: { select: { products: true } } },
   });
 
+  const availableLimit = Number(data.availableLimit);
+  const inUseLimit = Number(data.inUseCents);
+  const approvedLimit = Number(data.approvedLimit);
   const usePercent =
-    data.approvedLimit > 0n
-      ? Number((data.inUseCents * 1000n) / data.approvedLimit) / 10
-      : 0;
-
-  const firstName = data.profile.businessName.split(" ")[0] ?? user.name.split(" ")[0];
+    approvedLimit > 0 ? (inUseLimit / approvedLimit) * 100 : 0;
 
   return (
     <>
       <PageHeader
-        eyebrow="Cockpit"
-        title={`Oi, ${user.name.split(" ")[0]} ✦`}
+        eyebrow={`quarta · ${new Date().toLocaleDateString("pt-BR", { day: "2-digit", month: "long" })}`}
+        title={
+          <>
+            bom dia,{" "}
+            <span style={{ color: "var(--af-terra)" }}>
+              {user.name.split(" ")[0]}.
+            </span>
+          </>
+        }
         description={`${data.profile.businessName} · ${data.profile.addressNeighborhood}, ${data.profile.addressCity}/${data.profile.addressState}`}
         actions={
           <>
-            <Button asChild variant="outline" size="lg">
-              <Link href="/app/score">
-                <Sparkles className="size-4" /> Meu score
-              </Link>
-            </Button>
-            <Button asChild size="lg">
-              <Link href="/app/fiado">
-                Comprar fiado <ArrowRight className="size-4" />
-              </Link>
-            </Button>
+            <AfButton variant="outline" size="lg" href="/app/score" icon={false}>
+              <span className="inline-flex items-center gap-1.5">
+                <Sparkles className="size-4" /> meu score
+              </span>
+            </AfButton>
+            <AfButton variant="accent" size="lg" href="/app/fiado">
+              comprar fiado
+            </AfButton>
           </>
         }
       />
 
-      <div className="grid gap-5 px-6 py-6 md:px-10 md:py-8 lg:grid-cols-[1.4fr_1fr]">
-        {/* COLUNA 1 */}
+      <div
+        className="grid gap-5 px-6 py-7 md:px-10 md:py-8 lg:grid-cols-[1.45fr_1fr]"
+        style={{ background: "var(--af-paper-2)" }}
+      >
         <div className="space-y-5">
-          {/* LIMITE */}
-          <Card className="overflow-hidden border-border/60 shadow-soft">
-            <div className="grid gap-6 p-7 md:grid-cols-[1fr_auto] md:items-end">
-              <div>
-                <p className="text-xs uppercase tracking-widest text-muted-foreground">
-                  Limite disponível
-                </p>
-                <p className="mt-2 font-display text-5xl font-medium tabular-nums leading-none">
-                  {formatBRL(data.availableLimit)}
-                </p>
-                <p className="mt-2 text-sm text-muted-foreground">
-                  De um total de{" "}
-                  <span className="font-mono text-foreground">
-                    {formatBRL(data.approvedLimit)}
-                  </span>{" "}
-                  aprovados ·{" "}
-                  <Link href="/app/score" className="underline-offset-2 hover:underline">
-                    como calculamos
-                  </Link>
-                </p>
-              </div>
-              <div className="flex flex-col items-start gap-2 md:items-end">
-                <Badge variant="outline" className="border-success/30 bg-success/10 text-success">
-                  Score {data.score ? `${Math.round(data.score.score * 100)}%` : "—"}
-                </Badge>
-                <p className="text-xs text-muted-foreground">
-                  Calculado{" "}
-                  {data.score
-                    ? formatRelativeTime(data.score.calculatedAt)
-                    : ""}
-                </p>
-              </div>
+          {/* HERO LIMITE */}
+          <AfCard padding={28} radius={20} className="overflow-hidden">
+            <Eyebrow>limite agora · disponível</Eyebrow>
+            <div style={{ marginTop: 14 }}>
+              <Money cents={availableLimit} size={56} weight={600} />
             </div>
-            <Separator />
-            <div className="grid gap-4 p-6 md:grid-cols-3">
-              <div>
-                <p className="text-xs uppercase tracking-wider text-muted-foreground">
-                  Em uso
-                </p>
-                <p className="mt-1 text-xl font-medium tabular-nums">
-                  {formatBRL(data.inUseCents)}
-                </p>
-                <Progress value={usePercent} className="mt-2.5 h-1.5" />
-              </div>
-              <div>
-                <p className="text-xs uppercase tracking-wider text-muted-foreground">
-                  Capturado este mês
-                </p>
-                <p className="mt-1 text-xl font-medium tabular-nums text-success">
-                  {formatBRL(data.capturedThisMonth)}
-                </p>
-                <p className="mt-2.5 text-xs text-muted-foreground">
-                  Direto do Pix, automático
-                </p>
-              </div>
-              <div>
-                <p className="text-xs uppercase tracking-wider text-muted-foreground">
-                  Pix recebido (mês)
-                </p>
-                <p className="mt-1 text-xl font-medium tabular-nums">
-                  {formatBRL(data.pixThisMonth)}
-                </p>
-                <p className="mt-2.5 text-xs text-muted-foreground">
-                  Soma de todos os canais
-                </p>
-              </div>
-            </div>
-          </Card>
+            <p
+              className="af-mono"
+              style={{
+                fontSize: 12,
+                color: "var(--af-ink-soft)",
+                marginTop: 8,
+              }}
+            >
+              de R$ {(approvedLimit / 100).toLocaleString("pt-BR")} aprovados ·{" "}
+              <Link
+                href="/app/score"
+                className="underline-offset-2 hover:underline"
+              >
+                como calculamos
+              </Link>
+            </p>
 
-          {/* FLUXO DE CAIXA */}
-          <Card className="border-border/60 shadow-soft">
-            <div className="flex items-end justify-between gap-3 px-6 pt-6 pb-2">
-              <div>
-                <h2 className="font-display text-xl font-medium">
-                  Fluxo dos seus canais
-                </h2>
-                <p className="text-sm text-muted-foreground">
-                  Últimos 30 dias · soma diária por canal
-                </p>
+            <div style={{ marginTop: 20 }}>
+              <div
+                style={{
+                  display: "flex",
+                  height: 6,
+                  borderRadius: 99,
+                  overflow: "hidden",
+                  background: "var(--af-paper-3)",
+                }}
+              >
+                <div
+                  style={{
+                    width: `${Math.min(100, usePercent)}%`,
+                    background: "var(--af-terra)",
+                    transition: "width 1.2s ease",
+                  }}
+                />
+                <div
+                  style={{
+                    width: `${Math.max(0, 100 - usePercent)}%`,
+                    background: "var(--af-mata-2)",
+                  }}
+                />
               </div>
-              <div className="hidden flex-wrap items-center gap-3 md:flex">
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  marginTop: 10,
+                }}
+                className="af-mono"
+              >
+                <span style={{ fontSize: 11.5, color: "var(--af-terra)" }}>
+                  <span style={{ fontWeight: 600 }}>
+                    {formatBRL(inUseLimit, { withSymbol: true })}
+                  </span>{" "}
+                  comprometido
+                </span>
+                <span style={{ fontSize: 11.5, color: "var(--af-mata)" }}>
+                  <span style={{ fontWeight: 600 }}>
+                    {formatBRL(availableLimit, { withSymbol: true })}
+                  </span>{" "}
+                  livre
+                </span>
+              </div>
+            </div>
+          </AfCard>
+
+          {/* FLUXO DE CANAIS */}
+          <AfCard padding={0} radius={20} className="overflow-hidden">
+            <div
+              style={{
+                display: "flex",
+                alignItems: "flex-end",
+                justifyContent: "space-between",
+                padding: "24px 28px 8px",
+              }}
+            >
+              <div>
+                <Eyebrow>fluxo dos seus canais</Eyebrow>
+                <h2
+                  className="af-h"
+                  style={{
+                    fontSize: 22,
+                    margin: "8px 0 0",
+                    color: "var(--af-ink-deep)",
+                  }}
+                >
+                  últimos 30 dias
+                </h2>
+              </div>
+              <div className="hidden md:flex flex-wrap items-center gap-3">
                 {data.channels.map((c, i) => {
-                  const colors = ["bg-chart-1", "bg-chart-2", "bg-chart-3", "bg-chart-4"];
+                  const colors = [
+                    "var(--af-terra)",
+                    "var(--af-acafrao)",
+                    "var(--af-mata-2)",
+                    "var(--af-cobre)",
+                  ];
                   return (
-                    <div key={c.id} className="flex items-center gap-1.5 text-xs">
-                      <span className={`size-2 rounded-full ${colors[i % colors.length]}`} />
-                      <span className="text-muted-foreground">{c.label}</span>
+                    <div
+                      key={c.id}
+                      className="flex items-center gap-1.5 text-xs"
+                    >
+                      <span
+                        className="size-2 rounded-full"
+                        style={{
+                          background: colors[i % colors.length],
+                        }}
+                      />
+                      <span style={{ color: "var(--af-ink-soft)" }}>
+                        {c.label}
+                      </span>
                     </div>
                   );
                 })}
               </div>
             </div>
-            <div className="px-3 pb-4">
+            <div className="px-4 pb-4">
               <RevenueByChannelChart
                 transactions={data.pixLast30d.map((tx) => ({
                   receivedAt: tx.receivedAt,
@@ -182,146 +221,281 @@ export default async function CockpitPage() {
                 height={260}
               />
             </div>
-          </Card>
+          </AfCard>
 
           {/* OPERAÇÕES ATIVAS */}
-          <Card className="border-border/60 shadow-soft">
-            <div className="flex items-center justify-between px-6 pt-6 pb-3">
+          <AfCard padding={0} radius={20} className="overflow-hidden">
+            <div
+              style={{
+                padding: "24px 28px 14px",
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "flex-end",
+              }}
+            >
               <div>
-                <h2 className="font-display text-xl font-medium">
-                  Operações em andamento
+                <Eyebrow>operações ativas · {data.activeOrders.length}</Eyebrow>
+                <h2
+                  className="af-h"
+                  style={{
+                    fontSize: 22,
+                    margin: "8px 0 0",
+                    color: "var(--af-ink-deep)",
+                  }}
+                >
+                  duplicatas em circulação
                 </h2>
-                <p className="text-sm text-muted-foreground">
-                  Duplicatas vivas e pedidos em processamento
-                </p>
               </div>
-              <Button asChild variant="ghost" size="sm" className="gap-1">
-                <Link href="/app/historico">
-                  Histórico <ChevronRight className="size-4" />
-                </Link>
-              </Button>
+              <Link
+                href="/app/historico"
+                className="text-sm font-medium inline-flex items-center gap-1"
+                style={{ color: "var(--af-ink-soft)" }}
+              >
+                histórico <ChevronRight className="size-4" />
+              </Link>
             </div>
-            <Separator />
-            <div className="divide-y divide-border/60">
-              {data.activeOrders.length === 0 && (
-                <div className="px-6 py-12 text-center">
-                  <p className="text-sm text-muted-foreground">
-                    Nenhuma operação ativa. Que tal abrir uma agora?
+            <div style={{ borderTop: "1px solid var(--af-ink-08)" }}>
+              {data.activeOrders.length === 0 ? (
+                <div className="px-7 py-14 text-center">
+                  <p
+                    className="af-body"
+                    style={{ fontSize: 14, color: "var(--af-ink-soft)" }}
+                  >
+                    nenhuma operação ativa. que tal abrir uma agora?
                   </p>
-                  <Button asChild className="mt-4">
-                    <Link href="/app/fiado">Comprar fiado</Link>
-                  </Button>
+                  <div className="mt-4 inline-block">
+                    <AfButton variant="accent" size="md" href="/app/fiado">
+                      comprar fiado
+                    </AfButton>
+                  </div>
+                </div>
+              ) : (
+                <div className="divide-y" style={{ borderColor: "var(--af-ink-08)" }}>
+                  {data.activeOrders.map((order) => {
+                    const paid = order.receivables.reduce(
+                      (a, r) => a + r.amountCapturedCents,
+                      0n,
+                    );
+                    const t = Number(order.customerPayCents);
+                    const p = Number(paid);
+                    const remaining = t - p;
+                    const pct = t === 0 ? 0 : (p / t) * 100;
+                    return (
+                      <Link
+                        key={order.id}
+                        href={`/app/fiado/op/${order.id}`}
+                        className="grid items-center gap-4 px-7 py-4 transition-colors hover:bg-[oklch(0.985_0.005_75_/_0.5)]"
+                        style={{
+                          gridTemplateColumns: "auto 1fr auto auto",
+                        }}
+                      >
+                        <div
+                          style={{
+                            width: 36,
+                            height: 36,
+                            background: "var(--af-ink)",
+                            color: "var(--af-paper)",
+                            borderRadius: 10,
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            fontFamily: "var(--af-sans)",
+                            fontSize: 14,
+                            fontWeight: 600,
+                          }}
+                        >
+                          {order.supplier.businessName.charAt(0)}
+                        </div>
+                        <div className="min-w-0">
+                          <div className="flex items-center gap-2">
+                            <p
+                              className="af-body truncate"
+                              style={{
+                                fontSize: 14,
+                                fontWeight: 500,
+                                margin: 0,
+                              }}
+                            >
+                              {order.supplier.businessName}
+                            </p>
+                            <OrderStatusBadge status={order.status} />
+                          </div>
+                          <p
+                            className="af-mono"
+                            style={{
+                              fontSize: 11,
+                              color: "var(--af-ink-soft)",
+                              margin: "3px 0 0",
+                            }}
+                          >
+                            {order.items.length} item
+                            {order.items.length === 1 ? "" : "s"}
+                            {order.duplicata && (
+                              <> · {order.duplicata.numero}</>
+                            )}
+                            {order.dueDate && (
+                              <>
+                                {" · "}vence {formatRelativeTime(order.dueDate)}
+                              </>
+                            )}
+                          </p>
+                          <div
+                            style={{
+                              marginTop: 8,
+                              height: 3,
+                              background: "var(--af-ink-08)",
+                              borderRadius: 99,
+                              overflow: "hidden",
+                            }}
+                          >
+                            <div
+                              style={{
+                                width: `${pct}%`,
+                                height: "100%",
+                                background: "var(--af-mata-2)",
+                              }}
+                            />
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <Money cents={remaining > 0 ? remaining : 0} size={15} />
+                          <p
+                            className="af-mono"
+                            style={{
+                              fontSize: 10,
+                              color: "var(--af-ink-soft)",
+                              margin: "3px 0 0",
+                              textTransform: "uppercase",
+                              letterSpacing: "0.1em",
+                            }}
+                          >
+                            restante
+                          </p>
+                        </div>
+                        <ChevronRight
+                          className="size-4"
+                          style={{ color: "var(--af-ink-soft)" }}
+                        />
+                      </Link>
+                    );
+                  })}
                 </div>
               )}
-              {data.activeOrders.map((order) => {
-                const paid = order.receivables.reduce(
-                  (a, r) => a + r.amountCapturedCents,
-                  0n,
-                );
-                const totalPay = order.customerPayCents;
-                const pct = totalPay > 0n ? Number((paid * 1000n) / totalPay) / 10 : 0;
-                const remaining = totalPay - paid;
-                return (
-                  <Link
-                    key={order.id}
-                    href={`/app/fiado/${order.id}`}
-                    className="flex items-center gap-4 px-6 py-4 transition-colors hover:bg-muted/40"
-                  >
-                    <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                      <Store className="size-5" />
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-center gap-2">
-                        <p className="truncate text-sm font-medium">
-                          {order.supplier.businessName}
-                        </p>
-                        <OrderStatusBadge status={order.status} />
-                      </div>
-                      <p className="mt-0.5 text-xs text-muted-foreground">
-                        {order.items.length} item{order.items.length === 1 ? "" : "s"}
-                        {order.duplicata && (
-                          <>
-                            {" · "}
-                            <span className="font-mono">{order.duplicata.numero}</span>
-                          </>
-                        )}
-                        {order.dueDate && (
-                          <>
-                            {" · "}vence {formatRelativeTime(order.dueDate)}
-                          </>
-                        )}
-                      </p>
-                      <div className="mt-2 flex items-center gap-2">
-                        <Progress value={pct} className="h-1 flex-1" />
-                        <span className="text-[10px] tabular-nums text-muted-foreground">
-                          {pct.toFixed(0)}%
-                        </span>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-sm font-semibold tabular-nums">
-                        {formatBRL(remaining)}
-                      </p>
-                      <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
-                        restante
-                      </p>
-                    </div>
-                    <ChevronRight className="size-4 shrink-0 text-muted-foreground" />
-                  </Link>
-                );
-              })}
             </div>
-          </Card>
+          </AfCard>
         </div>
 
-        {/* COLUNA 2 */}
+        {/* COLUNA DIREITA */}
         <div className="space-y-5">
-          {/* TRAVA */}
-          <Card className="overflow-hidden border-border/60 bg-sidebar text-sidebar-foreground shadow-soft-lg">
-            <div className="flex items-center gap-2 px-5 pt-5 pb-2 text-xs uppercase tracking-widest text-sidebar-foreground/60">
-              <Lock className="size-3.5" />
-              Trava de recebíveis
-            </div>
-            <div className="px-5 pb-5">
-              <p className="font-display text-3xl font-medium tabular-nums">
-                {formatBRL(data.capturedThisMonth)}
-              </p>
-              <p className="mt-1 text-xs text-sidebar-foreground/60">
-                capturado este mês · últimos 14 dias abaixo
-              </p>
-              <div className="mt-3 rounded-xl bg-sidebar-accent/40 p-3">
-                <CaptureProgressChart
-                  captures={data.receivables90d.map((r) => ({
-                    capturedAt: r.capturedAt,
-                    amountCapturedCents: r.amountCapturedCents,
-                  }))}
+          {/* TRAVA DARK CARD */}
+          <GradientMesh
+            dark
+            style={{
+              borderRadius: 20,
+              padding: 22,
+              color: "var(--af-paper)",
+              overflow: "hidden",
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                marginBottom: 14,
+              }}
+            >
+              <Eyebrow color="oklch(0.972 0.008 75 / 0.55)">
+                <span className="inline-flex items-center gap-1.5">
+                  <Lock className="size-3" />
+                  trava · hoje
+                </span>
+              </Eyebrow>
+              <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                <SoundBars
+                  count={4}
+                  color="var(--af-acafrao)"
+                  height={12}
+                  width={2}
                 />
+                <PulseDot color="var(--af-acafrao)" label="ao vivo" />
               </div>
-              <Button
-                asChild
-                variant="ghost"
-                size="sm"
-                className="mt-3 w-full justify-between text-sidebar-foreground hover:bg-sidebar-accent/80 hover:text-sidebar-foreground"
-              >
-                <Link href="/app/trava">
-                  Ver trava ao vivo <ArrowUpRight className="size-4" />
-                </Link>
-              </Button>
             </div>
-          </Card>
+            <div
+              className="af-n"
+              style={{ fontSize: 44, lineHeight: 0.95, color: "var(--af-paper)" }}
+            >
+              <span
+                style={{
+                  fontSize: 18,
+                  opacity: 0.4,
+                  marginRight: 4,
+                  verticalAlign: "0.5em",
+                }}
+              >
+                R$
+              </span>
+              <BRLLive
+                initial={Number(data.capturedThisMonth) / 100}
+                ratePerSec={0.21}
+                jitter={0.55}
+              />
+            </div>
+            <div
+              className="af-mono"
+              style={{
+                fontSize: 11.5,
+                color: "oklch(0.972 0.008 75 / 0.55)",
+                marginTop: 6,
+              }}
+            >
+              capturado este mês · últimos 14 dias abaixo
+            </div>
+            <div
+              style={{
+                marginTop: 16,
+                padding: 12,
+                background: "oklch(0.972 0.008 75 / 0.05)",
+                borderRadius: 12,
+                border: "1px solid oklch(0.972 0.008 75 / 0.08)",
+              }}
+            >
+              <CaptureProgressChart
+                captures={data.receivables90d.map((r) => ({
+                  capturedAt: r.capturedAt,
+                  amountCapturedCents: r.amountCapturedCents,
+                }))}
+              />
+            </div>
+            <Link
+              href="/app/trava"
+              className="mt-4 inline-flex w-full items-center justify-between rounded-xl px-4 py-3 text-sm font-medium transition-opacity"
+              style={{
+                border: "1px solid oklch(0.972 0.008 75 / 0.18)",
+                color: "var(--af-paper)",
+              }}
+            >
+              <span>abrir liquidação ao vivo</span>
+              <ArrowUpRight className="size-4" style={{ opacity: 0.7 }} />
+            </Link>
+          </GradientMesh>
 
           {/* CANAIS CONECTADOS */}
-          <Card className="border-border/60 shadow-soft">
-            <div className="px-5 pt-5 pb-3">
-              <h3 className="font-display text-lg font-medium">
-                Canais conectados
+          <AfCard padding={0} radius={18} className="overflow-hidden">
+            <div style={{ padding: "20px 22px 12px" }}>
+              <Eyebrow>canais conectados · {data.channels.length}</Eyebrow>
+              <h3
+                className="af-h"
+                style={{
+                  fontSize: 18,
+                  margin: "6px 0 0",
+                  color: "var(--af-ink-deep)",
+                }}
+              >
+                onde o dinheiro entra
               </h3>
-              <p className="text-xs text-muted-foreground">
-                Quanto mais canais, mais sinal pro score
-              </p>
             </div>
-            <Separator />
-            <div className="divide-y divide-border/60">
+            <div className="divide-y" style={{ borderColor: "var(--af-ink-08)" }}>
               {data.channels.map((channel) => {
                 const Icon = CHANNEL_ICONS[channel.type] ?? Sparkles;
                 return (
@@ -329,67 +503,110 @@ export default async function CockpitPage() {
                     key={channel.id}
                     className="flex items-center gap-3 px-5 py-3"
                   >
-                    <div className="flex size-9 items-center justify-center rounded-lg bg-muted">
+                    <div
+                      style={{
+                        width: 34,
+                        height: 34,
+                        borderRadius: 9,
+                        background: "var(--af-ink)",
+                        color: "var(--af-paper)",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
                       <Icon className="size-4" />
                     </div>
                     <div className="min-w-0 flex-1">
-                      <p className="truncate text-sm font-medium">
+                      <p
+                        className="af-body truncate"
+                        style={{ fontSize: 13.5, fontWeight: 500, margin: 0 }}
+                      >
                         {channel.label}
                       </p>
-                      <p className="text-xs text-muted-foreground tabular-nums">
-                        {formatBRL(channel.monthlyRevenueCents, { compact: true })}
-                        /mês
+                      <p
+                        className="af-mono"
+                        style={{
+                          fontSize: 10.5,
+                          color: "var(--af-ink-soft)",
+                          margin: "2px 0 0",
+                        }}
+                      >
+                        contribui {formatBRL(channel.monthlyRevenueCents, { compact: true })}/mês
                       </p>
                     </div>
-                    <Badge
-                      variant="outline"
-                      className="border-success/30 bg-success/5 text-success text-[10px]"
-                    >
-                      conectado
-                    </Badge>
+                    <PulseDot color="var(--af-mata-2)" size={5} />
                   </div>
                 );
               })}
             </div>
-          </Card>
+          </AfCard>
 
-          {/* SUGESTÃO: fornecedores */}
-          <Card className="border-border/60 shadow-soft">
-            <div className="flex items-center justify-between px-5 pt-5 pb-3">
-              <div>
-                <h3 className="font-display text-lg font-medium">
-                  Fornecedores na rede
-                </h3>
-                <p className="text-xs text-muted-foreground">
-                  Curados na cadeia afro
-                </p>
-              </div>
-              <TrendingUp className="size-4 text-muted-foreground" />
+          {/* FORNECEDORES */}
+          <AfCard padding={0} radius={18} className="overflow-hidden">
+            <div style={{ padding: "20px 22px 12px" }}>
+              <Eyebrow>fornecedores na rede</Eyebrow>
+              <h3
+                className="af-h"
+                style={{
+                  fontSize: 18,
+                  margin: "6px 0 0",
+                  color: "var(--af-ink-deep)",
+                }}
+              >
+                curados na cadeia afro
+              </h3>
             </div>
-            <Separator />
-            <div className="divide-y divide-border/60">
+            <div className="divide-y" style={{ borderColor: "var(--af-ink-08)" }}>
               {featuredSuppliers.map((s) => (
                 <Link
                   key={s.id}
-                  href={`/app/fiado?fornecedor=${s.id}`}
-                  className="flex items-center gap-3 px-5 py-4 transition-colors hover:bg-muted/40"
+                  href={`/app/fiado/${s.id}`}
+                  className="flex items-center gap-3 px-5 py-4 transition-colors hover:bg-[oklch(0.985_0.005_75_/_0.5)]"
                 >
-                  <div className="flex size-10 items-center justify-center rounded-lg bg-accent text-accent-foreground">
-                    <Store className="size-4" />
+                  <div
+                    style={{
+                      width: 38,
+                      height: 38,
+                      borderRadius: 10,
+                      background: "var(--af-terra-soft)",
+                      color: "var(--af-terra)",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontFamily: "var(--af-sans)",
+                      fontSize: 14,
+                      fontWeight: 600,
+                    }}
+                  >
+                    {s.businessName.charAt(0)}
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-medium">
+                    <p
+                      className="af-body truncate"
+                      style={{ fontSize: 13.5, fontWeight: 500, margin: 0 }}
+                    >
                       {s.businessName}
                     </p>
-                    <p className="text-xs text-muted-foreground">
+                    <p
+                      className="af-mono"
+                      style={{
+                        fontSize: 10.5,
+                        color: "var(--af-ink-soft)",
+                        margin: "2px 0 0",
+                      }}
+                    >
                       {s._count.products} produtos · {s.addressNeighborhood}
                     </p>
                   </div>
-                  <ChevronRight className="size-4 text-muted-foreground" />
+                  <ArrowRight
+                    className="size-4"
+                    style={{ color: "var(--af-ink-soft)" }}
+                  />
                 </Link>
               ))}
             </div>
-          </Card>
+          </AfCard>
         </div>
       </div>
     </>

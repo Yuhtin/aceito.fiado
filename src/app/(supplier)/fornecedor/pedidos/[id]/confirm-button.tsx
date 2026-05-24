@@ -1,11 +1,9 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Check, Loader2 } from "lucide-react";
 import { toast } from "sonner";
-
-import { Button } from "@/components/ui/button";
 
 import { confirmOrderAction } from "./_actions";
 
@@ -17,25 +15,34 @@ export function ConfirmOrderButton({ orderId }: { orderId: string }) {
     startTransition(async () => {
       const result = await confirmOrderAction({ orderId });
       if (!result.ok) {
-        toast.error(result.error ?? "Não foi possível confirmar");
+        toast.error(result.error ?? "não foi possível confirmar");
         return;
       }
-      toast.success("Pedido confirmado", {
-        description: `Pix de ${result.amountFormatted} sendo enviado. Duplicata ${result.duplicataNumero} emitida.`,
+      toast.success("pedido confirmado", {
+        description: `Pix de ${result.amountFormatted} sendo enviado. duplicata ${result.duplicataNumero} emitida.`,
       });
       router.refresh();
     });
   }
 
   return (
-    <Button
-      size="lg"
-      className="gap-2"
+    <button
+      type="button"
       onClick={handleConfirm}
       disabled={pending}
+      className="inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-sm font-medium transition-opacity disabled:opacity-50"
+      style={{
+        background: "var(--af-terra)",
+        color: "var(--af-paper)",
+        fontFamily: "var(--af-sans)",
+      }}
     >
-      {pending ? <Loader2 className="size-4 animate-spin" /> : <Check className="size-4" />}
-      Confirmar e receber
-    </Button>
+      {pending ? (
+        <Loader2 className="size-4 animate-spin" />
+      ) : (
+        <Check className="size-4" />
+      )}
+      confirmar e receber
+    </button>
   );
 }

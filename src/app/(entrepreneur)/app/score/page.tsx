@@ -1,20 +1,17 @@
 import { redirect } from "next/navigation";
-import {
-  CheckCircle2,
-  ChevronRight,
-  Eye,
-  ShieldOff,
-  Sparkles,
-} from "lucide-react";
+import { CheckCircle2, ShieldOff, Sparkles } from "lucide-react";
 
+import {
+  AfCard,
+  Eyebrow,
+  GradientMesh,
+  Money,
+  Tag,
+} from "@/components/af";
 import { PageHeader } from "@/components/shell/page-header";
-import { Badge } from "@/components/ui/badge";
-import { Card } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
-import { Separator } from "@/components/ui/separator";
 import { requireEntrepreneur } from "@/lib/auth";
 import { db } from "@/lib/db";
-import { formatBRL, formatDate } from "@/lib/format";
+import { formatDate } from "@/lib/format";
 import { SCORING_CONSTANTS } from "@/lib/scoring";
 
 type Factor = {
@@ -32,166 +29,300 @@ export default async function ScorePage() {
     where: { entrepreneurId: user.entrepreneurId },
     orderBy: { calculatedAt: "desc" },
   });
-
   if (!snapshot) redirect("/app");
 
-  const inputs = snapshot.inputsJson as {
-    factors?: Factor[];
-  };
+  const inputs = snapshot.inputsJson as { factors?: Factor[] };
   const factors = inputs.factors ?? [];
 
   return (
     <>
       <PageHeader
-        eyebrow="Meu score"
-        title="Por que seu limite é o que é"
-        description="Sem caixa preta. Calculamos do que você fatura, em quantos canais e há quanto tempo. Sem consulta a Serasa."
+        eyebrow="meu score"
+        title="por que seu limite é o que é"
+        description="sem caixa preta. calculamos do que você fatura, em quantos canais e há quanto tempo. sem consulta a Serasa."
       />
 
-      <div className="grid gap-6 px-6 py-6 md:px-10 md:py-8 lg:grid-cols-[1.4fr_1fr]">
+      <div
+        className="grid gap-6 px-6 py-7 md:px-10 md:py-8 lg:grid-cols-[1.4fr_1fr]"
+        style={{ background: "var(--af-paper-2)" }}
+      >
         <div className="space-y-5">
-          {/* Score principal */}
-          <Card className="overflow-hidden border-border/60 shadow-soft">
-            <div className="grid gap-6 p-7 md:grid-cols-[auto_1fr] md:items-center">
-              <div className="flex size-32 items-center justify-center rounded-full bg-gradient-to-br from-primary/20 via-accent to-secondary text-primary">
+          {/* SCORE PRINCIPAL */}
+          <GradientMesh
+            className="overflow-hidden"
+            style={{ borderRadius: 20 }}
+          >
+            <div className="grid gap-6 p-8 md:grid-cols-[auto_1fr] md:items-center">
+              <div
+                className="flex size-32 items-center justify-center rounded-full"
+                style={{
+                  background: "var(--af-paper)",
+                  border: "2px solid var(--af-terra)",
+                  color: "var(--af-terra)",
+                }}
+              >
                 <div className="text-center">
-                  <p className="font-display text-4xl font-medium tabular-nums">
+                  <p
+                    className="af-n"
+                    style={{
+                      fontSize: 42,
+                      lineHeight: 1,
+                      color: "var(--af-ink-deep)",
+                    }}
+                  >
                     {Math.round(snapshot.score * 100)}
                   </p>
-                  <p className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+                  <p
+                    className="af-mono"
+                    style={{
+                      fontSize: 10,
+                      color: "var(--af-ink-soft)",
+                      letterSpacing: "0.12em",
+                      textTransform: "uppercase",
+                      marginTop: 4,
+                    }}
+                  >
                     de 100
                   </p>
                 </div>
               </div>
               <div>
-                <Badge
-                  variant="outline"
-                  className="mb-2 border-success/30 bg-success/10 text-success"
+                <Tag color="var(--af-mata)">
+                  aprovada · acima de{" "}
+                  {Math.round(SCORING_CONSTANTS.APPROVAL_THRESHOLD * 100)}%
+                </Tag>
+                <h2
+                  className="af-h-tight"
+                  style={{
+                    fontSize: 28,
+                    margin: "12px 0 0",
+                    color: "var(--af-ink-deep)",
+                  }}
                 >
-                  Aprovada · acima de {Math.round(SCORING_CONSTANTS.APPROVAL_THRESHOLD * 100)}%
-                </Badge>
-                <h2 className="font-display text-2xl font-medium leading-tight">
-                  Seu limite aprovado é{" "}
-                  <span className="text-primary">
-                    {formatBRL(snapshot.approvedLimitCents)}
+                  seu limite aprovado é{" "}
+                  <span style={{ color: "var(--af-terra)" }}>
+                    <Money
+                      cents={snapshot.approvedLimitCents}
+                      size={28}
+                      weight={600}
+                      color="var(--af-terra)"
+                    />
                   </span>
                 </h2>
-                <p className="mt-2 text-sm text-muted-foreground text-pretty">
+                <p
+                  className="af-body text-pretty"
+                  style={{
+                    fontSize: 13.5,
+                    color: "var(--af-ink-2)",
+                    margin: "10px 0 0",
+                  }}
+                >
                   {snapshot.rationale}
                 </p>
-                <p className="mt-2 text-xs text-muted-foreground">
-                  Calculado em {formatDate(snapshot.calculatedAt, true)}
+                <p
+                  className="af-mono"
+                  style={{
+                    fontSize: 11,
+                    color: "var(--af-ink-soft)",
+                    margin: "8px 0 0",
+                  }}
+                >
+                  calculado em {formatDate(snapshot.calculatedAt, true)}
                 </p>
               </div>
             </div>
-          </Card>
+          </GradientMesh>
 
-          {/* Fatores */}
-          <Card className="border-border/60 shadow-soft">
-            <div className="px-6 pt-6 pb-3">
-              <h2 className="font-display text-xl font-medium">
-                Como cada sinal pesa
+          {/* FATORES */}
+          <AfCard padding={0} radius={20} className="overflow-hidden">
+            <div className="px-7 pt-6 pb-3">
+              <Eyebrow>como cada sinal pesa</Eyebrow>
+              <h2
+                className="af-h"
+                style={{
+                  fontSize: 20,
+                  margin: "8px 0 0",
+                  color: "var(--af-ink-deep)",
+                }}
+              >
+                cada fator vira número 0–1, multiplicado pelo peso
               </h2>
-              <p className="text-sm text-muted-foreground">
-                Cada fator vira um número entre 0 e 1, multiplicado pelo peso.
-                Soma final = seu score.
-              </p>
             </div>
-            <Separator />
-            <div className="divide-y divide-border/60">
-              {factors.map((f) => {
-                const contributionPct = f.contribution * 100;
-                return (
-                  <div key={f.key} className="px-6 py-4">
-                    <div className="flex items-center justify-between gap-3">
-                      <div>
-                        <p className="text-sm font-medium">{f.label}</p>
-                        <p className="font-mono text-xs text-muted-foreground">
-                          peso {Math.round(f.weight * 100)}% · seu valor{" "}
-                          <span className="text-foreground">{f.rawValue}</span>
-                        </p>
+            <div style={{ borderTop: "1px solid var(--af-ink-08)" }}>
+              <div
+                className="divide-y"
+                style={{ borderColor: "var(--af-ink-08)" }}
+              >
+                {factors.map((f) => {
+                  const contributionPct = f.contribution * 100;
+                  return (
+                    <div key={f.key} className="px-7 py-4">
+                      <div className="flex items-center justify-between gap-3">
+                        <div>
+                          <p
+                            className="af-body"
+                            style={{ fontSize: 14, fontWeight: 500, margin: 0 }}
+                          >
+                            {f.label}
+                          </p>
+                          <p
+                            className="af-mono"
+                            style={{
+                              fontSize: 11,
+                              color: "var(--af-ink-soft)",
+                              margin: "3px 0 0",
+                            }}
+                          >
+                            peso {Math.round(f.weight * 100)}% · seu valor{" "}
+                            <span style={{ color: "var(--af-ink)" }}>
+                              {f.rawValue}
+                            </span>
+                          </p>
+                        </div>
+                        <div className="text-right">
+                          <p
+                            className="af-n"
+                            style={{
+                              fontSize: 16,
+                              color: "var(--af-mata)",
+                              fontWeight: 600,
+                            }}
+                          >
+                            +{contributionPct.toFixed(1)}
+                          </p>
+                          <p
+                            className="af-mono"
+                            style={{
+                              fontSize: 10,
+                              color: "var(--af-ink-soft)",
+                              margin: "2px 0 0",
+                              textTransform: "uppercase",
+                              letterSpacing: "0.1em",
+                            }}
+                          >
+                            pts
+                          </p>
+                        </div>
                       </div>
-                      <div className="text-right">
-                        <p className="font-mono text-sm tabular-nums">
-                          +{contributionPct.toFixed(1)} pts
-                        </p>
-                        <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
-                          contribuiu
-                        </p>
+                      <div
+                        className="mt-3 overflow-hidden rounded-full"
+                        style={{
+                          height: 4,
+                          background: "var(--af-ink-08)",
+                        }}
+                      >
+                        <div
+                          style={{
+                            width: `${f.normalizedValue * 100}%`,
+                            height: "100%",
+                            background: "var(--af-terra)",
+                          }}
+                        />
                       </div>
                     </div>
-                    <div className="mt-3">
-                      <Progress
-                        value={f.normalizedValue * 100}
-                        className="h-1.5"
-                      />
-                    </div>
-                  </div>
-                );
-              })}
+                  );
+                })}
+              </div>
             </div>
-          </Card>
+          </AfCard>
         </div>
 
         <div className="space-y-5">
-          <Card className="border-border/60 p-5 shadow-soft">
-            <div className="flex items-center gap-2 text-xs uppercase tracking-widest text-primary">
-              <Sparkles className="size-3.5" /> Por que isso importa
+          <AfCard padding={22} radius={18}>
+            <div
+              className="inline-flex items-center gap-1.5"
+              style={{ color: "var(--af-terra)" }}
+            >
+              <Sparkles className="size-3.5" />
+              <Eyebrow color="var(--af-terra)">por que isso importa</Eyebrow>
             </div>
-            <p className="mt-3 text-sm leading-relaxed">
-              Algoritmos de score brasileiros usam{" "}
-              <strong className="text-foreground">CEP</strong> como variável de
-              poder preditivo. CEP correlaciona com raça. Conclusão: o algoritmo
-              discrimina sem saber que discrimina.
+            <p
+              className="af-body"
+              style={{
+                fontSize: 13.5,
+                color: "var(--af-ink-2)",
+                margin: "12px 0 0",
+                lineHeight: 1.55,
+              }}
+            >
+              algoritmos de score brasileiros usam{" "}
+              <strong style={{ color: "var(--af-ink)" }}>CEP</strong> como
+              variável de poder preditivo. CEP correlaciona com raça.
+              conclusão: o algoritmo discrimina sem saber que discrimina.
             </p>
-            <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-              Nosso underwriting{" "}
-              <strong className="text-foreground">não consulta bureau</strong>.
-              Não usa CEP. Usa o que você de fato move por mês.
+            <p
+              className="af-body"
+              style={{
+                fontSize: 13.5,
+                color: "var(--af-ink-soft)",
+                margin: "12px 0 0",
+                lineHeight: 1.55,
+              }}
+            >
+              nosso underwriting{" "}
+              <strong style={{ color: "var(--af-ink)" }}>
+                não consulta bureau
+              </strong>
+              . não usa CEP. usa o que você de fato move por mês.
             </p>
-          </Card>
+          </AfCard>
 
-          <Card className="border-border/60 p-5 shadow-soft">
-            <h3 className="font-display text-base font-medium">
-              Como subir seu score
-            </h3>
-            <ul className="mt-3 space-y-2.5 text-sm">
-              <li className="flex items-start gap-2">
-                <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-success" />
-                <span className="text-muted-foreground">
-                  <strong className="text-foreground">Conecte mais canais</strong>{" "}
-                  — diversidade de receita vira sinal de resiliência.
-                </span>
-              </li>
-              <li className="flex items-start gap-2">
-                <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-success" />
-                <span className="text-muted-foreground">
-                  <strong className="text-foreground">Construa histórico</strong>{" "}
-                  — cada operação quitada melhora seu fator
-                  &ldquo;histórico com fornecedor&rdquo;.
-                </span>
-              </li>
-              <li className="flex items-start gap-2">
-                <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-success" />
-                <span className="text-muted-foreground">
-                  <strong className="text-foreground">Estabilize o fluxo</strong>{" "}
-                  — variação mensal alta puxa pra baixo. Constância importa.
-                </span>
-              </li>
+          <AfCard padding={22} radius={18}>
+            <Eyebrow>como subir seu score</Eyebrow>
+            <ul className="mt-4 space-y-3">
+              {[
+                [
+                  "conecte mais canais",
+                  "diversidade de receita vira sinal de resiliência.",
+                ],
+                [
+                  "construa histórico",
+                  "cada operação quitada melhora o fator histórico com fornecedor.",
+                ],
+                [
+                  "estabilize o fluxo",
+                  "variação mensal alta puxa pra baixo. constância importa.",
+                ],
+              ].map(([t, d]) => (
+                <li key={t} className="flex items-start gap-2.5">
+                  <CheckCircle2
+                    className="size-4 shrink-0 mt-0.5"
+                    style={{ color: "var(--af-mata)" }}
+                  />
+                  <span
+                    className="af-body"
+                    style={{ fontSize: 13.5, color: "var(--af-ink-2)" }}
+                  >
+                    <strong style={{ color: "var(--af-ink)" }}>{t}</strong> —{" "}
+                    {d}
+                  </span>
+                </li>
+              ))}
             </ul>
-          </Card>
+          </AfCard>
 
-          <Card className="border-dashed border-border p-5">
-            <div className="flex items-center gap-2 text-xs uppercase tracking-widest text-muted-foreground">
-              <ShieldOff className="size-3.5" /> O que não usamos
+          <AfCard
+            padding={22}
+            radius={18}
+            style={{ border: "1px dashed var(--af-ink-12)" }}
+          >
+            <div
+              className="inline-flex items-center gap-1.5"
+              style={{ color: "var(--af-ink-soft)" }}
+            >
+              <ShieldOff className="size-3.5" />
+              <Eyebrow>o que não usamos</Eyebrow>
             </div>
-            <ul className="mt-3 space-y-1 text-sm text-muted-foreground">
+            <ul
+              className="af-mono mt-3 space-y-1.5"
+              style={{ fontSize: 12, color: "var(--af-ink-soft)" }}
+            >
               <li>· CEP</li>
-              <li>· Score do Serasa, SPC ou Quod</li>
-              <li>· Dados de redes sociais inferidos</li>
-              <li>· Renda do CPF</li>
+              <li>· score do Serasa, SPC ou Quod</li>
+              <li>· dados de redes sociais inferidos</li>
+              <li>· renda do CPF</li>
             </ul>
-          </Card>
+          </AfCard>
         </div>
       </div>
     </>
