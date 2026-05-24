@@ -30,11 +30,6 @@ const OnboardingSchema = z.object({
   birthDate: z.string().date(),
   businessName: z.string().min(2),
   declaredBusinessActivity: z.string().min(2),
-  phone: z.string().min(10),
-  addressCep: z.string().regex(/^\d{8}$/),
-  addressCity: z.string().min(2),
-  addressState: z.string().length(2),
-  addressNeighborhood: z.string().min(2),
   monthsActive: z.number().int().nonnegative(),
   hasCadUnico: z.boolean().default(false),
   pluggyItemId: z.string().optional(),
@@ -42,6 +37,12 @@ const OnboardingSchema = z.object({
     .union([z.literal(200), z.literal(400), z.literal(600), z.literal(800)])
     .default(400),
   channels: z.array(ChannelInput).min(1, "Conecte pelo menos um canal"),
+  // Campos opcionais — defaults pro MVP. UI não coleta mais.
+  phone: z.string().default(""),
+  addressCep: z.string().default("00000000"),
+  addressCity: z.string().default("São Paulo"),
+  addressState: z.string().default("SP"),
+  addressNeighborhood: z.string().default("—"),
 });
 
 export type OnboardingInput = z.infer<typeof OnboardingSchema>;
@@ -128,11 +129,11 @@ export async function completeOnboardingAction(
           hasCadUnico: data.hasCadUnico,
           pluggyItemId: data.pluggyItemId,
           businessName: data.businessName,
-          phone: data.phone,
-          addressCep: data.addressCep,
-          addressCity: data.addressCity,
-          addressState: data.addressState.toUpperCase(),
-          addressNeighborhood: data.addressNeighborhood,
+          phone: data.phone || "",
+          addressCep: data.addressCep || "00000000",
+          addressCity: data.addressCity || "São Paulo",
+          addressState: (data.addressState || "SP").toUpperCase(),
+          addressNeighborhood: data.addressNeighborhood || "—",
           businessSince,
           channels: {
             createMany: {

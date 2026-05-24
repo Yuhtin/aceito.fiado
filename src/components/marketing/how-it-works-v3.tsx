@@ -6,7 +6,7 @@ const COLS = [
     title: "Cobre fiado em 3 toques",
     steps: [
       "Cliente afro MEI chega na loja. Quer pagar fiado.",
-      "Você abre o AceitoFiado, digita produtos e valor.",
+      "Você abre o aceito.fiado, digita produtos e valor.",
       "Gera o QrCode. Cliente escaneia. Você recebe à vista.",
     ],
   },

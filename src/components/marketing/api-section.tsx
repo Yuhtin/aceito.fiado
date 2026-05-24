@@ -31,8 +31,12 @@ export function ApiSection() {
             style={{ fontSize: "clamp(36px, 5vw, 56px)" }}
           >
             Pluga "Pagar com{" "}
-            <span style={{ color: "var(--af-dourado)" }}>AceitoFiado</span>"
-            no seu checkout.
+            <span style={{ letterSpacing: "-0.04em" }}>
+              aceito
+              <span style={{ color: "var(--af-dourado)" }}>.</span>
+              fiado
+            </span>
+            " no seu checkout.
           </h2>
           <p className="text-white/70 text-[15.5px] mt-5 leading-[1.55] max-w-md">
             SDK leve, ZDR (zero data retention), retorno via webhook. Compatível
