@@ -45,7 +45,7 @@ const OnboardingSchema = z.object({
   addressCep: z.string().default("00000000"),
   addressCity: z.string().default("São Paulo"),
   addressState: z.string().default("SP"),
-  addressNeighborhood: z.string().default("—"),
+  addressNeighborhood: z.string().default("Centro"),
 });
 
 export type OnboardingInput = z.infer<typeof OnboardingSchema>;
@@ -136,7 +136,7 @@ export async function completeOnboardingAction(
           addressCep: data.addressCep || "00000000",
           addressCity: data.addressCity || "São Paulo",
           addressState: (data.addressState || "SP").toUpperCase(),
-          addressNeighborhood: data.addressNeighborhood || "—",
+          addressNeighborhood: data.addressNeighborhood || "Centro",
           businessSince,
           channels: {
             createMany: {

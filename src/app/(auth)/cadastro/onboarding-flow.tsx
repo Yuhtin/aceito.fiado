@@ -319,7 +319,7 @@ export function OnboardingFlow({ nextUrl = "/app" }: { nextUrl?: string }) {
       addressCep: "00000000",
       addressCity: "São Paulo",
       addressState: "SP",
-      addressNeighborhood: "—",
+      addressNeighborhood: "Centro",
     });
 
     // Anima por no mínimo 2.5s pra a tela de calc respirar
@@ -582,7 +582,7 @@ function renderStep(
         <FieldShell
           eyebrow={eyebrowText}
           question="qual o CNPJ do seu MEI?"
-          hint="você precisa ser MEI pra usar a gente — é o que dá fé à duplicata."
+          hint="você precisa ser MEI pra usar a gente. é o que dá fé à duplicata."
         >
           <TextInput
             value={form.cnpj}
@@ -633,7 +633,7 @@ function renderStep(
         <FieldShell
           eyebrow={eyebrowText}
           question="há quanto tempo você empreende?"
-          hint="conta o tempo total — formal ou informal vale."
+          hint="conta o tempo total. formal ou informal vale."
         >
           <RangeChips
             options={TIME_RANGES.map((t) => ({
@@ -685,7 +685,7 @@ function renderStep(
         <FieldShell
           eyebrow={eyebrowText}
           question="quanto entra por mês, somando tudo?"
-          hint="média dos últimos 3 meses. sem pressão de precisão — escolhe a faixa."
+          hint="média dos últimos 3 meses. sem pressão de precisão, escolhe a faixa."
         >
           <RangeChips
             options={REVENUE_RANGES.map((r) => ({
@@ -750,7 +750,7 @@ function renderStep(
             <TextInput
               value={form.addressCity}
               onChange={(v) => update("addressCity", v)}
-              placeholder="cidade — São Paulo"
+              placeholder="ex: São Paulo"
               autoFocus
               size="sm"
             />
@@ -758,7 +758,7 @@ function renderStep(
               <TextInput
                 value={form.addressNeighborhood}
                 onChange={(v) => update("addressNeighborhood", v)}
-                placeholder="bairro — Brás"
+                placeholder="ex: Brás"
                 size="sm"
               />
               <TextInput
@@ -1551,7 +1551,7 @@ function ResultScreen({
                 lineHeight: 0.9,
               }}
             >
-              R$ {brl(Math.round(animatedLimit * 100)).replace("R$", "").replace(/ /g, "").trim()}
+              R$ {Math.round(animatedLimit).toLocaleString("pt-BR")}
             </span>
             <p
               className="af-mono mt-3"
