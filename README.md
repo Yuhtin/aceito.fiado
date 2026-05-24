@@ -524,8 +524,3 @@ Impactos esperados:
 - Preparar carteira para debênture ou FIDC.
 - Evoluir a API para marketplaces e ERPs de fornecedores.
 
-## Equipe
-
-Projeto desenvolvido no contexto de hackathon como MVP funcional de infraestrutura financeira para crédito produtivo.
-
-Adicionar nomes, funções e contatos da equipe nesta seção antes da submissão final.
