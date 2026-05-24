@@ -1,4 +1,5 @@
 // src/app/page.tsx
+import { ApiSection } from "@/components/marketing/api-section";
 import { HeroV3 } from "@/components/marketing/hero-v3";
 import { HowItWorksV3 } from "@/components/marketing/how-it-works-v3";
 import { ManifestoStrip } from "@/components/marketing/manifesto-strip";
@@ -11,6 +12,7 @@ export default function HomePage() {
       <ManifestoStrip />
       <NumbersGrid />
       <HowItWorksV3 />
+      <ApiSection />
     </div>
   );
 }
