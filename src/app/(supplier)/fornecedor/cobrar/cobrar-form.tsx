@@ -57,6 +57,33 @@ export function CobrarForm({ supplierName }: Props) {
             se a cliente ainda não tem cadastro, ela cria no momento de pagar
           </p>
         </div>
+        <p className="af-eb mb-2 mt-6">itens da venda</p>
+        <div className="bg-[var(--af-branco)] rounded-[10px] overflow-hidden border border-[var(--af-borda)]">
+          {items.map((item, i) => (
+            <div
+              key={i}
+              className="flex items-center px-3.5 py-3 border-b border-[var(--af-borda)] last:border-b-0 text-[13.5px]"
+            >
+              <span className="flex-1">{item.name}</span>
+              <span className="font-mono text-[12px] text-[var(--af-cinza)] mr-4">
+                ×{item.qty}
+              </span>
+              <span className="af-display text-[18px]">
+                R$ {(item.priceCents / 100).toFixed(2).replace(".", ",")}
+              </span>
+              <button
+                onClick={() => setItems(items.filter((_, j) => j !== i))}
+                className="ml-3.5 text-[var(--af-cinza)]"
+                aria-label="remover"
+              >
+                ×
+              </button>
+            </div>
+          ))}
+          <NewItemRow
+            onAdd={(item) => setItems((prev) => [...prev, item])}
+          />
+        </div>
         <button
           onClick={handleGenerate}
           disabled={generating || items.length === 0}
@@ -74,6 +101,58 @@ export function CobrarForm({ supplierName }: Props) {
           </p>
         )}
       </div>
+    </div>
+  );
+}
+
+function NewItemRow({
+  onAdd,
+}: {
+  onAdd: (item: CobrarItem) => void;
+}) {
+  const [name, setName] = useState("");
+  const [qty, setQty] = useState(1);
+  const [price, setPrice] = useState("");
+
+  const priceCents = Math.round(
+    Number(price.replace(/[^\d,]/g, "").replace(",", ".")) * 100,
+  );
+  const canAdd = name.trim().length > 0 && qty > 0 && priceCents > 0;
+
+  return (
+    <div className="flex items-center gap-2 px-3.5 py-3 bg-[var(--af-creme)]">
+      <input
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+        placeholder="nome do item"
+        className="flex-1 text-[13px] bg-transparent border-b border-[var(--af-borda)] outline-none py-1"
+      />
+      <input
+        type="number"
+        value={qty}
+        onChange={(e) => setQty(Math.max(1, Number(e.target.value)))}
+        className="w-12 text-[13px] bg-transparent border-b border-[var(--af-borda)] outline-none py-1 text-right font-mono"
+        min={1}
+      />
+      <input
+        value={price}
+        onChange={(e) => setPrice(e.target.value)}
+        placeholder="R$ 0,00"
+        className="w-24 text-[13px] bg-transparent border-b border-[var(--af-borda)] outline-none py-1 text-right font-mono"
+      />
+      <button
+        onClick={() => {
+          if (!canAdd) return;
+          onAdd({ name: name.trim(), qty, priceCents });
+          setName("");
+          setQty(1);
+          setPrice("");
+        }}
+        disabled={!canAdd}
+        className="text-[13px] font-medium text-[var(--af-dourado-dark)] disabled:opacity-30"
+      >
+        + add
+      </button>
     </div>
   );
 }
