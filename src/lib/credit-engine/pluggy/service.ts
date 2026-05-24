@@ -28,10 +28,16 @@ export class PluggyService {
 
   async createConnectToken(clientUserId?: string): Promise<{ accessToken: string }> {
     const apiKey = await this.getApiKey();
+    // includeSandbox: true habilita conectores sandbox (Banco Pluggy etc.)
+    // pra demo/dev. Em produção, remover ou condicionar a NODE_ENV !== 'production'.
+    const body: Record<string, unknown> = {
+      options: { includeSandbox: true }
+    };
+    if (clientUserId) body.clientUserId = clientUserId;
     return this.request<{ accessToken: string }>('/connect_token', {
       method: 'POST',
       headers: { 'X-API-KEY': apiKey },
-      body: JSON.stringify(clientUserId ? { clientUserId } : {})
+      body: JSON.stringify(body)
     });
   }
 

@@ -182,6 +182,7 @@ export function OnboardingFlow({ nextUrl = "/app" }: { nextUrl?: string }) {
       const { PluggyConnect } = await import("pluggy-connect-sdk");
       const pc = new PluggyConnect({
         connectToken: data.accessToken as string,
+        includeSandbox: true,
         onSuccess: (itemData) => {
           update("pluggyItemId", itemData.item.id);
           toast.success("conta conectada com sucesso!");
