@@ -64,6 +64,18 @@ enum DuplicataStatus {
   PROTESTED
 }
 
+enum CheckoutSource {
+  QR_PRESENCIAL
+  API_MARKETPLACE
+}
+
+enum CheckoutStatus {
+  PENDING
+  CONFIRMED
+  EXPIRED
+  CANCELLED
+}
+
 // ─────────────────────── Modelos ─────────────────────
 
 model User {
@@ -110,10 +122,11 @@ model EntrepreneurProfile {
   createdAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt
 
-  channels        Channel[]
-  scoreSnapshots  ScoreSnapshot[]
-  orders          Order[]
-  pixTransactions PixTransaction[]
+  channels         Channel[]
+  scoreSnapshots   ScoreSnapshot[]
+  orders           Order[]
+  pixTransactions  PixTransaction[]
+  checkoutSessions CheckoutSession[]
 
   @@index([cnpj])
 }
@@ -137,8 +150,13 @@ model SupplierProfile {
   createdAt           DateTime         @default(now())
   updatedAt           DateTime         @updatedAt
 
-  products Product[]
-  orders   Order[]
+  latitude    Float?
+  longitude   Float?
+  serviceTags String[]  @default([])
+
+  products         Product[]
+  orders           Order[]
+  checkoutSessions CheckoutSession[]
 
   @@index([cnpj])
   @@index([category])
@@ -216,9 +234,10 @@ model Order {
   dueDate     DateTime?
   repaidAt    DateTime?
 
-  items       OrderItem[]
-  duplicata   Duplicata?
-  receivables Receivable[]
+  items           OrderItem[]
+  duplicata       Duplicata?
+  receivables     Receivable[]
+  checkoutSession CheckoutSession?
 
   @@index([entrepreneurId, status])
   @@index([supplierId, status])
@@ -284,4 +303,34 @@ model Receivable {
   capturedAt          DateTime       @default(now())
 
   @@index([orderId])
+}
+
+model CheckoutSession {
+  id             String          @id @default(cuid())
+  code           String          @unique
+  supplierId     String
+  entrepreneurId String?
+  amount         BigInt
+  items          Json
+  prazo          Int
+  source         CheckoutSource  @default(QR_PRESENCIAL)
+  status         CheckoutStatus  @default(PENDING)
+  expiresAt      DateTime
+  confirmedAt    DateTime?
+  orderId        String?         @unique
+
+  // API marketplace
+  marketplaceId String?
+  successUrl    String?
+  webhookUrl    String?
+  cancelUrl     String?
+
+  supplier     SupplierProfile      @relation(fields: [supplierId], references: [id], onDelete: Cascade)
+  entrepreneur EntrepreneurProfile? @relation(fields: [entrepreneurId], references: [id])
+  order        Order?               @relation(fields: [orderId], references: [id])
+
+  createdAt DateTime @default(now())
+
+  @@index([code])
+  @@index([supplierId, status])
 }
