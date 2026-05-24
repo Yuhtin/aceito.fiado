@@ -301,7 +301,7 @@ export function OnboardingFlow({ nextUrl = "/app" }: { nextUrl?: string }) {
 
     return (
       <div
-        className="flex min-h-screen items-center justify-center p-8"
+        className="flex items-center justify-center px-6 py-10 lg:py-14"
         style={{ background: "var(--af-creme)" }}
       >
         <div
@@ -556,10 +556,10 @@ export function OnboardingFlow({ nextUrl = "/app" }: { nextUrl?: string }) {
   /* ─── multi-step form ─── */
   return (
     <div
-      className="flex min-h-screen flex-col items-center justify-center px-6 py-12"
+      className="flex flex-col items-center px-6 py-10 lg:py-14"
       style={{ background: "var(--af-creme)" }}
     >
-      <div className="w-full max-w-3xl">
+      <div className="w-full max-w-2xl">
         {/* stepper */}
         <ol className="mb-6 grid grid-cols-4 gap-2">
           {STEPS.map((s) => {
