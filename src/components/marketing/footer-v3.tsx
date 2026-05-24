@@ -2,7 +2,7 @@
 import { Logo } from "@/components/brand/logo";
 
 const COLS = [
-  ["produto", ["Checkout presencial", "API marketplace", "Trava de recebíveis", "Mudanças recentes"]],
+  ["produto", ["Checkout presencial", "API marketplace", "Documentação", "Mudanças recentes"]],
   ["empresa", ["Manifesto", "Imprensa", "Carreira", "Contato"]],
   ["recursos", ["Documentação", "Status", "Termos", "Privacidade"]],
   ["social", ["Instagram", "LinkedIn", "Newsletter", "GitHub"]],
@@ -44,7 +44,7 @@ export function FooterV3() {
         </div>
         <div className="mt-14 pt-7 border-t border-white/10 flex justify-between items-center flex-wrap gap-3 font-mono text-[11px] text-white/50">
           <span>
-            AceitoFiado · Tecnologia LTDA · CNPJ XX.XXX.XXX/0001-XX · v0.5
+            aceito.fiado · Tecnologia LTDA · CNPJ XX.XXX.XXX/0001-XX · v0.5
           </span>
           <span>© 2026 · São Paulo</span>
         </div>

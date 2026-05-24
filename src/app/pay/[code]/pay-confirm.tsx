@@ -196,7 +196,7 @@ function PaySuccess({
         <div className="bg-[var(--af-creme)] rounded-[10px] p-3.5 text-left">
           <div className="af-eb">próximo passo</div>
           <div className="text-[13px] mt-1.5 leading-[1.4]">
-            A trava do seu Pix começa a recolher 30% até zerar a dívida. Acompanhe em{" "}
+            Acompanhe seus fiados em aberto em{" "}
             <a
               href="/app"
               style={{ color: "var(--af-dourado-dark)" }}

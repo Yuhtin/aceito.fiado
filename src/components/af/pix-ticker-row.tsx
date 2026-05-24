@@ -4,7 +4,7 @@ import { PulseDot } from "./motion";
 export type PixTickerRowProps = {
   payer: string;
   total: number | bigint;
-  toTrava: number | bigint;
+  toSupplier: number | bigint;
   channel: string;
   time: string;
   isNew?: boolean;
@@ -15,7 +15,7 @@ export type PixTickerRowProps = {
 export function PixTickerRow({
   payer,
   total,
-  toTrava,
+  toSupplier,
   channel,
   time,
   isNew = false,
@@ -23,8 +23,8 @@ export function PixTickerRow({
   dark = false,
 }: PixTickerRowProps) {
   const t = typeof total === "bigint" ? Number(total) : total;
-  const tr = typeof toTrava === "bigint" ? Number(toTrava) : toTrava;
-  const travaPct = t === 0 ? 0 : tr / t;
+  const tr = typeof toSupplier === "bigint" ? Number(toSupplier) : toSupplier;
+  const supplierPct = t === 0 ? 0 : tr / t;
   const sub = dark ? "oklch(0.972 0.008 75 / 0.55)" : "var(--af-ink-soft)";
   const txt = dark ? "var(--af-paper)" : "var(--af-ink)";
   const sep = dark ? "oklch(0.972 0.008 75 / 0.08)" : "var(--af-ink-08)";
@@ -93,11 +93,11 @@ export function PixTickerRow({
         }}
       >
         <div
-          style={{ width: `${travaPct * 100}%`, background: "var(--af-terra)" }}
+          style={{ width: `${supplierPct * 100}%`, background: "var(--af-terra)" }}
         />
         <div
           style={{
-            width: `${(1 - travaPct) * 100}%`,
+            width: `${(1 - supplierPct) * 100}%`,
             background: "var(--af-mata-2)",
           }}
         />
@@ -112,7 +112,7 @@ export function PixTickerRow({
           className="af-mono"
           style={{ fontSize: 10, color: "var(--af-terra-2)" }}
         >
-          {(travaPct * 100).toFixed(0)}% → {supplier || "trava"}
+          {(supplierPct * 100).toFixed(0)}% → {supplier || "fornecedor"}
         </span>
         <span
           className="af-mono"

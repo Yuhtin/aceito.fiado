@@ -5,7 +5,10 @@ import { z } from "zod";
 import { createSession, hashPassword } from "@/lib/auth";
 import { analyzeCadastro } from "@/lib/credit-engine/analyze";
 import { db } from "@/lib/db";
-import type { ChannelType } from "@/generated/prisma/client";
+import type {
+  ChannelType,
+  SupplierCategory,
+} from "@/generated/prisma/client";
 
 const ChannelInput = z.object({
   type: z.enum([
@@ -30,11 +33,6 @@ const OnboardingSchema = z.object({
   birthDate: z.string().date(),
   businessName: z.string().min(2),
   declaredBusinessActivity: z.string().min(2),
-  phone: z.string().min(10),
-  addressCep: z.string().regex(/^\d{8}$/),
-  addressCity: z.string().min(2),
-  addressState: z.string().length(2),
-  addressNeighborhood: z.string().min(2),
   monthsActive: z.number().int().nonnegative(),
   hasCadUnico: z.boolean().default(false),
   pluggyItemId: z.string().optional(),
@@ -42,6 +40,12 @@ const OnboardingSchema = z.object({
     .union([z.literal(200), z.literal(400), z.literal(600), z.literal(800)])
     .default(400),
   channels: z.array(ChannelInput).min(1, "Conecte pelo menos um canal"),
+  // Campos opcionais — defaults pro MVP. UI não coleta mais.
+  phone: z.string().default(""),
+  addressCep: z.string().default("00000000"),
+  addressCity: z.string().default("São Paulo"),
+  addressState: z.string().default("SP"),
+  addressNeighborhood: z.string().default("Centro"),
 });
 
 export type OnboardingInput = z.infer<typeof OnboardingSchema>;
@@ -128,11 +132,11 @@ export async function completeOnboardingAction(
           hasCadUnico: data.hasCadUnico,
           pluggyItemId: data.pluggyItemId,
           businessName: data.businessName,
-          phone: data.phone,
-          addressCep: data.addressCep,
-          addressCity: data.addressCity,
-          addressState: data.addressState.toUpperCase(),
-          addressNeighborhood: data.addressNeighborhood,
+          phone: data.phone || "",
+          addressCep: data.addressCep || "00000000",
+          addressCity: data.addressCity || "São Paulo",
+          addressState: (data.addressState || "SP").toUpperCase(),
+          addressNeighborhood: data.addressNeighborhood || "Centro",
           businessSince,
           channels: {
             createMany: {
@@ -184,5 +188,94 @@ export async function completeOnboardingAction(
     attentionFactors: analysis.attentionFactors,
     userExplanation: analysis.userExplanation,
     engine: analysis.engine,
+  };
+}
+
+// ─────────────────────── Supplier (lojista) onboarding ───────────────────────
+
+const SupplierOnboardingSchema = z.object({
+  name: z.string().min(2),
+  email: z.string().email(),
+  password: z.string().min(6),
+  cnpj: z.string().regex(/^\d{14}$/),
+  businessName: z.string().min(2),
+  category: z.enum([
+    "TEXTIL",
+    "COSMETICOS",
+    "ALIMENTOS",
+    "BEBIDAS",
+    "PAPELARIA",
+    "ACESSORIOS",
+    "CALCADOS",
+    "BAZAR",
+    "OUTROS",
+  ]),
+  addressCity: z.string().min(2),
+  addressState: z.string().length(2),
+  addressNeighborhood: z.string().min(2),
+  description: z.string().default(""),
+  phone: z.string().default(""),
+  addressCep: z.string().default("00000000"),
+  pixKey: z.string().default(""),
+});
+
+export type SupplierOnboardingInput = z.infer<typeof SupplierOnboardingSchema>;
+
+export interface CompleteSupplierResult {
+  ok: boolean;
+  error?: string;
+  supplierId?: string;
+  businessName?: string;
+}
+
+export async function completeSupplierOnboardingAction(
+  input: SupplierOnboardingInput,
+): Promise<CompleteSupplierResult> {
+  const parsed = SupplierOnboardingSchema.safeParse(input);
+  if (!parsed.success) {
+    return { ok: false, error: parsed.error.issues[0]?.message };
+  }
+  const data = parsed.data;
+
+  const existing = await db.user.findUnique({
+    where: { email: data.email.toLowerCase() },
+  });
+  if (existing) return { ok: false, error: "E-mail já cadastrado" };
+
+  const existingCnpj = await db.supplierProfile.findUnique({
+    where: { cnpj: data.cnpj },
+  });
+  if (existingCnpj) return { ok: false, error: "CNPJ já cadastrado" };
+
+  const user = await db.user.create({
+    data: {
+      email: data.email.toLowerCase(),
+      passwordHash: hashPassword(data.password),
+      role: "SUPPLIER",
+      name: data.name,
+      supplier: {
+        create: {
+          cnpj: data.cnpj,
+          businessName: data.businessName,
+          category: data.category as SupplierCategory,
+          description: data.description || `${data.businessName} · ${data.category.toLowerCase()}`,
+          phone: data.phone || "",
+          addressCep: data.addressCep || "00000000",
+          addressCity: data.addressCity,
+          addressState: data.addressState.toUpperCase(),
+          addressNeighborhood: data.addressNeighborhood,
+          pixKey: data.pixKey || "",
+        },
+      },
+    },
+    include: { supplier: { select: { id: true, businessName: true } } },
+  });
+
+  await createSession(user.id);
+
+  return {
+    ok: true,
+    supplierId: user.supplier?.id,
+    businessName: user.supplier?.businessName,
   };
 }

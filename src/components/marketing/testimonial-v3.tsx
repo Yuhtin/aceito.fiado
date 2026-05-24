@@ -15,7 +15,7 @@ export function TestimonialV3() {
           <span style={{ color: "var(--af-dourado)" }}>
             maior pedido da loja
           </span>{" "}
-          e a AceitoFiado liquidou em 11 dias sem eu ter que ligar pra
+          e a aceito<span style={{ color: "var(--af-dourado)" }}>.</span>fiado liquidou em 11 dias sem eu ter que ligar pra
           ninguém. É a primeira vez que crédito serviu pra mim."
         </blockquote>
         <div className="flex items-center gap-4 mt-8">

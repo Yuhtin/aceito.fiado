@@ -64,8 +64,7 @@ export default async function EntrarPage({ searchParams }: Props) {
                 lineHeight: 1.6,
               }}
             >
-              acesse seu cockpit para ver limite, operações e trava de
-              recebíveis.
+              acesse seu cockpit para ver limite e operações em andamento.
             </p>
 
             <LoginForm prefillEmail={demoEmail} nextUrl={nextUrl} />
