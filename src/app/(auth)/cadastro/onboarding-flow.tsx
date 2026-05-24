@@ -180,12 +180,19 @@ export function OnboardingFlow({ nextUrl = "/app" }: { nextUrl?: string }) {
       }
 
       const { PluggyConnect } = await import("pluggy-connect-sdk");
+      // Sandbox connectors disponíveis (sem OAuth, sem cadastro em banco real):
+      //   2 = Pluggy Bank (PERSONAL_BANK sandbox) — credenciais user-good/password-good
+      //   4 = Pluggy Bank BR (sandbox alternativo)
+      // Bancos reais exigem redirect URI cadastrado no Pluggy Dashboard — fora do MVP.
       const pc = new PluggyConnect({
         connectToken: data.accessToken as string,
         includeSandbox: true,
+        connectorIds: [2, 4],
         onSuccess: (itemData) => {
           update("pluggyItemId", itemData.item.id);
-          toast.success("conta conectada com sucesso!");
+          toast.success(
+            "conta conectada! seu fluxo bancário foi compartilhado com segurança.",
+          );
           setConnectingPluggy(false);
         },
         onError: (error) => {
@@ -1137,6 +1144,25 @@ export function OnboardingFlow({ nextUrl = "/app" }: { nextUrl?: string }) {
                       )}
                       Conectar Open Finance
                     </button>
+                  )}
+                  {!form.pluggyItemId && (
+                    <p
+                      className="af-mono mt-3"
+                      style={{
+                        fontSize: 11,
+                        color: "var(--af-cinza)",
+                        lineHeight: 1.5,
+                      }}
+                    >
+                      modo sandbox · escolha &quot;Pluggy Bank&quot; e use{" "}
+                      <span style={{ color: "var(--af-preto)", fontWeight: 600 }}>
+                        user-good
+                      </span>{" "}
+                      /{" "}
+                      <span style={{ color: "var(--af-preto)", fontWeight: 600 }}>
+                        password-good
+                      </span>
+                    </p>
                   )}
                 </div>
               </div>
