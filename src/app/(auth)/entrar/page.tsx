@@ -166,7 +166,7 @@ export default async function EntrarPage({ searchParams }: Props) {
             }}
           >
             sem Serasa. sem CEP no algoritmo. seu histórico de recebimentos
-            fala mais alto do que qualquer score convencional.
+            fala mais alto do que qualquer bureau convencional.
           </p>
 
           {/* manifesto quote */}

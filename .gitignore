@@ -57,3 +57,4 @@ next-env.d.ts
 /onboarding-*.png
 /final-*.png
 /showcase-*.png
+.superpowers/

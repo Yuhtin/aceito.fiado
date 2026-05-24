@@ -16,7 +16,6 @@ export {
   CodeBlock,
 } from "./primitives";
 export { AfLogo } from "./logo";
-export { ScoreRing } from "./score-ring";
 export { OperationCard } from "./operation-card";
 export { PixTickerRow, type PixTickerRowProps } from "./pix-ticker-row";
 export { ChannelChip } from "./channel-chip";
