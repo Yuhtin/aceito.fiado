@@ -6,6 +6,7 @@ export {
   GradientMesh,
   Ticker,
 } from "./motion";
+export { DisplayHeading } from "./display-heading";
 export { Money } from "./money";
 export {
   Eyebrow,
