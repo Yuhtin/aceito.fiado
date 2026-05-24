@@ -31,17 +31,23 @@ export default async function HistoricoPage() {
       />
       <div
         className="px-6 py-7 md:px-10 md:py-8"
-        style={{ background: "var(--af-paper-2)" }}
+        style={{ background: "var(--af-creme-2)" }}
       >
         <AfCard padding={0} radius={20} className="overflow-hidden">
           <div
+            className="px-7 pt-5 pb-3"
+            style={{ borderBottom: "1px solid var(--af-borda)" }}
+          >
+            <p className="af-eb">atividade na rede · {orders.length} operações</p>
+          </div>
+          <div
             className="divide-y"
-            style={{ borderColor: "var(--af-ink-08)" }}
+            style={{ borderColor: "var(--af-borda)" }}
           >
             {orders.length === 0 && (
               <p
                 className="px-7 py-10 text-center text-sm"
-                style={{ color: "var(--af-ink-soft)" }}
+                style={{ color: "var(--af-cinza)" }}
               >
                 nenhuma operação ainda.
               </p>
@@ -55,21 +61,21 @@ export default async function HistoricoPage() {
                 <Link
                   key={o.id}
                   href={`/app/fiado/op/${o.id}`}
-                  className="grid items-center gap-4 px-7 py-4 transition-colors hover:bg-[oklch(0.985_0.005_75_/_0.5)] md:grid-cols-[auto_2fr_1fr_1fr_auto]"
+                  className="grid items-center gap-4 px-7 py-4 transition-colors hover:bg-[var(--af-creme)] md:grid-cols-[auto_2fr_1fr_1fr_auto]"
                 >
                   <div
                     style={{
                       width: 40,
                       height: 40,
-                      background: "var(--af-ink)",
-                      color: "var(--af-paper)",
+                      background: "var(--af-preto)",
+                      color: "var(--af-creme)",
                       borderRadius: 10,
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
-                      fontFamily: "var(--af-sans)",
-                      fontSize: 14,
-                      fontWeight: 600,
+                      fontFamily: "var(--af-display)",
+                      fontSize: 16,
+                      fontWeight: 400,
                     }}
                   >
                     {o.supplier.businessName.charAt(0)}
@@ -85,7 +91,7 @@ export default async function HistoricoPage() {
                       className="af-mono"
                       style={{
                         fontSize: 11,
-                        color: "var(--af-ink-soft)",
+                        color: "var(--af-cinza)",
                         margin: "3px 0 0",
                       }}
                     >
@@ -99,7 +105,7 @@ export default async function HistoricoPage() {
                       className="af-mono"
                       style={{
                         fontSize: 10,
-                        color: "var(--af-ink-soft)",
+                        color: "var(--af-cinza)",
                         margin: "2px 0 0",
                         textTransform: "uppercase",
                         letterSpacing: "0.1em",
@@ -109,12 +115,12 @@ export default async function HistoricoPage() {
                     </p>
                   </div>
                   <div>
-                    <Money cents={paid} size={14} color="var(--af-mata)" />
+                    <Money cents={paid} size={14} color="var(--af-sucesso)" />
                     <p
                       className="af-mono"
                       style={{
                         fontSize: 10,
-                        color: "var(--af-ink-soft)",
+                        color: "var(--af-cinza)",
                         margin: "2px 0 0",
                         textTransform: "uppercase",
                         letterSpacing: "0.1em",
@@ -130,7 +136,7 @@ export default async function HistoricoPage() {
                         className="af-mono"
                         style={{
                           fontSize: 10,
-                          color: "var(--af-ink-soft)",
+                          color: "var(--af-cinza)",
                           margin: "3px 0 0",
                         }}
                       >
@@ -141,7 +147,7 @@ export default async function HistoricoPage() {
                     </div>
                     <ChevronRight
                       className="size-4"
-                      style={{ color: "var(--af-ink-soft)" }}
+                      style={{ color: "var(--af-cinza)" }}
                     />
                   </div>
                 </Link>
