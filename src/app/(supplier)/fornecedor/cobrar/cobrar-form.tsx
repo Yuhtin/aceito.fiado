@@ -44,7 +44,19 @@ export function CobrarForm({ supplierName }: Props) {
         <h1 className="af-display text-[28px] mt-2 mb-6 text-[var(--af-preto)]">
           Quem é a cliente?
         </h1>
-        {/* form vai aqui — preenchido em 2.2-2.4 */}
+        <div className="mb-5">
+          <label className="af-eb block mb-2">CPF ou nome da MEI (opcional)</label>
+          <input
+            type="text"
+            value={cpf}
+            onChange={(e) => setCpf(e.target.value)}
+            placeholder="132.456.789-90 · Joana Bezerra"
+            className="w-full bg-[var(--af-branco)] border border-[var(--af-borda)] rounded-[8px] px-3.5 py-3 text-sm text-[var(--af-preto)]"
+          />
+          <p className="text-[11px] text-[var(--af-cinza)] mt-1.5 font-mono">
+            se a cliente ainda não tem cadastro, ela cria no momento de pagar
+          </p>
+        </div>
         <button
           onClick={handleGenerate}
           disabled={generating || items.length === 0}
